@@ -2,12 +2,14 @@
 import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import {  MenuIcon, XIcon } from '@heroicons/react/outline'
+import { PAGE_NAME_SEARCH, PAGE_NAME_SETTINGS, PAGE_NAME_TRACKED_TV_SHOWS } from '../../constants';
 
 
 interface NavBarProps {
   isLoggedIn: boolean;
+  setCurrentPage: (params: string) => any;
+  currentPage: string;
   setShowLoginModal: (params: boolean) => any;
-  setShowTrackedTvShows: (params: boolean) => any;
   logout: () => any;
 }
 
@@ -20,11 +22,13 @@ function showSettingsPage(arg0: boolean) {
 }
 
 
-export const NavBar = ({ isLoggedIn, setShowLoginModal, setShowTrackedTvShows, logout }: NavBarProps) => {
-  const navigation = [
-    { name: 'Search', href: '#', current: true, onClick: setShowTrackedTvShows(false) },
-    { name: 'My List', href: '#', current: false, onClick: setShowTrackedTvShows(true) },
-    { name: 'Settings', href: '#', current: false, onClick: showSettingsPage(true) },
+export const NavBar = ({ setCurrentPage, currentPage, isLoggedIn, setShowLoginModal, logout }: NavBarProps) => {
+  const navigation = isLoggedIn ? [
+    { name: PAGE_NAME_SEARCH, href: '#', current: currentPage === PAGE_NAME_SEARCH, onClick: setCurrentPage },
+    { name: PAGE_NAME_TRACKED_TV_SHOWS, href: '#', current: currentPage === PAGE_NAME_TRACKED_TV_SHOWS, onClick: setCurrentPage },
+    { name: PAGE_NAME_SETTINGS, href: '#', current: currentPage === PAGE_NAME_SETTINGS, onClick: setCurrentPage },
+  ] : [
+    { name: PAGE_NAME_SEARCH, href: '#', current: currentPage === PAGE_NAME_SEARCH, onClick: setCurrentPage }
   ]
 
   return (
@@ -63,7 +67,7 @@ export const NavBar = ({ isLoggedIn, setShowLoginModal, setShowTrackedTvShows, l
                       <a
                         key={item.name}
                         href={item.href}
-                        onClick={() => item.onClick}
+                        onClick={() => item.onClick(item.name)}
                         className={classNames(
                           item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                           'px-3 py-2 rounded-md text-sm font-medium'

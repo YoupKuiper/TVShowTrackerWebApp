@@ -10,7 +10,7 @@ interface TvShowsListItemProps {
 export const TvShowListItem = ({ tvShow, isTrackedListItem, handleClick }: TvShowsListItemProps) => {
 
   const buttonColor = isTrackedListItem ? 'red' : 'blue';
-  const buttonClass = `h-[50px] w-[300px] bg-${buttonColor}-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md`
+  const buttonClass = `h-[50px] w-[300px] bg-${buttonColor}-500 hover:bg-${buttonColor}-700 text-white font-bold py-2 px-4 rounded-md`
     return (
         <div key={tvShow.id}>   
           <div className='h-[450px] w-[300px] hover:scale-105 hover:duration-200'>

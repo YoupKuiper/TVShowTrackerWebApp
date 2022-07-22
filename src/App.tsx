@@ -4,16 +4,17 @@ import LoginFormModal from './Components/LoginFormModal/LoginFormModal';
 import { NavBar } from './Components/NavBar/NavBar';
 import SearchBar from './Components/SearchBar/SearchBar';
 import TvShowsListView from './Components/TvShowsListView/TvShowsListView';
-import { DEFAULT_TOKEN, JWT_TOKEN_KEY, MOVIEDB_API_BASE_URL, TV_SHOW_TRACKER_API_BASE_URL } from './constants';
+import { DEFAULT_TOKEN, JWT_TOKEN_KEY, MOVIEDB_API_BASE_URL, PAGE_NAME_SEARCH, PAGE_NAME_TRACKED_TV_SHOWS, TV_SHOW_TRACKER_API_BASE_URL } from './constants';
 
 const App = () => {
 
   const [tvShows, setTvShows] = useState([]);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [loggedInUser, setLoggedInUser] = useState(null);
-  const [showTrackedTvShows, setShowTrackedTvShows] = useState(false)
+  const [currentPage, setCurrentPage] = useState(PAGE_NAME_SEARCH)
 
   const isLoggedIn = !!loggedInUser;
+  const showTrackedTvShows = currentPage === PAGE_NAME_TRACKED_TV_SHOWS
 
   const searchTvShow = async (title: string) => {
     try {
@@ -78,7 +79,7 @@ const App = () => {
 
   return (
     <div>
-      <NavBar isLoggedIn={isLoggedIn} setShowLoginModal={setShowLoginModal} setShowTrackedTvShows={setShowTrackedTvShows} logout={logoutUser} />
+      <NavBar setCurrentPage={setCurrentPage} currentPage={currentPage} isLoggedIn={isLoggedIn} setShowLoginModal={setShowLoginModal} logout={logoutUser} />
       <SearchBar search={searchTvShow} />
       <TvShowsListView isTrackedList={showTrackedTvShows} tvShows={isLoggedIn && showTrackedTvShows ? loggedInUser : tvShows} addTrackedTVShow={addTrackedTVShow} removeTrackedTVShow={removeTrackedTVShow} />
       {showLoginModal && <LoginFormModal setShowLoginModal={setShowLoginModal} loginUser={loginUser}  />}
