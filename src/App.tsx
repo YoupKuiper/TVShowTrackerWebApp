@@ -69,19 +69,50 @@ const App = () => {
     setLoggedInUser(null);
   }
 
-  const addTrackedTVShow = (id: number) => {
-    return null;
+  const addTrackedTVShow = async (id: number) => {
+    console.log(`Adding: ${id}`)
+    await updateUser(id)
   }
 
-  const removeTrackedTVShow = (id: number) => {
-    return null;
+  const removeTrackedTVShow = async (id: number) => {
+    console.log(`Removing: ${id}`)
+    await updateUser(id)
+  }
+
+  const updateUser = async (params: any) => {
+    try {
+      const token = localStorage.getItem(JWT_TOKEN_KEY);
+      if(!token){
+        console.error('No token found')
+        return;
+      }
+
+      const { data, status } = await axios.post<any>(
+        `${TV_SHOW_TRACKER_API_BASE_URL}/UpdateUser`,
+        { token, settings: { trackedTvShows: params } }
+      );
+      console.log(`Data: ${JSON.stringify(data, null, 4)}`);
+      console.log('response status is: ', status);
+
+      setLoggedInUser(data.parsedUser);
+      localStorage.setItem(JWT_TOKEN_KEY, data.token);
+        
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.log('error message: ', error);
+        return error.message;
+      } else {
+        console.log('unexpected error: ', error);
+        return 'An unexpected error occurred';
+      }
+    }
   }
 
   return (
     <div>
       <NavBar setCurrentPage={setCurrentPage} currentPage={currentPage} isLoggedIn={isLoggedIn} setShowLoginModal={setShowLoginModal} logout={logoutUser} />
       <SearchBar search={searchTvShow} />
-      <TvShowsListView isTrackedList={showTrackedTvShows} tvShows={isLoggedIn && showTrackedTvShows ? loggedInUser : tvShows} addTrackedTVShow={addTrackedTVShow} removeTrackedTVShow={removeTrackedTVShow} />
+      <TvShowsListView isTrackedList={showTrackedTvShows} tvShows={isLoggedIn && showTrackedTvShows ? loggedInUser : tvShows} handleClick={showTrackedTvShows ? removeTrackedTVShow : addTrackedTVShow} />
       {showLoginModal && <LoginFormModal setShowLoginModal={setShowLoginModal} loginUser={loginUser}  />}
     </div>
   )
