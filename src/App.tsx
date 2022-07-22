@@ -4,14 +4,16 @@ import LoginFormModal from './Components/LoginFormModal/LoginFormModal';
 import { NavBar } from './Components/NavBar/NavBar';
 import SearchBar from './Components/SearchBar/SearchBar';
 import TvShowsListView from './Components/TvShowsListView/TvShowsListView';
-import { MOVIEDB_API_BASE_URL, TV_SHOW_TRACKER_API_BASE_URL } from './constants';
+import { DEFAULT_TOKEN, JWT_TOKEN_KEY, MOVIEDB_API_BASE_URL, TV_SHOW_TRACKER_API_BASE_URL } from './constants';
 
 const App = () => {
 
   const [tvShows, setTvShows] = useState([]);
-  const [isLoggedIn, setLoggedIn] = useState(false)
   const [showLoginModal, setShowLoginModal] = useState(false);
-  const [trackedTvShows, setTrackedTvShows] = useState([]);
+  const [loggedInUser, setLoggedInUser] = useState(null);
+  const [showTrackedTvShows, setShowTrackedTvShows] = useState(false)
+
+  const isLoggedIn = !!loggedInUser;
 
   const searchTvShow = async (title: string) => {
     try {
@@ -22,7 +24,7 @@ const App = () => {
       console.log(`Data.results: ${JSON.stringify(data.results, null, 4)}`);
       console.log('response status is: ', status);
 
-      setTvShows(data.results)
+      setTvShows(data.results);
 
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -41,12 +43,15 @@ const App = () => {
         `${TV_SHOW_TRACKER_API_BASE_URL}/Login`,
         { emailAddress, password }
       );
-      console.log(`Data.results: ${JSON.stringify(data.results, null, 4)}`);
+      console.log(`Data: ${JSON.stringify(data, null, 4)}`);
       console.log('response status is: ', status);
+
+      setLoggedInUser(data.parsedUser);
+      localStorage.setItem(JWT_TOKEN_KEY, data.token);
         
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        console.log('error message: ', error.message);
+        console.log('error message: ', error);
         return error.message;
       } else {
         console.log('unexpected error: ', error);
@@ -55,11 +60,27 @@ const App = () => {
     }
   }
 
+  const logoutUser = () => {
+    // Delete jwt token
+    localStorage.setItem(JWT_TOKEN_KEY, DEFAULT_TOKEN);
+
+    // Update state
+    setLoggedInUser(null);
+  }
+
+  const addTrackedTVShow = (id: number) => {
+    return null;
+  }
+
+  const removeTrackedTVShow = (id: number) => {
+    return null;
+  }
+
   return (
     <div>
-      <NavBar isLoggedIn={isLoggedIn} setShowLoginModal={setShowLoginModal} />
+      <NavBar isLoggedIn={isLoggedIn} setShowLoginModal={setShowLoginModal} setShowTrackedTvShows={setShowTrackedTvShows} logout={logoutUser} />
       <SearchBar search={searchTvShow} />
-      <TvShowsListView tvShows={tvShows}/>
+      <TvShowsListView isTrackedList={showTrackedTvShows} tvShows={isLoggedIn && showTrackedTvShows ? loggedInUser : tvShows} addTrackedTVShow={addTrackedTVShow} removeTrackedTVShow={removeTrackedTVShow} />
       {showLoginModal && <LoginFormModal setShowLoginModal={setShowLoginModal} loginUser={loginUser}  />}
     </div>
   )

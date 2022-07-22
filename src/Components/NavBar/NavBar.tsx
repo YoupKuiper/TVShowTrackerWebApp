@@ -7,18 +7,26 @@ import {  MenuIcon, XIcon } from '@heroicons/react/outline'
 interface NavBarProps {
   isLoggedIn: boolean;
   setShowLoginModal: (params: boolean) => any;
+  setShowTrackedTvShows: (params: boolean) => any;
+  logout: () => any;
 }
 
-const navigation = [
-  { name: 'My List', href: '#', current: true },
-  { name: 'Settings', href: '#', current: false },
-]
-
-function classNames(...classes: any) {
+const classNames = (...classes: any) => {
   return classes.filter(Boolean).join(' ')
 }
 
-export const NavBar = ({ isLoggedIn, setShowLoginModal }: NavBarProps) => {
+function showSettingsPage(arg0: boolean) {
+  return null;
+}
+
+
+export const NavBar = ({ isLoggedIn, setShowLoginModal, setShowTrackedTvShows, logout }: NavBarProps) => {
+  const navigation = [
+    { name: 'Search', href: '#', current: true, onClick: setShowTrackedTvShows(false) },
+    { name: 'My List', href: '#', current: false, onClick: setShowTrackedTvShows(true) },
+    { name: 'Settings', href: '#', current: false, onClick: showSettingsPage(true) },
+  ]
+
   return (
     <Disclosure as="nav" className="bg-gray-800">
       {({ open }) => (
@@ -55,6 +63,7 @@ export const NavBar = ({ isLoggedIn, setShowLoginModal }: NavBarProps) => {
                       <a
                         key={item.name}
                         href={item.href}
+                        onClick={() => item.onClick}
                         className={classNames(
                           item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                           'px-3 py-2 rounded-md text-sm font-medium'
@@ -100,26 +109,7 @@ export const NavBar = ({ isLoggedIn, setShowLoginModal }: NavBarProps) => {
                           <a
                             href="#"
                             className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
-                          >
-                            Your Profile
-                          </a>
-                        )}
-                      </Menu.Item>
-                      <Menu.Item>
-                        {({ active }) => (
-                          <a
-                            href="#"
-                            className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
-                          >
-                            Settings
-                          </a>
-                        )}
-                      </Menu.Item>
-                      <Menu.Item>
-                        {({ active }) => (
-                          <a
-                            href="#"
-                            className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
+                            onClick={logout}
                           >
                             Sign out
                           </a>
