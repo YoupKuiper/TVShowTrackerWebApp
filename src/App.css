@@ -26,6 +26,23 @@ body {
   flex-direction: column;
 }
 
+.navBarWrapper {
+  width: 100%;
+}
+
+.topLeftNavBar {
+  width: 25%;
+}
+
+.middleNavBar {
+  width: 50%;
+}
+
+.topRightNavBar {
+  width: 25%;
+}
+
+
 h1 {
   font-size: 3rem;
   letter-spacing: 0.9px;
