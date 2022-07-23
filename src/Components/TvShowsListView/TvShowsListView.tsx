@@ -1,4 +1,4 @@
-import { TvShow } from "../../interfaces";
+import { TvShow } from "../../validators";
 import { TvShowListItem } from "../TvShowsListItem/TvShowListItem";
 
 interface TvShowsListViewProps {
