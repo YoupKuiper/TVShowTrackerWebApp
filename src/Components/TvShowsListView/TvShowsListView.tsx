@@ -4,7 +4,7 @@ import { TvShowListItem } from "../TvShowsListItem/TvShowListItem";
 interface TvShowsListViewProps {
     tvShows: TvShow[];
     isTrackedList: boolean;
-    handleClick: (id: number) => any;
+    handleClick: (tvShow: TvShow) => any;
 }
 
 

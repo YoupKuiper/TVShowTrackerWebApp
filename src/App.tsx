@@ -1,20 +1,21 @@
 import axios from 'axios';
 import { useState } from "react";
-import LoginFormModal from './Components/LoginFormModal/LoginFormModal';
-import { NavBar } from './Components/NavBar/NavBar';
-import SearchBar from './Components/SearchBar/SearchBar';
-import TvShowsListView from './Components/TvShowsListView/TvShowsListView';
+import LoginFormModal from './components/LoginFormModal/LoginFormModal';
+import { NavBar } from './components/NavBar/NavBar';
+import SearchBar from './components/SearchBar/SearchBar';
+import TvShowsListView from './components/TvShowsListView/TvShowsListView';
 import { DEFAULT_TOKEN, DEFAULT_USER, JWT_TOKEN_KEY, MOVIEDB_API_BASE_URL, PAGE_NAME_SEARCH, PAGE_NAME_TRACKED_TV_SHOWS, TV_SHOW_TRACKER_API_BASE_URL } from './constants';
-import { LoginResponse, User } from './validators';
+import { LoginResponse, TvShow, TvShowList, User } from './validators';
 
 const App = () => {
 
-  const [tvShows, setTvShows] = useState([]);
+  const [tvShows, setTvShows] = useState<TvShowList>([]);
+  const [trackedTVShows, setTrackedTVShows] = useState<TvShowList>([]);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [loggedInUser, setLoggedInUser] = useState<User>(DEFAULT_USER);
   const [currentPage, setCurrentPage] = useState(PAGE_NAME_SEARCH)
 
-  const isLoggedIn = !!loggedInUser.emailAddress;
+  const isLoggedIn = localStorage.getItem(JWT_TOKEN_KEY) !== DEFAULT_TOKEN;
   const showTrackedTvShows = currentPage === PAGE_NAME_TRACKED_TV_SHOWS
 
   const searchTvShow = async (title: string) => {
@@ -22,8 +23,7 @@ const App = () => {
       const { data, status } = await axios.get<any>(
         `${MOVIEDB_API_BASE_URL}/search/tv?api_key=${process.env.REACT_APP_API_KEY}&query=${encodeURIComponent(title)}`
       );
-  
-      console.log(`Data.results: ${JSON.stringify(data.results, null, 4)}`);
+      console.log(`Data.results: ${JSON.stringify(data, null, 4)}`);
       console.log('response status is: ', status);
 
       setTvShows(data.results);
@@ -37,6 +37,30 @@ const App = () => {
         return 'An unexpected error occurred';
       }
     }
+  }
+
+  const updateCurrentPage = async (newPage: string) => {
+    if(newPage === PAGE_NAME_TRACKED_TV_SHOWS){
+      try {
+        const { data, status } = await axios.post<any>(
+          `${TV_SHOW_TRACKER_API_BASE_URL}/GetTrackedTVShows`,
+          { token: localStorage.getItem(JWT_TOKEN_KEY) }
+        );
+        console.log(`Data.results: ${JSON.stringify(data, null, 4)}`);
+        console.log('response status is: ', status);
+  
+        setTrackedTVShows(data);
+  
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          console.log('error message: ', error.message);
+        } else {
+          console.log('unexpected error: ', error);
+        }
+      }
+    }
+
+    setCurrentPage(newPage)
   }
 
   const loginUser = async (emailAddress: string, password: string) => {
@@ -71,18 +95,18 @@ const App = () => {
     setLoggedInUser(DEFAULT_USER);
   }
 
-  const addTrackedTVShow = async (id: number) => {
-    console.log(`Adding: ${id}`)
+  const addTrackedTVShow = async (tvShow: TvShow) => {
+    console.log(`Adding: ${tvShow.id}`)
     
-    await updateUser(id)
+    await updateTrackedTvShows(tvShow, false)
   }
 
-  const removeTrackedTVShow = async (id: number) => {
-    console.log(`Removing: ${id}`)
-    await updateUser(id)
+  const removeTrackedTVShow = async (tvShow: TvShow) => {
+    console.log(`Removing: ${tvShow.id}`)
+    await updateTrackedTvShows(tvShow, true)
   }
 
-  const updateUser = async (params: any) => {
+  const updateTrackedTvShows = async (tvShow: TvShow, toRemove: boolean) => {
     try {
       const token = localStorage.getItem(JWT_TOKEN_KEY);
       if(!token){
@@ -90,16 +114,23 @@ const App = () => {
         return;
       }
 
-      const { data, status } = await axios.post<any>(
-        `${TV_SHOW_TRACKER_API_BASE_URL}/UpdateUser`,
-        { token, settings: { trackedTvShows: params } }
+      console.log(`TV show id: ${tvShow.id}`)
+      let newTrackedTvShowsList = [];
+      if (toRemove){
+        newTrackedTvShowsList = trackedTVShows.filter(e => e.id !== tvShow.id) 
+      }else{
+        // TODO: Prevent duplicates
+        newTrackedTvShowsList = trackedTVShows.concat(tvShow)
+      }
+
+      const { data, status } = await axios.post<User>(
+        `${TV_SHOW_TRACKER_API_BASE_URL}/UpdateTrackedTVShow`,
+        { token, tvShowsList: newTrackedTvShowsList }
       );
+      
       console.log(`Data: ${JSON.stringify(data, null, 4)}`);
       console.log('response status is: ', status);
-
-      setLoggedInUser(data.parsedUser);
-      localStorage.setItem(JWT_TOKEN_KEY, data.token);
-        
+      setLoggedInUser(data)
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.log('error message: ', error);
@@ -113,9 +144,9 @@ const App = () => {
 
   return (
     <div>
-      <NavBar setCurrentPage={setCurrentPage} currentPage={currentPage} isLoggedIn={isLoggedIn} setShowLoginModal={setShowLoginModal} logout={logoutUser} />
+      <NavBar setCurrentPage={updateCurrentPage} currentPage={currentPage} isLoggedIn={isLoggedIn} setShowLoginModal={setShowLoginModal} logout={logoutUser} />
       <SearchBar search={searchTvShow} />
-      <TvShowsListView isTrackedList={showTrackedTvShows} tvShows={isLoggedIn && showTrackedTvShows ? loggedInUser.settings.trackedTVShows : tvShows} handleClick={showTrackedTvShows ? removeTrackedTVShow : addTrackedTVShow} />
+      <TvShowsListView isTrackedList={showTrackedTvShows} tvShows={isLoggedIn && showTrackedTvShows ? trackedTVShows : tvShows} handleClick={showTrackedTvShows ? removeTrackedTVShow : addTrackedTVShow} />
       {showLoginModal && <LoginFormModal setShowLoginModal={setShowLoginModal} loginUser={loginUser}  />}
     </div>
   )

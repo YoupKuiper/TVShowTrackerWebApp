@@ -8,3 +8,11 @@ export const DEFAULT_TOKEN = 'no-token'
 export const PAGE_NAME_SEARCH = 'Search'
 export const PAGE_NAME_TRACKED_TV_SHOWS = 'Tracked Shows List'
 export const PAGE_NAME_SETTINGS = 'Settings'
+export const DEFAULT_USER = {
+    emailAddress: '',
+    emailAddressVerified: false,
+    settings: {
+      wantsEmailNotifications: false,
+      trackedTVShows: []
+    }
+  }
