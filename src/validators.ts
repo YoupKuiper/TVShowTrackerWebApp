@@ -25,6 +25,15 @@ export const LoginResponse = z.object({
     user: User
 });
 
+export const UserAccountCreation = z.object({
+    emailAddress: z.string().email({ message: "Invalid email address" }),
+    password: z.string(),
+    repeatedPassword: z.string()
+}).refine((data) => data.password === data.repeatedPassword, {
+    message: "Passwords don't match",
+    path: ["confirm"], // path of error
+})
+
 export type User = z.infer<typeof User>;
 export type TvShowList = z.infer<typeof TvShowList>;
 export type TvShow = z.infer<typeof TvShow>;

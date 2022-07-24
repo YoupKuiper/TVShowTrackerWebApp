@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useState } from "react";
+import CreateAccountFormModal from './components/CreateAccountFormModal/CreateAccountFormModal';
 import LoginFormModal from './components/LoginFormModal/LoginFormModal';
 import { NavBar } from './components/NavBar/NavBar';
 import SearchBar from './components/SearchBar/SearchBar';
@@ -12,6 +13,7 @@ const App = () => {
   const [tvShows, setTvShows] = useState<TvShowList>([]);
   const [trackedTVShows, setTrackedTVShows] = useState<TvShowList>([]);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showCreateAccountModal, setShowCreateAccountModal] = useState(false);
   const [loggedInUser, setLoggedInUser] = useState<User>(DEFAULT_USER);
   const [currentPage, setCurrentPage] = useState(PAGE_NAME_SEARCH)
 
@@ -61,6 +63,27 @@ const App = () => {
     }
 
     setCurrentPage(newPage)
+  }
+
+  const createUserAccount = async (emailAddress: string, password: string) => {
+    try {
+      const { data, status } = await axios.post<any>(
+        `${TV_SHOW_TRACKER_API_BASE_URL}/CreateAccount`,
+        { emailAddress, password }
+      );
+
+      console.log(`Data: ${JSON.stringify(data, null, 4)}`);
+      console.log('response status is: ', status);
+        
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.error('error message: ', error);
+        return error.message;
+      } else {
+        console.error('unexpected error: ', error);
+        return 'An unexpected error occurred';
+      }
+    }
   }
 
   const loginUser = async (emailAddress: string, password: string) => {
@@ -144,10 +167,11 @@ const App = () => {
 
   return (
     <div>
-      <NavBar setCurrentPage={updateCurrentPage} currentPage={currentPage} loggedInUser={loggedInUser} setShowLoginModal={setShowLoginModal} logout={logoutUser} />
+      <NavBar setCurrentPage={updateCurrentPage} currentPage={currentPage} loggedInUser={loggedInUser} setShowLoginModal={setShowLoginModal} setShowCreateAccountModal={setShowCreateAccountModal} logout={logoutUser} />
       <SearchBar search={searchTvShow} />
       <TvShowsListView isTrackedList={showTrackedTvShows} tvShows={isLoggedIn && showTrackedTvShows ? trackedTVShows : tvShows} handleClick={showTrackedTvShows ? removeTrackedTVShow : addTrackedTVShow} />
       {showLoginModal && <LoginFormModal setShowLoginModal={setShowLoginModal} loginUser={loginUser}  />}
+      {showCreateAccountModal && <CreateAccountFormModal setShowCreateAccountModal={setShowCreateAccountModal} createUserAccount={createUserAccount}  />}
     </div>
   )
 }

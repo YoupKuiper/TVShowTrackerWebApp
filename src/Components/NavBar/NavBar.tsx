@@ -11,6 +11,7 @@ interface NavBarProps {
   setCurrentPage: (params: string) => any;
   currentPage: string;
   setShowLoginModal: (params: boolean) => any;
+  setShowCreateAccountModal: (params: boolean) => any;
   logout: () => any;
 }
 
@@ -23,7 +24,7 @@ function showSettingsPage(arg0: boolean) {
 }
 
 
-export const NavBar = ({ setCurrentPage, currentPage, loggedInUser, setShowLoginModal, logout }: NavBarProps) => {
+export const NavBar = ({ setCurrentPage, currentPage, loggedInUser, setShowLoginModal, setShowCreateAccountModal, logout }: NavBarProps) => {
   const isLoggedIn = !!loggedInUser.emailAddress
   const navigation = isLoggedIn ? [
     { name: PAGE_NAME_SEARCH, href: '#', current: currentPage === PAGE_NAME_SEARCH, onClick: setCurrentPage },
@@ -86,7 +87,8 @@ export const NavBar = ({ setCurrentPage, currentPage, loggedInUser, setShowLogin
                 {/* Profile dropdown */}
                 {!isLoggedIn && 
                   <div>
-                    <button onClick={() => {setShowLoginModal(true)}} className='text-slate-50'>Login</button>
+                    <button onClick={() => {setShowLoginModal(true)}} className='text-slate-50 p-5'>Login</button>
+                    <button onClick={() => {setShowCreateAccountModal(true)}} className='text-slate-50 p-5'>Create account</button>
                   </div>
                 }
                 {isLoggedIn && <Menu as="div" className="ml-3 relative">
