@@ -1,5 +1,6 @@
 import { LockClosedIcon } from '@heroicons/react/solid'
 import { useState } from 'react';
+import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 
 interface LoginFormModalProps {
   setShowLoginModal: (params: boolean) => any;
@@ -8,19 +9,23 @@ interface LoginFormModalProps {
 
 const LoginFormModal = ({ setShowLoginModal, loginUser }: LoginFormModalProps) => {
 
-  const [emailAddress, setEmailAddress] = useState('')
+  const [emailAddress, setEmailAddress] = useState('');
   const [password, setPassword] = useState('');
+  const [showSpinner, setShowSpinner] = useState(false);
 
   const handleOnClose = (event: any) => {
     // Only close when background is clicked
-    if(event.target.id === 'container'){
+    if (event.target.id === 'container') {
       setShowLoginModal(false);
     }
   }
 
   const handleLogin = async (event: any) => {
     event.preventDefault();
-    
+
+    // Show loading spinner
+    setShowSpinner(true)
+
     // Do api call to log in
     await loginUser(emailAddress, password)
 
@@ -35,6 +40,7 @@ const LoginFormModal = ({ setShowLoginModal, loginUser }: LoginFormModalProps) =
     <>
       <div id='container' onClick={handleOnClose} className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm
       flex justify-center items-center">
+
         <div className="bg-white max-w-md w-full space-y-8 p-10 rounded-md">
           <div>
             <img
@@ -44,6 +50,7 @@ const LoginFormModal = ({ setShowLoginModal, loginUser }: LoginFormModalProps) =
             />
             <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Sign in to your account</h2>
           </div>
+          { showSpinner ? <div className="mt-8 space-y-6"><LoadingSpinner/></div> :
           <form className="mt-8 space-y-6" action="#" method="POST">
             <input type="hidden" name="remember" defaultValue="true" />
             <div className="rounded-md shadow-sm -space-y-px">
@@ -112,7 +119,7 @@ const LoginFormModal = ({ setShowLoginModal, loginUser }: LoginFormModalProps) =
                 Sign in
               </button>
             </div>
-          </form>
+          </form>}
         </div>
       </div>
     </>

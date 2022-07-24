@@ -144,7 +144,7 @@ const App = () => {
 
   return (
     <div>
-      <NavBar setCurrentPage={updateCurrentPage} currentPage={currentPage} isLoggedIn={isLoggedIn} setShowLoginModal={setShowLoginModal} logout={logoutUser} />
+      <NavBar setCurrentPage={updateCurrentPage} currentPage={currentPage} loggedInUser={loggedInUser} setShowLoginModal={setShowLoginModal} logout={logoutUser} />
       <SearchBar search={searchTvShow} />
       <TvShowsListView isTrackedList={showTrackedTvShows} tvShows={isLoggedIn && showTrackedTvShows ? trackedTVShows : tvShows} handleClick={showTrackedTvShows ? removeTrackedTVShow : addTrackedTVShow} />
       {showLoginModal && <LoginFormModal setShowLoginModal={setShowLoginModal} loginUser={loginUser}  />}

@@ -3,10 +3,11 @@ import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import {  MenuIcon, XIcon } from '@heroicons/react/outline'
 import { PAGE_NAME_SEARCH, PAGE_NAME_SETTINGS, PAGE_NAME_TRACKED_TV_SHOWS } from '../../constants';
+import { User } from '../../validators';
 
 
 interface NavBarProps {
-  isLoggedIn: boolean;
+  loggedInUser: User;
   setCurrentPage: (params: string) => any;
   currentPage: string;
   setShowLoginModal: (params: boolean) => any;
@@ -22,7 +23,8 @@ function showSettingsPage(arg0: boolean) {
 }
 
 
-export const NavBar = ({ setCurrentPage, currentPage, isLoggedIn, setShowLoginModal, logout }: NavBarProps) => {
+export const NavBar = ({ setCurrentPage, currentPage, loggedInUser, setShowLoginModal, logout }: NavBarProps) => {
+  const isLoggedIn = !!loggedInUser.emailAddress
   const navigation = isLoggedIn ? [
     { name: PAGE_NAME_SEARCH, href: '#', current: currentPage === PAGE_NAME_SEARCH, onClick: setCurrentPage },
     { name: PAGE_NAME_TRACKED_TV_SHOWS, href: '#', current: currentPage === PAGE_NAME_TRACKED_TV_SHOWS, onClick: setCurrentPage },
@@ -84,10 +86,6 @@ export const NavBar = ({ setCurrentPage, currentPage, isLoggedIn, setShowLoginMo
                 {/* Profile dropdown */}
                 {!isLoggedIn && 
                   <div>
-                    {/* <Menu.Button className="bg-gray-800 flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
-                        <span className="sr-only">Open user menu</span>
-                        <button className='text-slate-50'>Hello, username</button>
-                      </Menu.Button> */}
                     <button onClick={() => {setShowLoginModal(true)}} className='text-slate-50'>Login</button>
                   </div>
                 }
@@ -95,7 +93,7 @@ export const NavBar = ({ setCurrentPage, currentPage, isLoggedIn, setShowLoginMo
                   <div>
                     <Menu.Button className="bg-gray-800 flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
                       <span className="sr-only">Open user menu</span>
-                      <button className='text-slate-50'>Hello, username</button>
+                      <button className='text-slate-50'>{loggedInUser.emailAddress}</button>
                     </Menu.Button>
                   </div>
                   <Transition
