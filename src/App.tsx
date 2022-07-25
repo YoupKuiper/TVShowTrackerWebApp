@@ -4,7 +4,7 @@ import CreateAccountFormModal from './Components/CreateAccountFormModal/CreateAc
 import LoginFormModal from './Components/LoginFormModal/LoginFormModal';
 import { NavBar } from './Components/NavBar/NavBar';
 import SearchBar from './Components/SearchBar/SearchBar';
-import TvShowsListView from './Components/TvShowsListView/TvShowsListView';
+import TVShowsListView from './Components/TVShowsListView/TVShowsListView';
 import { DEFAULT_TOKEN, DEFAULT_USER, JWT_TOKEN_KEY, MOVIEDB_API_BASE_URL, PAGE_NAME_SEARCH, PAGE_NAME_TRACKED_TV_SHOWS } from './constants';
 import { LoginResponse, TvShow, TvShowList, User } from './validators';
 
@@ -174,7 +174,7 @@ const App = () => {
     <div>
       <NavBar setCurrentPage={updateCurrentPage} currentPage={currentPage} loggedInUser={loggedInUser} setShowLoginModal={setShowLoginModal} setShowCreateAccountModal={setShowCreateAccountModal} logout={logoutUser} />
       <SearchBar search={searchTvShow} />
-      <TvShowsListView isTrackedList={showTrackedTvShows} tvShows={isLoggedIn && showTrackedTvShows ? trackedTVShows : tvShows} showSpinner={showSpinner} handleClick={showTrackedTvShows ? removeTrackedTVShow : addTrackedTVShow} />
+      <TVShowsListView isTrackedList={showTrackedTvShows} tvShows={isLoggedIn && showTrackedTvShows ? trackedTVShows : tvShows} showSpinner={showSpinner} handleClick={showTrackedTvShows ? removeTrackedTVShow : addTrackedTVShow} />
       {showLoginModal && <LoginFormModal setShowLoginModal={setShowLoginModal} loginUser={loginUser}  />}
       {showCreateAccountModal && <CreateAccountFormModal setShowCreateAccountModal={setShowCreateAccountModal} createUserAccount={createUserAccount}  />}
     </div>

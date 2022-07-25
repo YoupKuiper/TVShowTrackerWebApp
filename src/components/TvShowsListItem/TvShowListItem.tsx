@@ -7,7 +7,7 @@ interface TvShowsListItemProps {
   handleClick: (tvShow: TvShow) => any;
 }
 
-export const TvShowListItem = ({ tvShow, isTrackedListItem, handleClick }: TvShowsListItemProps) => {
+export const TVShowListItem = ({ tvShow, isTrackedListItem, handleClick }: TvShowsListItemProps) => {
 
   const buttonClass = isTrackedListItem ? `h-[50px] w-[300px] bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md` :
   `h-[50px] w-[300px] bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md`;
