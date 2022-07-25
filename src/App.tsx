@@ -4,7 +4,7 @@ import CreateAccountFormModal from './Components/CreateAccountFormModal/CreateAc
 import LoginFormModal from './Components/LoginFormModal/LoginFormModal';
 import { NavBar } from './Components/NavBar/NavBar';
 import SearchBar from './Components/SearchBar/SearchBar';
-import TVShowsListView from './Components/TVShowsListView/TvShowsListView';
+import TVShowsListView from './Components/TVShowsListView/TVShowsListView';
 import { DEFAULT_TOKEN, DEFAULT_USER, JWT_TOKEN_KEY, MOVIEDB_API_BASE_URL, PAGE_NAME_SEARCH, PAGE_NAME_TRACKED_TV_SHOWS } from './constants';
 import { LoginResponse, TvShow, TvShowList, User } from './validators';
 
