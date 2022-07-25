@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { useState } from "react";
-import CreateAccountFormModal from './components/CreateAccountFormModal/CreateAccountFormModal';
-import LoginFormModal from './components/LoginFormModal/LoginFormModal';
-import { NavBar } from './components/NavBar/NavBar';
-import SearchBar from './components/SearchBar/SearchBar';
-import TvShowsListView from './components/TvShowsListView/TvShowsListView';
+import CreateAccountFormModal from './Components/CreateAccountFormModal/CreateAccountFormModal';
+import LoginFormModal from './Components/LoginFormModal/LoginFormModal';
+import { NavBar } from './Components/NavBar/NavBar';
+import SearchBar from './Components/SearchBar/SearchBar';
+import TvShowsListView from './Components/TvShowsListView/TvShowsListView';
 import { DEFAULT_TOKEN, DEFAULT_USER, JWT_TOKEN_KEY, MOVIEDB_API_BASE_URL, PAGE_NAME_SEARCH, PAGE_NAME_TRACKED_TV_SHOWS } from './constants';
 import { LoginResponse, TvShow, TvShowList, User } from './validators';
 
