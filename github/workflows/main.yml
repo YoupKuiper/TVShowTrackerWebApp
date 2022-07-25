@@ -1,13 +1,9 @@
 # Name of workflow as seen in Github actions tab
-name: dev-build-and-deploy
-# Run workflow only on push to dev branch
-on:
-  push:
-    branches:
-      - main
+name: web-app-build-and-deploy
+on: [push]
 jobs:
   # To build the project
-  deploy-web-app:
+  build-and-deploy-web-app:
     runs-on: ubuntu-latest
     steps:
       - name: Checking out code
