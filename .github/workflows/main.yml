@@ -18,6 +18,12 @@ jobs:
       - name: Installing dependencies
         run: npm install
 
+      - name: create env file
+        run: |
+          touch .env
+          echo REACT_APP_API_KEY=${{ secrets.REACT_APP_API_KEY }} >> .env
+          echo REACT_APP_API_BASE_URL=${{ secrets.REACT_APP_API_BASE_URL }} >> .env
+
       - name: Building project
         run: npm run build
         
