@@ -4,18 +4,23 @@ on: [push]
 jobs:
   # To build the project
   build-and-deploy-web-app:
+    name: build and deploy tv show tracker web app
     runs-on: ubuntu-latest
     steps:
       - name: Checking out code
         uses: actions/checkout@v3
+
       - name: Installing Node.js
         uses: actions/setup-node@v3
         with:
           node-version: "16"
+
       - name: Installing dependencies
         run: npm install
+
       - name: Building project
         run: npm run build
+        
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
