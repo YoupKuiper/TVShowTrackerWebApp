@@ -26,8 +26,13 @@ const CreateAccountFormModal = ({ setShowCreateAccountModal, createUserAccount }
   }
 
   const renderErrorMessages = (errorMessages: ZodIssue[]) => {
-    return errorMessages.map((error) => (<Alert message={error.message}/>))
+    return errorMessages.map((error, index) => (<Alert key={index} message={error.message} index={index} closeAlert={closeAlert} />))
   }
+
+  function closeAlert(indexToRemove: number) {
+    const newErrorMessages = errorMessages.filter((_message, index) => index !== indexToRemove)
+    setErrorMessages(newErrorMessages)
+  } 
 
   const handleCreateUserAccount = async (event: any) => {
     event.preventDefault();
@@ -37,7 +42,7 @@ const CreateAccountFormModal = ({ setShowCreateAccountModal, createUserAccount }
     } catch (error) {
       if (error instanceof z.ZodError) {
         console.log(JSON.stringify(error.issues))
-        setErrorMessages(error.issues)
+        setErrorMessages(errorMessages.concat(error.issues))
         return;
       }
     }
