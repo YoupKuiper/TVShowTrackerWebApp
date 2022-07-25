@@ -1,8 +1,8 @@
 import { PlusIcon } from '@heroicons/react/solid'
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
-import { z, ZodIssue } from "zod";
-import { UserAccountCreation } from '../../validators';
+import { z } from "zod";
+import { IndexAndAlertMessage, UserAccountCreation } from '../../validators';
 import { Alert } from '../Alert/Alert';
 
 interface CreateAccountFormModalProps {
@@ -16,7 +16,9 @@ const CreateAccountFormModal = ({ setShowCreateAccountModal, createUserAccount }
   const [password, setPassword] = useState('');
   const [repeatedPassword, setRepeatedPassword] = useState('');
   const [showSpinner, setShowSpinner] = useState(false);
-  const [errorMessages, setErrorMessages] = useState<ZodIssue[]>([])
+  const [errorMessages, setErrorMessages] = useState<IndexAndAlertMessage[]>([]);
+  // Index added to try to be able to remove alerts after timeout and still have known unique indices
+  const [errorMessageLastIndex, setErrorMessageLastIndex] = useState(0);
 
   const handleOnClose = (event: any) => {
     // Only close when background is clicked
@@ -25,13 +27,18 @@ const CreateAccountFormModal = ({ setShowCreateAccountModal, createUserAccount }
     }
   }
 
-  const renderErrorMessages = (errorMessages: ZodIssue[]) => {
-    return errorMessages.map((error, index) => (<Alert key={index} message={error.message} index={index} closeAlert={closeAlert} />))
+  useEffect(() => {
+
+  }, [errorMessages])
+
+  const renderErrorMessages = (errorMessages: IndexAndAlertMessage[]) => {
+    return errorMessages.map((error, index) => (<Alert key={index} message={error.message} index={error.index} closeAlert={closeAlert} />))
   }
 
   function closeAlert(indexToRemove: number) {
-    const newErrorMessages = errorMessages.filter((_message, index) => index !== indexToRemove)
-    setErrorMessages(newErrorMessages)
+    console.log(`current errorMessages: ${JSON.stringify(errorMessages, null, 2)}`)
+    console.log(`Closing: ${indexToRemove}`)
+    setErrorMessages(errorMessages.filter((message) => message.index !== indexToRemove))
   } 
 
   const handleCreateUserAccount = async (event: any) => {
@@ -42,7 +49,13 @@ const CreateAccountFormModal = ({ setShowCreateAccountModal, createUserAccount }
     } catch (error) {
       if (error instanceof z.ZodError) {
         console.log(JSON.stringify(error.issues))
-        setErrorMessages(errorMessages.concat(error.issues))
+        let currentIndex = errorMessageLastIndex;
+        const errorsToAdd = error.issues.map((issue) => {
+          currentIndex++
+          return { index: currentIndex, message: issue.message }
+        })
+        setErrorMessageLastIndex(currentIndex)
+        setErrorMessages(errorMessages.concat(errorsToAdd))
         return;
       }
     }

@@ -34,6 +34,12 @@ export const UserAccountCreation = z.object({
     path: ["confirm"], // path of error
 })
 
+export const IndexAndAlertMessage = z.object({
+    index: z.number(),
+    message: z.string()
+})
+
 export type User = z.infer<typeof User>;
 export type TvShowList = z.infer<typeof TvShowList>;
 export type TvShow = z.infer<typeof TvShow>;
+export type IndexAndAlertMessage = z.infer<typeof IndexAndAlertMessage>;

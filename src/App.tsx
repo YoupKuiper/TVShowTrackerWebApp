@@ -5,7 +5,7 @@ import LoginFormModal from './components/LoginFormModal/LoginFormModal';
 import { NavBar } from './components/NavBar/NavBar';
 import SearchBar from './components/SearchBar/SearchBar';
 import TvShowsListView from './components/TvShowsListView/TvShowsListView';
-import { DEFAULT_TOKEN, DEFAULT_USER, JWT_TOKEN_KEY, MOVIEDB_API_BASE_URL, PAGE_NAME_SEARCH, PAGE_NAME_TRACKED_TV_SHOWS, TV_SHOW_TRACKER_API_BASE_URL } from './constants';
+import { DEFAULT_TOKEN, DEFAULT_USER, JWT_TOKEN_KEY, MOVIEDB_API_BASE_URL, PAGE_NAME_SEARCH, PAGE_NAME_TRACKED_TV_SHOWS } from './constants';
 import { LoginResponse, TvShow, TvShowList, User } from './validators';
 
 const App = () => {
@@ -16,21 +16,24 @@ const App = () => {
   const [showCreateAccountModal, setShowCreateAccountModal] = useState(false);
   const [loggedInUser, setLoggedInUser] = useState<User>(DEFAULT_USER);
   const [currentPage, setCurrentPage] = useState(PAGE_NAME_SEARCH)
-
+  const [showSpinner, setShowSpinner] = useState(false)
   const isLoggedIn = localStorage.getItem(JWT_TOKEN_KEY) !== DEFAULT_TOKEN;
   const showTrackedTvShows = currentPage === PAGE_NAME_TRACKED_TV_SHOWS
+  const TV_SHOW_TRACKER_API_BASE_URL = process.env.NODE_ENV === 'development' ? process.env.REACT_APP_LOCAL_API_BASE_URL : process.env.REACT_APP_API_BASE_URL
 
   const searchTvShow = async (title: string) => {
     try {
+      setShowSpinner(true)
       const { data, status } = await axios.get<any>(
-        `${MOVIEDB_API_BASE_URL}/search/tv?api_key=${process.env.REACT_APP_API_KEY}&query=${encodeURIComponent(title)}`
+        `${MOVIEDB_API_BASE_URL}/search/tv?api_key=${process.env.REACT_APP_API_KEY}&query=${encodeURIComponent(title)}&include_adult=true`
       );
       console.log(`Data.results: ${JSON.stringify(data, null, 4)}`);
       console.log('response status is: ', status);
-
+      setShowSpinner(false)
       setTvShows(data.results);
 
     } catch (error) {
+      setShowSpinner(false)
       if (axios.isAxiosError(error)) {
         console.log('error message: ', error.message);
         return error.message;
@@ -44,16 +47,18 @@ const App = () => {
   const updateCurrentPage = async (newPage: string) => {
     if(newPage === PAGE_NAME_TRACKED_TV_SHOWS){
       try {
+        setShowSpinner(true)
         const { data, status } = await axios.post<any>(
           `${TV_SHOW_TRACKER_API_BASE_URL}/GetTrackedTVShows`,
           { token: localStorage.getItem(JWT_TOKEN_KEY) }
         );
         console.log(`Data.results: ${JSON.stringify(data, null, 4)}`);
         console.log('response status is: ', status);
-  
+        setShowSpinner(false)
         setTrackedTVShows(data);
   
       } catch (error) {
+        setShowSpinner(false)
         if (axios.isAxiosError(error)) {
           console.log('error message: ', error.message);
         } else {
@@ -146,14 +151,14 @@ const App = () => {
         newTrackedTvShowsList = trackedTVShows.concat(tvShow)
       }
 
-      const { data, status } = await axios.post<User>(
+      const { data, status } = await axios.post<TvShowList>(
         `${TV_SHOW_TRACKER_API_BASE_URL}/UpdateTrackedTVShow`,
         { token, tvShowsList: newTrackedTvShowsList }
       );
       
       console.log(`Data: ${JSON.stringify(data, null, 4)}`);
       console.log('response status is: ', status);
-      setLoggedInUser(data)
+      setTrackedTVShows(data)
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.log('error message: ', error);
@@ -169,7 +174,7 @@ const App = () => {
     <div>
       <NavBar setCurrentPage={updateCurrentPage} currentPage={currentPage} loggedInUser={loggedInUser} setShowLoginModal={setShowLoginModal} setShowCreateAccountModal={setShowCreateAccountModal} logout={logoutUser} />
       <SearchBar search={searchTvShow} />
-      <TvShowsListView isTrackedList={showTrackedTvShows} tvShows={isLoggedIn && showTrackedTvShows ? trackedTVShows : tvShows} handleClick={showTrackedTvShows ? removeTrackedTVShow : addTrackedTVShow} />
+      <TvShowsListView isTrackedList={showTrackedTvShows} tvShows={isLoggedIn && showTrackedTvShows ? trackedTVShows : tvShows} showSpinner={showSpinner} handleClick={showTrackedTvShows ? removeTrackedTVShow : addTrackedTVShow} />
       {showLoginModal && <LoginFormModal setShowLoginModal={setShowLoginModal} loginUser={loginUser}  />}
       {showCreateAccountModal && <CreateAccountFormModal setShowCreateAccountModal={setShowCreateAccountModal} createUserAccount={createUserAccount}  />}
     </div>
