@@ -1,6 +1,6 @@
 import { TvShow } from "../../validators";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
-import { TVShowListItem } from "../TVShowsListItem/TvShowListItem";
+import { TVShowListItem } from "../TVShowsListItem/TVShowListItem";
 
 interface TvShowsListViewProps {
     tvShows: TvShow[];
