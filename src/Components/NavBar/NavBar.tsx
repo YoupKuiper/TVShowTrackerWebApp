@@ -27,11 +27,11 @@ function showSettingsPage(arg0: boolean) {
 export const NavBar = ({ setCurrentPage, currentPage, loggedInUser, setShowLoginModal, setShowCreateAccountModal, logout }: NavBarProps) => {
   const isLoggedIn = !!loggedInUser.emailAddress
   const navigation = isLoggedIn ? [
-    { name: PAGE_NAME_SEARCH, href: '#', current: currentPage === PAGE_NAME_SEARCH, onClick: setCurrentPage },
-    { name: PAGE_NAME_TRACKED_TV_SHOWS, href: '#', current: currentPage === PAGE_NAME_TRACKED_TV_SHOWS, onClick: setCurrentPage },
-    { name: PAGE_NAME_SETTINGS, href: '#', current: currentPage === PAGE_NAME_SETTINGS, onClick: setCurrentPage },
+    { name: PAGE_NAME_SEARCH, href: '/#', current: currentPage === PAGE_NAME_SEARCH, onClick: setCurrentPage },
+    { name: PAGE_NAME_TRACKED_TV_SHOWS, href: '/#', current: currentPage === PAGE_NAME_TRACKED_TV_SHOWS, onClick: setCurrentPage },
+    { name: PAGE_NAME_SETTINGS, href: '/#', current: currentPage === PAGE_NAME_SETTINGS, onClick: setCurrentPage },
   ] : [
-    { name: PAGE_NAME_SEARCH, href: '#', current: currentPage === PAGE_NAME_SEARCH, onClick: setCurrentPage }
+    { name: PAGE_NAME_SEARCH, href: '/#', current: currentPage === PAGE_NAME_SEARCH, onClick: setCurrentPage }
   ]
 
   return (
@@ -111,7 +111,7 @@ export const NavBar = ({ setCurrentPage, currentPage, loggedInUser, setShowLogin
                       <Menu.Item>
                         {({ active }) => (
                           <a
-                            href="#"
+                            href="/#"
                             className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
                             onClick={logout}
                           >

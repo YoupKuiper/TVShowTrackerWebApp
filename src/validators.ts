@@ -1,7 +1,5 @@
 import { z } from "zod";
 
-export type LoginResponse = z.infer<typeof LoginResponse>;
-
 export const TvShow = z.object({
     id: z.number(),
     name: z.string(),
@@ -40,6 +38,7 @@ export const IndexAndAlertMessage = z.object({
 })
 
 export type User = z.infer<typeof User>;
+export type LoginResponse = z.infer<typeof LoginResponse>;
 export type TvShowList = z.infer<typeof TvShowList>;
 export type TvShow = z.infer<typeof TvShow>;
 export type IndexAndAlertMessage = z.infer<typeof IndexAndAlertMessage>;
