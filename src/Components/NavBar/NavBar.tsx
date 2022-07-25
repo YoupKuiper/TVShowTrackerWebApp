@@ -19,10 +19,6 @@ const classNames = (...classes: any) => {
   return classes.filter(Boolean).join(' ')
 }
 
-function showSettingsPage(arg0: boolean) {
-  return null;
-}
-
 
 export const NavBar = ({ setCurrentPage, currentPage, loggedInUser, setShowLoginModal, setShowCreateAccountModal, logout }: NavBarProps) => {
   const isLoggedIn = !!loggedInUser.emailAddress

@@ -6,12 +6,12 @@ import { NavBar } from './Components/NavBar/NavBar';
 import SearchBar from './Components/SearchBar/SearchBar';
 import TVShowsListView from './Components/TVShowsListView/TVShowsListView';
 import { DEFAULT_TOKEN, DEFAULT_USER, JWT_TOKEN_KEY, MOVIEDB_API_BASE_URL, PAGE_NAME_SEARCH, PAGE_NAME_TRACKED_TV_SHOWS } from './constants';
-import { LoginResponse, TvShow, TvShowList, User } from './validators';
+import { LoginResponse, TvShow, User } from './validators';
 
 const App = () => {
 
-  const [tvShows, setTvShows] = useState<TvShowList>([]);
-  const [trackedTVShows, setTrackedTVShows] = useState<TvShowList>([]);
+  const [tvShows, setTvShows] = useState<TvShow[]>([]);
+  const [trackedTVShows, setTrackedTVShows] = useState<TvShow[]>([]);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showCreateAccountModal, setShowCreateAccountModal] = useState(false);
   const [loggedInUser, setLoggedInUser] = useState<User>(DEFAULT_USER);
@@ -19,7 +19,7 @@ const App = () => {
   const [showSpinner, setShowSpinner] = useState(false)
   const isLoggedIn = localStorage.getItem(JWT_TOKEN_KEY) !== DEFAULT_TOKEN;
   const showTrackedTvShows = currentPage === PAGE_NAME_TRACKED_TV_SHOWS
-  const TV_SHOW_TRACKER_API_BASE_URL = process.env.NODE_ENV === 'development' ? process.env.REACT_APP_LOCAL_API_BASE_URL : process.env.REACT_APP_API_BASE_URL
+  const TV_SHOW_TRACKER_API_BASE_URL = process.env.REACT_APP_API_BASE_URL
 
   const searchTvShow = async (title: string) => {
     try {
@@ -151,7 +151,7 @@ const App = () => {
         newTrackedTvShowsList = trackedTVShows.concat(tvShow)
       }
 
-      const { data, status } = await axios.post<TvShowList>(
+      const { data, status } = await axios.post<TvShow[]>(
         `${TV_SHOW_TRACKER_API_BASE_URL}/UpdateTrackedTVShow`,
         { token, tvShowsList: newTrackedTvShowsList }
       );

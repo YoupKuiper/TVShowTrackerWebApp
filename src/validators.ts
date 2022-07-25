@@ -1,26 +1,24 @@
 import { z } from "zod";
 
-export const TvShow = z.object({
+export const TvShowObject = z.object({
     id: z.number(),
     name: z.string(),
     poster_path: z.string(),
     first_air_date: z.string()
 })
 
-export const TvShowList = z.array(TvShow)
-
-export const User = z.object({
+export const UserObject = z.object({
     emailAddress: z.string().email({ message: "Invalid email address" }),
     emailAddressVerified: z.boolean(),
     settings: z.object({
         wantsEmailNotifications: z.boolean(),
-        trackedTVShows: TvShowList
+        trackedTVShows: z.array(TvShowObject)
       })
 })
 
-export const LoginResponse = z.object({
+export const LoginResponseObject = z.object({
     token: z.string(),
-    user: User
+    user: UserObject
 });
 
 export const UserAccountCreation = z.object({
@@ -32,13 +30,12 @@ export const UserAccountCreation = z.object({
     path: ["confirm"], // path of error
 })
 
-export const IndexAndAlertMessage = z.object({
+export const IndexAndAlertMessageObject = z.object({
     index: z.number(),
     message: z.string()
 })
 
-export type User = z.infer<typeof User>;
-export type LoginResponse = z.infer<typeof LoginResponse>;
-export type TvShowList = z.infer<typeof TvShowList>;
-export type TvShow = z.infer<typeof TvShow>;
-export type IndexAndAlertMessage = z.infer<typeof IndexAndAlertMessage>;
+export type User = z.infer<typeof UserObject>;
+export type LoginResponse = z.infer<typeof LoginResponseObject>;
+export type TvShow = z.infer<typeof TvShowObject>;
+export type IndexAndAlertMessage = z.infer<typeof IndexAndAlertMessageObject>;
