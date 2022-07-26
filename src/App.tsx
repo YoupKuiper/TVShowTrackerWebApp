@@ -18,7 +18,7 @@ const App = () => {
   const [currentPage, setCurrentPage] = useState(PAGE_NAME_SEARCH)
   const [showSpinner, setShowSpinner] = useState(false)
   const isLoggedIn = localStorage.getItem(JWT_TOKEN_KEY) !== DEFAULT_TOKEN;
-  const showTrackedTvShows = currentPage === PAGE_NAME_TRACKED_TV_SHOWS
+  const showTrackedTVShows = currentPage === PAGE_NAME_TRACKED_TV_SHOWS
   const TV_SHOW_TRACKER_API_BASE_URL = process.env.REACT_APP_API_BASE_URL
 
   const searchTvShow = async (title: string) => {
@@ -27,7 +27,6 @@ const App = () => {
       const { data, status } = await axios.get<any>(
         `${MOVIEDB_API_BASE_URL}/search/tv?api_key=${process.env.REACT_APP_API_KEY}&query=${encodeURIComponent(title)}&include_adult=true`
       );
-      console.log(`Data.results: ${JSON.stringify(data, null, 4)}`);
       console.log('Response status is: ', status);
       setShowSpinner(false)
       setTvShows(data.results);
@@ -45,18 +44,17 @@ const App = () => {
   }
 
   const updateCurrentPage = async (newPage: string) => {
-    if(newPage === PAGE_NAME_TRACKED_TV_SHOWS){
+    if (newPage === PAGE_NAME_TRACKED_TV_SHOWS) {
       try {
         setShowSpinner(true)
         const { data, status } = await axios.post<any>(
           `${TV_SHOW_TRACKER_API_BASE_URL}/GetTrackedTVShows`,
           { token: localStorage.getItem(JWT_TOKEN_KEY) }
         );
-        console.log(`Data.results: ${JSON.stringify(data, null, 4)}`);
         console.log('response status is: ', status);
         setShowSpinner(false)
         setTrackedTVShows(data);
-  
+
       } catch (error) {
         setShowSpinner(false)
         if (axios.isAxiosError(error)) {
@@ -79,7 +77,7 @@ const App = () => {
 
       console.log(`Data: ${JSON.stringify(data, null, 4)}`);
       console.log('response status is: ', status);
-        
+
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.error('error message: ', error);
@@ -103,7 +101,7 @@ const App = () => {
 
       setLoggedInUser(data.user);
       localStorage.setItem(JWT_TOKEN_KEY, data.token);
-        
+
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.error('error message: ', error);
@@ -125,7 +123,7 @@ const App = () => {
 
   const addTrackedTVShow = async (tvShow: TvShow) => {
     console.log(`Adding: ${tvShow.id}`)
-    
+
     await updateTrackedTvShows(tvShow, false)
   }
 
@@ -137,16 +135,16 @@ const App = () => {
   const updateTrackedTvShows = async (tvShow: TvShow, toRemove: boolean) => {
     try {
       const token = localStorage.getItem(JWT_TOKEN_KEY);
-      if(!token){
+      if (!token) {
         console.error('No token found')
         return;
       }
 
       console.log(`TV show id: ${tvShow.id}`)
       let newTrackedTvShowsList = [];
-      if (toRemove){
-        newTrackedTvShowsList = trackedTVShows.filter(e => e.id !== tvShow.id) 
-      }else{
+      if (toRemove) {
+        newTrackedTvShowsList = trackedTVShows.filter(e => e.id !== tvShow.id)
+      } else {
         // TODO: Prevent duplicates
         newTrackedTvShowsList = trackedTVShows.concat(tvShow)
       }
@@ -155,7 +153,7 @@ const App = () => {
         `${TV_SHOW_TRACKER_API_BASE_URL}/UpdateTrackedTVShow`,
         { token, tvShowsList: newTrackedTvShowsList }
       );
-      
+
       console.log(`Data: ${JSON.stringify(data, null, 4)}`);
       console.log('response status is: ', status);
       setTrackedTVShows(data)
@@ -172,11 +170,23 @@ const App = () => {
 
   return (
     <div>
-      <NavBar setCurrentPage={updateCurrentPage} currentPage={currentPage} loggedInUser={loggedInUser} setShowLoginModal={setShowLoginModal} setShowCreateAccountModal={setShowCreateAccountModal} logout={logoutUser} />
+      <NavBar
+        setCurrentPage={updateCurrentPage}
+        currentPage={currentPage}
+        loggedInUser={loggedInUser}
+        setShowLoginModal={setShowLoginModal}
+        setShowCreateAccountModal={setShowCreateAccountModal}
+        logout={logoutUser} />
       <SearchBar search={searchTvShow} />
-      <TVShowsListView isTrackedList={showTrackedTvShows} tvShows={isLoggedIn && showTrackedTvShows ? trackedTVShows : tvShows} showSpinner={showSpinner} handleClick={showTrackedTvShows ? removeTrackedTVShow : addTrackedTVShow} />
-      {showLoginModal && <LoginFormModal setShowLoginModal={setShowLoginModal} loginUser={loginUser}  />}
-      {showCreateAccountModal && <CreateAccountFormModal setShowCreateAccountModal={setShowCreateAccountModal} createUserAccount={createUserAccount}  />}
+      <TVShowsListView
+        isTrackedList={showTrackedTVShows}
+        tvShows={tvShows}
+        trackedTVShows={trackedTVShows}
+        showSpinner={showSpinner}
+        handleClick={showTrackedTVShows ? removeTrackedTVShow : addTrackedTVShow}
+        isLoggedIn={isLoggedIn} />
+      {showLoginModal && <LoginFormModal setShowLoginModal={setShowLoginModal} loginUser={loginUser} />}
+      {showCreateAccountModal && <CreateAccountFormModal setShowCreateAccountModal={setShowCreateAccountModal} createUserAccount={createUserAccount} />}
     </div>
   )
 }
