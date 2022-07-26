@@ -1,12 +1,13 @@
 import axios from 'axios';
-import { useState } from "react";
+import { decodeToken } from "react-jwt";
+import { useEffect, useState } from "react";
 import CreateAccountFormModal from './Components/CreateAccountFormModal/CreateAccountFormModal';
 import LoginFormModal from './Components/LoginFormModal/LoginFormModal';
 import { NavBar } from './Components/NavBar/NavBar';
 import SearchBar from './Components/SearchBar/SearchBar';
 import TVShowsListView from './Components/TVShowsListView/TVShowsListView';
 import { DEFAULT_TOKEN, DEFAULT_USER, JWT_TOKEN_KEY, MOVIEDB_API_BASE_URL, PAGE_NAME_SEARCH, PAGE_NAME_TRACKED_TV_SHOWS } from './constants';
-import { LoginResponse, TvShow, User } from './validators';
+import { LoginResponse, TvShow, User, UserObject } from './validators';
 
 const App = () => {
 
@@ -17,9 +18,22 @@ const App = () => {
   const [loggedInUser, setLoggedInUser] = useState<User>(DEFAULT_USER);
   const [currentPage, setCurrentPage] = useState(PAGE_NAME_SEARCH)
   const [showSpinner, setShowSpinner] = useState(false)
-  const isLoggedIn = localStorage.getItem(JWT_TOKEN_KEY) !== DEFAULT_TOKEN;
   const showTrackedTVShows = currentPage === PAGE_NAME_TRACKED_TV_SHOWS
   const TV_SHOW_TRACKER_API_BASE_URL = process.env.REACT_APP_API_BASE_URL
+
+  useEffect(() => {
+    try {
+      const token = localStorage.getItem(JWT_TOKEN_KEY)
+      if(token){
+        const decodedToken: any = decodeToken(token);
+        const loggedInUser = UserObject.parse(decodedToken.data);
+        setLoggedInUser(loggedInUser);
+      }
+    } catch (error) {
+      console.log(`Failed to get user from token: ${error}`)
+      logoutUser()
+    }
+  }, []);
 
   const searchTvShow = async (title: string) => {
     try {
@@ -184,7 +198,7 @@ const App = () => {
         trackedTVShows={trackedTVShows}
         showSpinner={showSpinner}
         handleClick={showTrackedTVShows ? removeTrackedTVShow : addTrackedTVShow}
-        isLoggedIn={isLoggedIn} />
+        isLoggedIn={!!loggedInUser.emailAddress} />
       {showLoginModal && <LoginFormModal setShowLoginModal={setShowLoginModal} loginUser={loginUser} />}
       {showCreateAccountModal && <CreateAccountFormModal setShowCreateAccountModal={setShowCreateAccountModal} createUserAccount={createUserAccount} />}
     </div>
