@@ -58,14 +58,14 @@ const App = () => {
   }
 
   const updateCurrentPage = async (newPage: string) => {
-    if (newPage === PAGE_NAME_TRACKED_TV_SHOWS) {
+    if (newPage === PAGE_NAME_TRACKED_TV_SHOWS || newPage === PAGE_NAME_SEARCH) {
       try {
         setShowSpinner(true)
         const { data, status } = await axios.post<any>(
           `${TV_SHOW_TRACKER_API_BASE_URL}/GetTrackedTVShows`,
           { token: localStorage.getItem(JWT_TOKEN_KEY) }
         );
-        console.log('response status is: ', status);
+
         setShowSpinner(false)
         setTrackedTVShows(data);
 

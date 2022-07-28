@@ -11,7 +11,6 @@ interface TvShowsListItemProps {
 }
 
 export const TVShowListItem = ({ tvShow, isTrackedListItem, shouldShowButton, handleClick }: TvShowsListItemProps) => {
-
   const buttonClass = isTrackedListItem ? `h-[50px] w-[50px] bg-red-500 hover:opacity-100 text-white font-bold rounded-md absolute top-0 right-0 text-center opacity-70` :
   `h-[50px] w-[50px] bg-blue-500 hover:opacity-100 text-white font-bold rounded-md absolute top-0 right-0 text-center opacity-70`;
   
