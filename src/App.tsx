@@ -61,7 +61,7 @@ const App = () => {
     if (newPage === PAGE_NAME_TRACKED_TV_SHOWS || newPage === PAGE_NAME_SEARCH) {
       try {
         setShowSpinner(true)
-        const { data, status } = await axios.post<any>(
+        const { data } = await axios.post<any>(
           `${TV_SHOW_TRACKER_API_BASE_URL}/GetTrackedTVShows`,
           { token: localStorage.getItem(JWT_TOKEN_KEY) }
         );

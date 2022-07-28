@@ -16,7 +16,7 @@ export const TVShowListItem = ({ tvShow, isTrackedListItem, shouldShowButton, ha
   
     return (
         <div key={tvShow.id}>   
-          <div className='h-[450px] w-[300px] hover:scale-105 hover:duration-200 relative'>
+          <div className='h-[360px] w-[240px] hover:scale-105 hover:duration-200 relative'>
             <img className='w-full h-full' src={tvShow.poster_path ? IMAGES_BASE_URL + IMAGE_DEFAULT_SIZE + tvShow.poster_path : "https://via.placeholder.com/400"} alt={tvShow.name} />
             {shouldShowButton && <button className={buttonClass} onClick={() => handleClick(tvShow)} >{isTrackedListItem ? <XIcon/> : <PlusIcon/>}</button>}
           </div>
