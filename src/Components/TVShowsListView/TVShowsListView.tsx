@@ -26,7 +26,7 @@ const shouldButtonBeShown = (isLoggedIn: boolean, isTrackedList: boolean, tracke
     return !isAlreadyInTrackedList(tvShow, trackedTVShows)
 }
 
-const TVShowsListView = ({ tvShows, trackedTVShows, isTrackedList, setShowDetails, showSpinner, isLoggedIn, handleButtonClick: handleButtonClick }: TvShowsListViewProps) => {
+const TVShowsListView = ({ tvShows, trackedTVShows, isTrackedList, setShowDetails, showSpinner, isLoggedIn, handleButtonClick }: TvShowsListViewProps) => {
     const tvShowsToShow = isTrackedList ? trackedTVShows : tvShows
  return(
     <>
