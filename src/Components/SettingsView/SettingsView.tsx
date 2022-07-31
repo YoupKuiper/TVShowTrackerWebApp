@@ -1,7 +1,4 @@
-import { LockClosedIcon } from '@heroicons/react/solid'
-import { useState } from 'react';
 import { User } from '../../validators';
-import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 
 interface SettingsViewProps {
     loggedInUser: User;

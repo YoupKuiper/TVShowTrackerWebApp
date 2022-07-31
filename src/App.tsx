@@ -6,20 +6,23 @@ import LoginFormModal from './Components/LoginFormModal/LoginFormModal';
 import { NavBar } from './Components/NavBar/NavBar';
 import SearchBar from './Components/SearchBar/SearchBar';
 import TVShowsListView from './Components/TVShowsListView/TVShowsListView';
-import { DEFAULT_TOKEN, DEFAULT_USER, JWT_TOKEN_KEY, MOVIEDB_API_BASE_URL, PAGE_NAME_SEARCH, PAGE_NAME_TRACKED_TV_SHOWS } from './constants';
-import { LoginResponse, TvShow, User, UserObject } from './validators';
+import { DEFAULT_TOKEN, DEFAULT_TV_SHOW, DEFAULT_USER, JWT_TOKEN_KEY, MOVIEDB_API_BASE_URL, PAGE_NAME_SEARCH, PAGE_NAME_TRACKED_TV_SHOWS } from './constants';
+import { LoginResponse, TVShow, User, UserObject } from './validators';
+import { TVShowsDetailsModal } from './Components/TVShowDetailsModal/TVShowDetailsModal';
 
 const App = () => {
 
-  const [tvShows, setTvShows] = useState<TvShow[]>([]);
-  const [trackedTVShows, setTrackedTVShows] = useState<TvShow[]>([]);
+  const [tvShows, setTvShows] = useState<TVShow[]>([]);
+  const [trackedTVShows, setTrackedTVShows] = useState<TVShow[]>([]);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showCreateAccountModal, setShowCreateAccountModal] = useState(false);
+  const [tvShowDetailsToShow, setTVShowDetailsToShow] = useState<TVShow>(DEFAULT_TV_SHOW);
   const [loggedInUser, setLoggedInUser] = useState<User>(DEFAULT_USER);
   const [currentPage, setCurrentPage] = useState(PAGE_NAME_SEARCH)
   const [showSpinner, setShowSpinner] = useState(false)
   const showTrackedTVShows = currentPage === PAGE_NAME_TRACKED_TV_SHOWS
   const TV_SHOW_TRACKER_API_BASE_URL = process.env.REACT_APP_API_BASE_URL
+  const showTVShowDetailsModal = tvShowDetailsToShow && tvShowDetailsToShow.id !== DEFAULT_TV_SHOW.id
 
   useEffect(() => {
     try {
@@ -42,6 +45,7 @@ const App = () => {
         `${MOVIEDB_API_BASE_URL}/search/tv?api_key=${process.env.REACT_APP_API_KEY}&query=${encodeURIComponent(title)}&include_adult=true`
       );
       console.log('Response status is: ', status);
+      console.log('Response status is: ', data);
       setShowSpinner(false)
       setTvShows(data.results);
 
@@ -135,18 +139,18 @@ const App = () => {
     setLoggedInUser(DEFAULT_USER);
   }
 
-  const addTrackedTVShow = async (tvShow: TvShow) => {
+  const addTrackedTVShow = async (tvShow: TVShow) => {
     console.log(`Adding: ${tvShow.id}`)
 
     await updateTrackedTvShows(tvShow, false)
   }
 
-  const removeTrackedTVShow = async (tvShow: TvShow) => {
+  const removeTrackedTVShow = async (tvShow: TVShow) => {
     console.log(`Removing: ${tvShow.id}`)
     await updateTrackedTvShows(tvShow, true)
   }
 
-  const updateTrackedTvShows = async (tvShow: TvShow, toRemove: boolean) => {
+  const updateTrackedTvShows = async (tvShow: TVShow, toRemove: boolean) => {
     try {
       const token = localStorage.getItem(JWT_TOKEN_KEY);
       if (!token) {
@@ -163,7 +167,7 @@ const App = () => {
         newTrackedTvShowsList = trackedTVShows.concat(tvShow)
       }
 
-      const { data, status } = await axios.post<TvShow[]>(
+      const { data, status } = await axios.post<TVShow[]>(
         `${TV_SHOW_TRACKER_API_BASE_URL}/UpdateTrackedTVShow`,
         { token, tvShowsList: newTrackedTvShowsList }
       );
@@ -197,8 +201,10 @@ const App = () => {
         tvShows={tvShows}
         trackedTVShows={trackedTVShows}
         showSpinner={showSpinner}
-        handleClick={showTrackedTVShows ? removeTrackedTVShow : addTrackedTVShow}
+        setShowDetails={setTVShowDetailsToShow}
+        handleButtonClick={showTrackedTVShows ? removeTrackedTVShow : addTrackedTVShow}
         isLoggedIn={!!loggedInUser.emailAddress} />
+      {showTVShowDetailsModal && <TVShowsDetailsModal tvShow={tvShowDetailsToShow} setTVShow={setTVShowDetailsToShow} />}
       {showLoginModal && <LoginFormModal setShowLoginModal={setShowLoginModal} loginUser={loginUser} />}
       {showCreateAccountModal && <CreateAccountFormModal setShowCreateAccountModal={setShowCreateAccountModal} createUserAccount={createUserAccount} />}
     </div>

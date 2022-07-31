@@ -1,10 +1,12 @@
 import { z } from "zod";
 
-export const TvShowObject = z.object({
+export const TVShowObject = z.object({
     id: z.number(),
     name: z.string(),
     poster_path: z.string(),
-    first_air_date: z.string()
+    first_air_date: z.string(),
+    overview: z.string(),
+    backdrop_path: z.string()
 })
 
 export const UserObject = z.object({
@@ -36,5 +38,5 @@ export const IndexAndAlertMessageObject = z.object({
 
 export type User = z.infer<typeof UserObject>;
 export type LoginResponse = z.infer<typeof LoginResponseObject>;
-export type TvShow = z.infer<typeof TvShowObject>;
+export type TVShow = z.infer<typeof TVShowObject>;
 export type IndexAndAlertMessage = z.infer<typeof IndexAndAlertMessageObject>;

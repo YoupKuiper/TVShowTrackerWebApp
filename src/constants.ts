@@ -8,9 +8,17 @@ export const PAGE_NAME_SEARCH = 'Search'
 export const PAGE_NAME_TRACKED_TV_SHOWS = 'Tracked Shows List'
 export const PAGE_NAME_SETTINGS = 'Settings'
 export const DEFAULT_USER = {
-    emailAddress: '',
-    settings: {
-      emailAddressVerified: false,
-      wantsEmailNotifications: false,
-    }
+  emailAddress: '',
+  settings: {
+    emailAddressVerified: false,
+    wantsEmailNotifications: false,
   }
+}
+export const DEFAULT_TV_SHOW = {
+  id: 9999999999,
+  name: '',
+  poster_path: '',
+  first_air_date: '',
+  overview: '',
+  backdrop_path: ''
+}

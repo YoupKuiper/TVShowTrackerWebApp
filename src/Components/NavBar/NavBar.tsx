@@ -2,7 +2,7 @@
 import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import {  MenuIcon, XIcon } from '@heroicons/react/outline'
-import { PAGE_NAME_SEARCH, PAGE_NAME_SETTINGS, PAGE_NAME_TRACKED_TV_SHOWS } from '../../constants';
+import { PAGE_NAME_SEARCH, PAGE_NAME_TRACKED_TV_SHOWS } from '../../constants';
 import { User } from '../../validators';
 
 
