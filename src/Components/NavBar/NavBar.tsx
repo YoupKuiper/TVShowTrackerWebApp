@@ -25,7 +25,7 @@ export const NavBar = ({ setCurrentPage, currentPage, loggedInUser, setShowLogin
   const navigation = isLoggedIn ? [
     { name: PAGE_NAME_SEARCH, href: '/#', current: currentPage === PAGE_NAME_SEARCH, onClick: setCurrentPage },
     { name: PAGE_NAME_TRACKED_TV_SHOWS, href: '/#', current: currentPage === PAGE_NAME_TRACKED_TV_SHOWS, onClick: setCurrentPage },
-    { name: PAGE_NAME_SETTINGS, href: '/#', current: currentPage === PAGE_NAME_SETTINGS, onClick: setCurrentPage },
+    // { name: PAGE_NAME_SETTINGS, href: '/#', current: currentPage === PAGE_NAME_SETTINGS, onClick: setCurrentPage },
   ] : [
     { name: PAGE_NAME_SEARCH, href: '/#', current: currentPage === PAGE_NAME_SEARCH, onClick: setCurrentPage }
   ]
@@ -89,9 +89,9 @@ export const NavBar = ({ setCurrentPage, currentPage, loggedInUser, setShowLogin
                 }
                 {isLoggedIn && <Menu as="div" className="ml-3 relative">
                   <div>
-                    <Menu.Button className="bg-gray-800 flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
+                    <Menu.Button className="bg-gray-800 text-slate-50 flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
                       <span className="sr-only">Open user menu</span>
-                      <button className='text-slate-50'>{loggedInUser.emailAddress}</button>
+                      {loggedInUser.emailAddress}
                     </Menu.Button>
                   </div>
                   <Transition
