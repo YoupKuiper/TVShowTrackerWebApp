@@ -134,6 +134,7 @@ const App = () => {
   const logoutUser = () => {
     // Delete jwt token
     localStorage.setItem(JWT_TOKEN_KEY, DEFAULT_TOKEN);
+    setTrackedTVShows([])
 
     // Update state
     setLoggedInUser(DEFAULT_USER);
