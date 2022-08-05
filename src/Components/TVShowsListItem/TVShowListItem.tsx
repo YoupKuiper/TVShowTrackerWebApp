@@ -3,7 +3,6 @@ import { PlusIcon } from '@heroicons/react/solid'
 import { XIcon } from '@heroicons/react/solid'
 import { TVShow } from '../../validators';
 import { useState } from 'react';
-import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 
 interface TvShowsListItemProps {
   tvShow: TVShow;
