@@ -6,14 +6,24 @@ import LoginFormModal from './Components/LoginFormModal/LoginFormModal';
 import { NavBar } from './Components/NavBar/NavBar';
 import SearchBar from './Components/SearchBar/SearchBar';
 import TVShowsListView from './Components/TVShowsListView/TVShowsListView';
-import { DEFAULT_TOKEN, DEFAULT_TV_SHOW, DEFAULT_USER, JWT_TOKEN_KEY, MOVIEDB_API_BASE_URL, PAGE_NAME_SEARCH, PAGE_NAME_TRACKED_TV_SHOWS } from './constants';
+import { DEFAULT_TOKEN, DEFAULT_TV_SHOW, DEFAULT_USER, JWT_TOKEN_KEY, MOVIEDB_API_BASE_URL, PAGE_NAME_SEARCH, PAGE_NAME_TRACKED_TV_SHOWS, TRACKED_TV_SHOWS_KEY } from './constants';
 import { LoginResponse, TVShow, User, UserObject } from './validators';
 import { TVShowsDetailsModal } from './Components/TVShowDetailsModal/TVShowDetailsModal';
+
+
+const getTrackedShowsFromLocalStorage = () => {
+  try {
+    const trackedTVShows = JSON.parse(localStorage.getItem(TRACKED_TV_SHOWS_KEY) || '')
+    return trackedTVShows
+  } catch (error) {
+    return []
+  }
+}
 
 const App = () => {
 
   const [tvShows, setTvShows] = useState<TVShow[]>([]);
-  const [trackedTVShows, setTrackedTVShows] = useState<TVShow[]>([]);
+  const [trackedTVShows, setTrackedTVShows] = useState<TVShow[]>(getTrackedShowsFromLocalStorage);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showCreateAccountModal, setShowCreateAccountModal] = useState(false);
   const [tvShowDetailsToShow, setTVShowDetailsToShow] = useState<TVShow>(DEFAULT_TV_SHOW);
@@ -37,6 +47,10 @@ const App = () => {
       logoutUser()
     }
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem(TRACKED_TV_SHOWS_KEY, JSON.stringify(trackedTVShows));
+  }, [trackedTVShows]);
 
   const searchTvShow = async (title: string) => {
     try {
@@ -62,7 +76,7 @@ const App = () => {
   }
 
   const updateCurrentPage = async (newPage: string) => {
-    if (newPage === PAGE_NAME_TRACKED_TV_SHOWS || newPage === PAGE_NAME_SEARCH) {
+    if (newPage === PAGE_NAME_TRACKED_TV_SHOWS) {
       try {
         setShowSpinner(true)
         const { data } = await axios.post<any>(
@@ -119,6 +133,8 @@ const App = () => {
 
       setLoggedInUser(data.user);
       localStorage.setItem(JWT_TOKEN_KEY, data.token);
+
+      updateCurrentPage(PAGE_NAME_TRACKED_TV_SHOWS);
 
     } catch (error) {
       if (axios.isAxiosError(error)) {

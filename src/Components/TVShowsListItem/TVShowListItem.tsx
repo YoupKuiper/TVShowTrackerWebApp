@@ -1,8 +1,8 @@
-import { IMAGES_BASE_URL, IMAGE_DEFAULT_SIZE } from '../../constants'
 import { PlusIcon } from '@heroicons/react/solid'
 import { XIcon } from '@heroicons/react/solid'
 import { TVShow } from '../../validators';
 import { useState } from 'react';
+import { IMAGES_BASE_URL, IMAGE_DEFAULT_SIZE } from '../../constants'
 
 interface TvShowsListItemProps {
   tvShow: TVShow;
@@ -11,8 +11,6 @@ interface TvShowsListItemProps {
   setShowDetails: (TVShow: TVShow) => any;
   handleButtonClick: (tvShow: TVShow) => any;
 }
-
-
 
 export const TVShowListItem = ({ tvShow, isTrackedListItem, shouldShowButton, setShowDetails, handleButtonClick }: TvShowsListItemProps) => {
 
