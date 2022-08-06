@@ -72,7 +72,7 @@ const LoginFormModal = ({ setShowLoginModal, loginUser }: LoginFormModalProps) =
       <div id='container' onClick={handleOnClose} className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm
       flex justify-center items-center">
 
-        <div className="bg-white max-w-md w-full space-y-8 p-10 rounded-md">
+        <div className="bg-white max-w-md w-full space-y-8 p-10 rounded-md dark:bg-gray-700 dark:text-white">
           <div className="flex justify-between items-start rounded-t">
             <button id='closebutton' type="button" onClick={handleOnClose} className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="defaultModal">
               <svg aria-hidden="true" className="w-5 h-5 pointer-events-none" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"></path></svg>
@@ -85,7 +85,7 @@ const LoginFormModal = ({ setShowLoginModal, loginUser }: LoginFormModalProps) =
               src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg"
               alt="Workflow"
             />
-            <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Sign in to your account</h2>
+            <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white">Sign in to your account</h2>
           </div>
           {showSpinner ? <div className="mt-8 space-y-6"><LoadingSpinner /></div> :
             <form className="mt-8 space-y-6" action="#" method="POST">
@@ -134,13 +134,13 @@ const LoginFormModal = ({ setShowLoginModal, loginUser }: LoginFormModalProps) =
                     type="checkbox"
                     className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                   />
-                  <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
+                  <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900 dark:text-white">
                     Remember me
                   </label>
                 </div>
 
                 <div className="text-sm">
-                  <a href="/#" className="font-medium text-indigo-600 hover:text-indigo-500">
+                  <a href="/#" className="font-medium text-indigo-600 hover:text-indigo-500 dark:text-white">
                     Forgot your password?
                   </a>
                 </div>

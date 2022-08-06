@@ -6,7 +6,7 @@ import LoginFormModal from './Components/LoginFormModal/LoginFormModal';
 import { NavBar } from './Components/NavBar/NavBar';
 import SearchBar from './Components/SearchBar/SearchBar';
 import TVShowsListView from './Components/TVShowsListView/TVShowsListView';
-import { DEFAULT_TOKEN, DEFAULT_TV_SHOW, DEFAULT_USER, JWT_TOKEN_KEY, MOVIEDB_API_BASE_URL, PAGE_NAME_SEARCH, PAGE_NAME_TRACKED_TV_SHOWS, TRACKED_TV_SHOWS_KEY } from './constants';
+import { DARK_MODE_KEY, DEFAULT_TOKEN, DEFAULT_TV_SHOW, DEFAULT_USER, JWT_TOKEN_KEY, MOVIEDB_API_BASE_URL, PAGE_NAME_SEARCH, PAGE_NAME_TRACKED_TV_SHOWS, TRACKED_TV_SHOWS_KEY } from './constants';
 import { LoginResponse, TVShow, User, UserObject } from './validators';
 import { TVShowsDetailsModal } from './Components/TVShowDetailsModal/TVShowDetailsModal';
 
@@ -20,6 +20,14 @@ const getTrackedShowsFromLocalStorage = () => {
   }
 }
 
+const getDarkModeStateFromLocalStorage = () => {
+  try {
+    return !!JSON.parse(localStorage.getItem(DARK_MODE_KEY) || '')
+  } catch (error) {
+    return false
+  }
+}
+
 const App = () => {
 
   const [tvShows, setTvShows] = useState<TVShow[]>([]);
@@ -30,6 +38,7 @@ const App = () => {
   const [loggedInUser, setLoggedInUser] = useState<User>(DEFAULT_USER);
   const [currentPage, setCurrentPage] = useState(PAGE_NAME_SEARCH)
   const [showSpinner, setShowSpinner] = useState(false)
+  const [darkMode, setDarkMode] = useState(getDarkModeStateFromLocalStorage)
   const showTrackedTVShows = currentPage === PAGE_NAME_TRACKED_TV_SHOWS
   const TV_SHOW_TRACKER_API_BASE_URL = process.env.REACT_APP_API_BASE_URL
   const showTVShowDetailsModal = tvShowDetailsToShow && tvShowDetailsToShow.id !== DEFAULT_TV_SHOW.id
@@ -51,6 +60,10 @@ const App = () => {
   useEffect(() => {
     localStorage.setItem(TRACKED_TV_SHOWS_KEY, JSON.stringify(trackedTVShows));
   }, [trackedTVShows]);
+
+  useEffect(() => {
+    localStorage.setItem(DARK_MODE_KEY, JSON.stringify(darkMode));
+  }, [darkMode]);
 
   const searchTvShow = async (title: string) => {
     try {
@@ -193,14 +206,16 @@ const App = () => {
   }
 
   return (
-    <div>
+    <div className={darkMode ? 'dark bg-gray-800 w-full h-screen' : ''}>
       <NavBar
         setCurrentPage={updateCurrentPage}
         currentPage={currentPage}
+        darkMode={darkMode}
         loggedInUser={loggedInUser}
         setShowLoginModal={setShowLoginModal}
         setShowCreateAccountModal={setShowCreateAccountModal}
-        logout={logoutUser} />
+        logout={logoutUser}
+        setDarkMode={setDarkMode} />
       <SearchBar search={searchTvShow} />
       <TVShowsListView
         isTrackedList={showTrackedTVShows}

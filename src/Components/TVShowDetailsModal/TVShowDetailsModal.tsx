@@ -19,7 +19,7 @@ export const TVShowsDetailsModal = ({ tvShow, setTVShow }: showTVShowDetailsModa
     return (
         <div id='container' onClick={handleOnClose} className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm
         flex justify-center items-center">
-            <div className="bg-white relative max-w-3xl w-full h-full sm:h-auto space-y-8 p-10 sm:rounded-md overflow-auto">
+            <div className="bg-white relative max-w-3xl w-full h-full sm:h-auto space-y-8 p-10 sm:rounded-md overflow-auto dark:bg-gray-700 dark:text-white">
                 <div className="flex justify-between items-start rounded-t border-b dark:border-gray-600">
                     <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
                         {tvShow.name}

@@ -31,7 +31,7 @@ const TVShowsListView = ({ tvShows, trackedTVShows, isTrackedList, setShowDetail
  return(
     <>
     {showSpinner ? (<LoadingSpinner/>) : tvShowsToShow.length > 0 ? (
-    <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 justify-items-center">
+    <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 justify-items-center dark:bg-gray-800 pb-5">
         {tvShowsToShow.map((tvShow: TVShow) => {
             const shouldShowButton = shouldButtonBeShown(isLoggedIn, isTrackedList, trackedTVShows, tvShow)
             return (
@@ -45,7 +45,7 @@ const TVShowsListView = ({ tvShows, trackedTVShows, isTrackedList, setShowDetail
         )})}
     </div>
     ) : (
-    <div className="container mx-auto content-center">
+    <div className="container mx-auto content-center dark:text-white">
         <h2>No TV shows found</h2>
     </div>
     )}
