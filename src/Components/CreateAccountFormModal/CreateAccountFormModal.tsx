@@ -1,5 +1,5 @@
 import { PlusIcon } from '@heroicons/react/solid'
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 import { z } from "zod";
 import { IndexAndAlertMessage, UserAccountCreation } from '../../validators';
@@ -26,10 +26,6 @@ const CreateAccountFormModal = ({ setShowCreateAccountModal, createUserAccount }
       setShowCreateAccountModal(false);
     }
   }
-
-  useEffect(() => {
-
-  }, [errorMessages])
 
   const renderErrorMessages = (errorMessages: IndexAndAlertMessage[]) => {
     return errorMessages.map((error, index) => (<Alert key={index} message={error.message} index={error.index} closeAlert={closeAlert} />))

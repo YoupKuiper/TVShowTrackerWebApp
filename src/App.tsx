@@ -122,7 +122,6 @@ const App = () => {
   }
 
   const loginUser = async (emailAddress: string, password: string) => {
-    try {
       const { data, status } = await axios.post<LoginResponse>(
         `${TV_SHOW_TRACKER_API_BASE_URL}/Login`,
         { emailAddress, password }
@@ -135,16 +134,6 @@ const App = () => {
       localStorage.setItem(JWT_TOKEN_KEY, data.token);
 
       updateCurrentPage(PAGE_NAME_TRACKED_TV_SHOWS);
-
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.error('error message: ', error);
-        return error.message;
-      } else {
-        console.error('unexpected error: ', error);
-        return 'An unexpected error occurred';
-      }
-    }
   }
 
   const logoutUser = () => {

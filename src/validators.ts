@@ -22,6 +22,11 @@ export const LoginResponseObject = z.object({
     user: UserObject
 });
 
+export const LoginUserObject = z.object({
+    emailAddress: z.string().email({ message: 'Invalid email address' }),
+    password: z.string().min(1, { message: 'Please enter a password' })
+})
+
 export const UserAccountCreation = z.object({
     emailAddress: z.string().email({ message: "Invalid email address" }),
     password: z.string(),
