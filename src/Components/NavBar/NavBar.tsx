@@ -90,17 +90,13 @@ export const NavBar = ({ setCurrentPage, currentPage, darkMode, loggedInUser, se
                   <span className="sr-only">Toggle dark/light mode</span>
                 </button>
 
-                {!isLoggedIn &&
-                  <div>
-                    <button onClick={() => { setShowLoginModal(true) }} className='text-slate-50 p-5'>Login</button>
-                    <button onClick={() => { setShowCreateAccountModal(true) }} className='text-slate-50 p-5'>Create account</button>
-                  </div>
-                }
-                {isLoggedIn && <Menu as="div" className="ml-3 relative">
+                <Menu as="div" className="ml-3 relative">
                   <div>
                     <Menu.Button className="bg-gray-800 text-slate-50 flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
                       <span className="sr-only">Open user menu</span>
-                      {loggedInUser.emailAddress}
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
                     </Menu.Button>
                   </div>
                   <Transition
@@ -112,8 +108,30 @@ export const NavBar = ({ setCurrentPage, currentPage, darkMode, loggedInUser, se
                     leaveFrom="transform opacity-100 scale-100"
                     leaveTo="transform opacity-0 scale-95"
                   >
-                    <Menu.Items className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
-                      <Menu.Item>
+                    <Menu.Items className="origin-top-right absolute z-50 right-0 mt-2 w-32 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+                      {!isLoggedIn && <Menu.Item>
+                        {({ active }) => (
+                          <a
+                            href="/#"
+                            className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
+                            onClick={() => { setShowLoginModal(true)}}
+                          >
+                            Login
+                          </a>
+                        )}
+                      </Menu.Item>}
+                      {!isLoggedIn && <Menu.Item>
+                        {({ active }) => (
+                          <a
+                            href="/#"
+                            className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
+                            onClick={() => { setShowCreateAccountModal(true) }}
+                          >
+                            Create account
+                          </a>
+                        )}
+                      </Menu.Item>}
+                      {isLoggedIn && <Menu.Item>
                         {({ active }) => (
                           <a
                             href="/#"
@@ -123,10 +141,10 @@ export const NavBar = ({ setCurrentPage, currentPage, darkMode, loggedInUser, se
                             Sign out
                           </a>
                         )}
-                      </Menu.Item>
+                      </Menu.Item>}
                     </Menu.Items>
                   </Transition>
-                </Menu>}
+                </Menu>
               </div>
             </div>
           </div>
