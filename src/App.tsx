@@ -46,13 +46,22 @@ const App = () => {
   useEffect(() => {
     try {
       const token = localStorage.getItem(JWT_TOKEN_KEY)
-      if(token){
+      if (token && token !== DEFAULT_TOKEN) {
         const decodedToken: any = decodeToken(token);
         const loggedInUser = UserObject.parse(decodedToken.data);
         setLoggedInUser(loggedInUser);
       }
+
+      const fetchPopularTVShows = async () => {
+        // get the data from the api
+        await getPopularTVShows()
+      }
+
+      if(currentPage === PAGE_NAME_SEARCH && tvShows.length === 0){
+        fetchPopularTVShows();
+      }
     } catch (error) {
-      console.log(`Failed to get user from token: ${error}`)
+      console.log(error)
       logoutUser()
     }
   }, []);
@@ -65,11 +74,36 @@ const App = () => {
     localStorage.setItem(DARK_MODE_KEY, JSON.stringify(darkMode));
   }, [darkMode]);
 
-  const searchTvShow = async (title: string) => {
+  const getPopularTVShows = async () => {
     try {
       setShowSpinner(true)
       const { data, status } = await axios.get<any>(
-        `${MOVIEDB_API_BASE_URL}/search/tv?api_key=${process.env.REACT_APP_API_KEY}&query=${encodeURIComponent(title)}&include_adult=true`
+        `${MOVIEDB_API_BASE_URL}/tv/popular?api_key=${process.env.REACT_APP_API_KEY}`          
+      );
+      console.log('Response status is: ', status);
+      console.log('Response status is: ', data);
+      setShowSpinner(false)
+      setTvShows(data.results);
+
+    } catch (error) {
+      setShowSpinner(false)
+      if (axios.isAxiosError(error)) {
+        console.log('error message: ', error.message);
+        return error.message;
+      } else {
+        console.log('unexpected error: ', error);
+        return 'An unexpected error occurred';
+      }
+    }
+  }
+
+  const searchTvShow = async (title: string) => {
+    try {
+      setShowSpinner(true)
+      const searchUrl = title ? `${MOVIEDB_API_BASE_URL}/search/tv?api_key=${process.env.REACT_APP_API_KEY}&query=${encodeURIComponent(title)}` :
+      `${MOVIEDB_API_BASE_URL}/tv/popular?api_key=${process.env.REACT_APP_API_KEY}`
+      const { data, status } = await axios.get<any>(
+        searchUrl
       );
       console.log('Response status is: ', status);
       console.log('Response status is: ', data);
@@ -135,18 +169,18 @@ const App = () => {
   }
 
   const loginUser = async (emailAddress: string, password: string) => {
-      const { data, status } = await axios.post<LoginResponse>(
-        `${TV_SHOW_TRACKER_API_BASE_URL}/Login`,
-        { emailAddress, password }
-      );
+    const { data, status } = await axios.post<LoginResponse>(
+      `${TV_SHOW_TRACKER_API_BASE_URL}/Login`,
+      { emailAddress, password }
+    );
 
-      console.log(`Data: ${JSON.stringify(data, null, 4)}`);
-      console.log('response status is: ', status);
+    console.log(`Data: ${JSON.stringify(data, null, 4)}`);
+    console.log('response status is: ', status);
 
-      setLoggedInUser(data.user);
-      localStorage.setItem(JWT_TOKEN_KEY, data.token);
+    setLoggedInUser(data.user);
+    localStorage.setItem(JWT_TOKEN_KEY, data.token);
 
-      updateCurrentPage(PAGE_NAME_TRACKED_TV_SHOWS);
+    updateCurrentPage(PAGE_NAME_TRACKED_TV_SHOWS);
   }
 
   const logoutUser = () => {

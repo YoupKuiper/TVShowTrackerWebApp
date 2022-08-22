@@ -4,7 +4,7 @@ import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { MenuIcon, XIcon } from '@heroicons/react/outline'
 import { PAGE_NAME_SEARCH, PAGE_NAME_TRACKED_TV_SHOWS } from '../../constants';
 import { User } from '../../validators';
-
+import logo from '../../Img/logo.png'
 
 interface NavBarProps {
   loggedInUser: User;
@@ -52,13 +52,13 @@ export const NavBar = ({ setCurrentPage, currentPage, darkMode, loggedInUser, se
               <div className="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
                 <div className="flex-shrink-0 flex items-center">
                   <img
-                    className="block lg:hidden h-8 w-auto"
-                    src="https://tailwindui.com/img/logos/workflow-mark-indigo-500.svg"
+                    className="block lg:hidden h-10 w-auto"
+                    src={logo}
                     alt="Workflow"
                   />
                   <img
                     className="hidden lg:block h-8 w-auto"
-                    src="https://tailwindui.com/img/logos/workflow-logo-indigo-500-mark-white-text.svg"
+                    src={logo}
                     alt="Workflow"
                   />
                 </div>

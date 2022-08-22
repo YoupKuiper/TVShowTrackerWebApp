@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { IndexAndAlertMessage, LoginUserObject } from '../../validators';
 import { Alert } from '../Alert/Alert';
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
+import logo from '../../Img/logo.png'
 
 interface LoginFormModalProps {
   setShowLoginModal: (params: boolean) => any;
@@ -81,8 +82,8 @@ const LoginFormModal = ({ setShowLoginModal, loginUser }: LoginFormModalProps) =
           </div>
           <div style={{marginTop: "0"}}>
             <img
-              className="mx-auto h-12 w-auto"
-              src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg"
+              className="mx-auto h-24 w-auto"
+              src={logo}
               alt="Workflow"
             />
             <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white">Sign in to your account</h2>
