@@ -64,7 +64,7 @@ const App = () => {
       console.log(error)
       logoutUser()
     }
-  }, []);
+  }, [currentPage, tvShows.length]);
 
   useEffect(() => {
     localStorage.setItem(TRACKED_TV_SHOWS_KEY, JSON.stringify(trackedTVShows));
