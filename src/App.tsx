@@ -67,10 +67,6 @@ const App = () => {
     }
   }, [currentPage, tvShows.length]);
 
-  // useEffect(() => {
-  //   localStorage.setItem(TRACKED_TV_SHOWS_KEY, JSON.stringify(trackedTVShows));
-  // }, [trackedTVShows]);
-
   useEffect(() => {
     localStorage.setItem(DARK_MODE_KEY, JSON.stringify(darkMode));
   }, [darkMode]);
