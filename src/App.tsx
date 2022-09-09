@@ -11,7 +11,7 @@ import { LoginResponse, TVShow, User, UserObject } from './validators';
 import { TVShowsDetailsModal } from './Components/TVShowDetailsModal/TVShowDetailsModal';
 
 
-const getTrackedShowsFromLocalStorage = () => {
+const getTrackedShowsFromLocalStorage = ():TVShow[] => {
   try {
     const trackedTVShows = JSON.parse(localStorage.getItem(TRACKED_TV_SHOWS_KEY) || '')
     return trackedTVShows
@@ -39,6 +39,7 @@ const App = () => {
   const [currentPage, setCurrentPage] = useState(PAGE_NAME_SEARCH)
   const [showSpinner, setShowSpinner] = useState(false)
   const [darkMode, setDarkMode] = useState(getDarkModeStateFromLocalStorage)
+  const [searchTerm, setSearchTerm] = useState('');
   const showTrackedTVShows = currentPage === PAGE_NAME_TRACKED_TV_SHOWS
   const TV_SHOW_TRACKER_API_BASE_URL = process.env.REACT_APP_API_BASE_URL
   const showTVShowDetailsModal = tvShowDetailsToShow && tvShowDetailsToShow.id !== DEFAULT_TV_SHOW.id
@@ -66,9 +67,9 @@ const App = () => {
     }
   }, [currentPage, tvShows.length]);
 
-  useEffect(() => {
-    localStorage.setItem(TRACKED_TV_SHOWS_KEY, JSON.stringify(trackedTVShows));
-  }, [trackedTVShows]);
+  // useEffect(() => {
+  //   localStorage.setItem(TRACKED_TV_SHOWS_KEY, JSON.stringify(trackedTVShows));
+  // }, [trackedTVShows]);
 
   useEffect(() => {
     localStorage.setItem(DARK_MODE_KEY, JSON.stringify(darkMode));
@@ -97,18 +98,34 @@ const App = () => {
     }
   }
 
+  const searchAllTVShows = async (title: string) => {
+    const searchUrl = title ? `${MOVIEDB_API_BASE_URL}/search/tv?api_key=${process.env.REACT_APP_API_KEY}&query=${encodeURIComponent(title)}` :
+    `${MOVIEDB_API_BASE_URL}/tv/popular?api_key=${process.env.REACT_APP_API_KEY}`
+    const { data, status } = await axios.get<any>(
+      searchUrl
+    );
+    console.log('Response status is: ', status);
+    console.log('Response status is: ', data);
+    setTvShows(data.results);
+  }
+
+  const searchTrackedTVShows = async (title: string) => {
+    setTrackedTVShows(getTrackedShowsFromLocalStorage().filter((tvShow) => tvShow.name.toLowerCase().includes(title.toLowerCase())))
+  }
+
   const searchTvShow = async (title: string) => {
     try {
+      // If search page, search db
+      // If tracked list page, search tracked
+      if(currentPage === PAGE_NAME_SEARCH){
+        console.log('searching all')
+        await searchAllTVShows(title)
+      }else if(currentPage === PAGE_NAME_TRACKED_TV_SHOWS){
+        console.log('searching tracked')
+        await searchTrackedTVShows(title)
+      }
       setShowSpinner(true)
-      const searchUrl = title ? `${MOVIEDB_API_BASE_URL}/search/tv?api_key=${process.env.REACT_APP_API_KEY}&query=${encodeURIComponent(title)}` :
-      `${MOVIEDB_API_BASE_URL}/tv/popular?api_key=${process.env.REACT_APP_API_KEY}`
-      const { data, status } = await axios.get<any>(
-        searchUrl
-      );
-      console.log('Response status is: ', status);
-      console.log('Response status is: ', data);
       setShowSpinner(false)
-      setTvShows(data.results);
 
     } catch (error) {
       setShowSpinner(false)
@@ -123,6 +140,7 @@ const App = () => {
   }
 
   const updateCurrentPage = async (newPage: string) => {
+    setSearchTerm('')
     if (newPage === PAGE_NAME_TRACKED_TV_SHOWS) {
       try {
         setShowSpinner(true)
@@ -133,6 +151,7 @@ const App = () => {
 
         setShowSpinner(false)
         setTrackedTVShows(data);
+        localStorage.setItem(TRACKED_TV_SHOWS_KEY, JSON.stringify(data));
 
       } catch (error) {
         setShowSpinner(false)
@@ -252,7 +271,7 @@ const App = () => {
         setShowCreateAccountModal={setShowCreateAccountModal}
         logout={logoutUser}
         setDarkMode={setDarkMode} />
-      <SearchBar search={searchTvShow} />
+      <SearchBar search={searchTvShow} setSearchTerm={setSearchTerm} searchTerm={searchTerm}/>
       <TVShowsListView
         isTrackedList={showTrackedTVShows}
         tvShows={tvShows}
