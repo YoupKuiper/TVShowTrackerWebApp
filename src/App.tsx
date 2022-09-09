@@ -138,6 +138,8 @@ const App = () => {
         setShowSpinner(false)
         if (axios.isAxiosError(error)) {
           console.log('error message: ', error.message);
+          // request failed, relog user in
+          setShowLoginModal(true)
         } else {
           console.log('unexpected error: ', error);
         }
@@ -231,7 +233,7 @@ const App = () => {
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.log('error message: ', error);
-        return error.message;
+        setShowLoginModal(true)
       } else {
         console.log('unexpected error: ', error);
         return 'An unexpected error occurred';
