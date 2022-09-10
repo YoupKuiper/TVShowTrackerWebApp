@@ -22,5 +22,7 @@ export const DEFAULT_TV_SHOW = {
   poster_path: '',
   first_air_date: '',
   overview: '',
-  backdrop_path: ''
+  backdrop_path: '',
+  vote_average: 0,
+  vote_count: 0
 }

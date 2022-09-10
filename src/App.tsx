@@ -65,6 +65,7 @@ const App = () => {
       console.log(error)
       logoutUser()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -282,7 +283,7 @@ const App = () => {
         handleButtonClick={showTrackedTVShows ? removeTrackedTVShow : addTrackedTVShow}
         isLoggedIn={isLoggedIn}
         getPopular={getPopularTVShows} />
-      {showTVShowDetailsModal && <TVShowsDetailsModal tvShow={tvShowDetailsToShow} setTVShow={setTVShowDetailsToShow} />}
+      {showTVShowDetailsModal && <TVShowsDetailsModal tvShow={tvShowDetailsToShow} setTVShow={setTVShowDetailsToShow} darkMode={darkMode} />}
       {showLoginModal && <LoginFormModal setShowLoginModal={setShowLoginModal} loginUser={loginUser} createAccount={openCreateAccountModalFromLogin}/>}
       {showCreateAccountModal && <CreateAccountFormModal setShowCreateAccountModal={setShowCreateAccountModal} createUserAccount={createUserAccount} />}
     </div>

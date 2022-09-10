@@ -6,7 +6,9 @@ export const TVShowObject = z.object({
     poster_path: z.string(),
     first_air_date: z.string(),
     overview: z.string(),
-    backdrop_path: z.string()
+    backdrop_path: z.string(),
+    vote_average: z.number(),
+    vote_count: z.number()
 })
 
 export const UserObject = z.object({
