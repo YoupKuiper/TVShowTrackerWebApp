@@ -53,6 +53,14 @@ const App = () => {
         const loggedInUser = UserObject.parse(decodedToken.data);
         setLoggedInUser(loggedInUser);
       }
+
+      
+      const fetchPopularTVShows = async () => {
+        await getPopularTVShows()
+      }
+
+      fetchPopularTVShows();
+
     } catch (error) {
       console.log(error)
       logoutUser()
