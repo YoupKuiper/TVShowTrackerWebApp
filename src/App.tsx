@@ -53,21 +53,11 @@ const App = () => {
         const loggedInUser = UserObject.parse(decodedToken.data);
         setLoggedInUser(loggedInUser);
       }
-
-      const fetchPopularTVShows = async () => {
-        // get the data from the api
-        await getPopularTVShows()
-      }
-
-      if(currentPage === PAGE_NAME_SEARCH && tvShows.length === 0){
-        fetchPopularTVShows();
-      }
     } catch (error) {
       console.log(error)
       logoutUser()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPage, tvShows.length]);
+  }, []);
 
   useEffect(() => {
     localStorage.setItem(DARK_MODE_KEY, JSON.stringify(darkMode));
@@ -111,14 +101,10 @@ const App = () => {
 
   const searchTvShow = async (title: string) => {
     try {
-      // If search page, search db
-      // If tracked list page, search tracked
       setShowSpinner(true)
       if(currentPage === PAGE_NAME_SEARCH){
-        console.log('searching all')
         await searchAllTVShows(title)
       }else if(currentPage === PAGE_NAME_TRACKED_TV_SHOWS){
-        console.log('searching tracked')
         await searchTrackedTVShows(title)
       }
       setShowSpinner(false)
@@ -204,6 +190,7 @@ const App = () => {
     // Delete jwt token
     localStorage.setItem(JWT_TOKEN_KEY, DEFAULT_TOKEN);
     setTrackedTVShows([])
+    localStorage.setItem(TRACKED_TV_SHOWS_KEY, '');
 
     // Update state
     setLoggedInUser(DEFAULT_USER);
@@ -285,7 +272,8 @@ const App = () => {
         showSpinner={showSpinner}
         setShowDetails={setTVShowDetailsToShow}
         handleButtonClick={showTrackedTVShows ? removeTrackedTVShow : addTrackedTVShow}
-        isLoggedIn={isLoggedIn} />
+        isLoggedIn={isLoggedIn}
+        getPopular={getPopularTVShows} />
       {showTVShowDetailsModal && <TVShowsDetailsModal tvShow={tvShowDetailsToShow} setTVShow={setTVShowDetailsToShow} />}
       {showLoginModal && <LoginFormModal setShowLoginModal={setShowLoginModal} loginUser={loginUser} createAccount={openCreateAccountModalFromLogin}/>}
       {showCreateAccountModal && <CreateAccountFormModal setShowCreateAccountModal={setShowCreateAccountModal} createUserAccount={createUserAccount} />}

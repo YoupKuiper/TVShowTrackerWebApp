@@ -10,6 +10,7 @@ interface TvShowsListViewProps {
     isLoggedIn: boolean;
     setShowDetails: (tvShow: TVShow) => any;
     handleButtonClick: (tvShow: TVShow) => any;
+    getPopular: () => any;
 }
 
 const isAlreadyInTrackedList = (tvShow: TVShow, trackedTVShows: TVShow[]) => {
@@ -26,7 +27,7 @@ const shouldButtonBeShown = (isLoggedIn: boolean, isTrackedList: boolean, tracke
     return !isAlreadyInTrackedList(tvShow, trackedTVShows)
 }
 
-const TVShowsListView = ({ tvShows, trackedTVShows, isTrackedList, setShowDetails, showSpinner, isLoggedIn, handleButtonClick }: TvShowsListViewProps) => {
+const TVShowsListView = ({ tvShows, trackedTVShows, isTrackedList, setShowDetails, showSpinner, isLoggedIn, handleButtonClick, getPopular }: TvShowsListViewProps) => {
     const tvShowsToShow = isTrackedList ? trackedTVShows : tvShows
  return(
     <>
@@ -46,7 +47,7 @@ const TVShowsListView = ({ tvShows, trackedTVShows, isTrackedList, setShowDetail
     </div>
     ) : (
     <div className="container mx-auto content-center dark:text-white">
-        <h2>No TV shows found</h2>
+        <h2>No TV shows found. {!isTrackedList && <button onClick={() => getPopular()} className='underline'>Show popular TV Shows</button>}</h2>
     </div>
     )}
     </>
