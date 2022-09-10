@@ -74,13 +74,13 @@ const App = () => {
   const getPopularTVShows = async () => {
     try {
       setShowSpinner(true)
-      const { data, status } = await axios.get<any>(
-        `${MOVIEDB_API_BASE_URL}/tv/popular?api_key=${process.env.REACT_APP_API_KEY}`          
+      const { data } = await axios.post<any>(
+        `${TV_SHOW_TRACKER_API_BASE_URL}/SearchTVShows`,
+        { searchString: '' }
       );
-      console.log('Response status is: ', status);
       console.log('Response status is: ', data);
       setShowSpinner(false)
-      setTvShows(data.results);
+      setTvShows(data);
 
     } catch (error) {
       setShowSpinner(false)
@@ -95,14 +95,12 @@ const App = () => {
   }
 
   const searchAllTVShows = async (title: string) => {
-    const searchUrl = title ? `${MOVIEDB_API_BASE_URL}/search/tv?api_key=${process.env.REACT_APP_API_KEY}&query=${encodeURIComponent(title)}` :
-    `${MOVIEDB_API_BASE_URL}/tv/popular?api_key=${process.env.REACT_APP_API_KEY}`
-    const { data, status } = await axios.get<any>(
-      searchUrl
+    const { data } = await axios.post<any>(
+      `${TV_SHOW_TRACKER_API_BASE_URL}/SearchTVShows`,
+      { searchString: title }
     );
-    console.log('Response status is: ', status);
     console.log('Response status is: ', data);
-    setTvShows(data.results);
+    setTvShows(data);
   }
 
   const searchTrackedTVShows = async (title: string) => {
@@ -113,6 +111,7 @@ const App = () => {
     try {
       // If search page, search db
       // If tracked list page, search tracked
+      setShowSpinner(true)
       if(currentPage === PAGE_NAME_SEARCH){
         console.log('searching all')
         await searchAllTVShows(title)
@@ -120,7 +119,6 @@ const App = () => {
         console.log('searching tracked')
         await searchTrackedTVShows(title)
       }
-      setShowSpinner(true)
       setShowSpinner(false)
 
     } catch (error) {
