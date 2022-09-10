@@ -38,6 +38,5 @@ jobs:
         run: aws s3 sync ./build/ s3://tvtracker.net --delete
 
       - name: Clear CloudFront cache
-        run: aws cloudfront create-invalidation \
-              --distribution-id E1SI0G599LMHD \
-              --paths "/*"
+        run: aws cloudfront create-invalidation --distribution-id E1SI0G599LMHD --paths "/*"
+             
