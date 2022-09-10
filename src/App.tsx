@@ -6,7 +6,7 @@ import LoginFormModal from './Components/LoginFormModal/LoginFormModal';
 import { NavBar } from './Components/NavBar/NavBar';
 import SearchBar from './Components/SearchBar/SearchBar';
 import TVShowsListView from './Components/TVShowsListView/TVShowsListView';
-import { DARK_MODE_KEY, DEFAULT_TOKEN, DEFAULT_TV_SHOW, DEFAULT_USER, JWT_TOKEN_KEY, MOVIEDB_API_BASE_URL, PAGE_NAME_SEARCH, PAGE_NAME_TRACKED_TV_SHOWS, TRACKED_TV_SHOWS_KEY } from './constants';
+import { DARK_MODE_KEY, DEFAULT_TOKEN, DEFAULT_TV_SHOW, DEFAULT_USER, JWT_TOKEN_KEY, PAGE_NAME_SEARCH, PAGE_NAME_TRACKED_TV_SHOWS, TRACKED_TV_SHOWS_KEY } from './constants';
 import { LoginResponse, TVShow, User, UserObject } from './validators';
 import { TVShowsDetailsModal } from './Components/TVShowDetailsModal/TVShowDetailsModal';
 
@@ -65,6 +65,7 @@ const App = () => {
       console.log(error)
       logoutUser()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage, tvShows.length]);
 
   useEffect(() => {
