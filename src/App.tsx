@@ -43,6 +43,7 @@ const App = () => {
   const showTrackedTVShows = currentPage === PAGE_NAME_TRACKED_TV_SHOWS
   const TV_SHOW_TRACKER_API_BASE_URL = process.env.REACT_APP_API_BASE_URL
   const showTVShowDetailsModal = tvShowDetailsToShow && tvShowDetailsToShow.id !== DEFAULT_TV_SHOW.id
+  const isLoggedIn = !!loggedInUser.emailAddress
 
   useEffect(() => {
     try {
@@ -256,7 +257,7 @@ const App = () => {
   }
 
   return (
-    <div className={darkMode ? 'dark bg-gray-800 w-full h-screen' : ''}>
+    <div className={darkMode ? 'dark bg-gray-800 w-full h-screen text-white' : ''}>
       <NavBar
         setCurrentPage={updateCurrentPage}
         currentPage={currentPage}
@@ -266,6 +267,11 @@ const App = () => {
         setShowCreateAccountModal={setShowCreateAccountModal}
         logout={logoutUser}
         setDarkMode={setDarkMode} />
+      {!isLoggedIn && <div className='container mx-auto text-center py-5'>
+        <div className='text-4xl pb-5'>Welcome to TVTracker</div>
+        <div className='text-lg'>Add shows to your list and get email notifications when episodes air!</div>
+        <div className='text-lg'><button onClick={() => setShowCreateAccountModal(true)} className='underline'>Create an account</button> or <button onClick={() => setShowLoginModal(true)} className='underline'>Login</button> to get started</div>
+      </div>}
       <SearchBar search={searchTvShow} setSearchTerm={setSearchTerm} searchTerm={searchTerm}/>
       <TVShowsListView
         isTrackedList={showTrackedTVShows}
@@ -274,7 +280,7 @@ const App = () => {
         showSpinner={showSpinner}
         setShowDetails={setTVShowDetailsToShow}
         handleButtonClick={showTrackedTVShows ? removeTrackedTVShow : addTrackedTVShow}
-        isLoggedIn={!!loggedInUser.emailAddress} />
+        isLoggedIn={isLoggedIn} />
       {showTVShowDetailsModal && <TVShowsDetailsModal tvShow={tvShowDetailsToShow} setTVShow={setTVShowDetailsToShow} />}
       {showLoginModal && <LoginFormModal setShowLoginModal={setShowLoginModal} loginUser={loginUser} />}
       {showCreateAccountModal && <CreateAccountFormModal setShowCreateAccountModal={setShowCreateAccountModal} createUserAccount={createUserAccount} />}
