@@ -4,6 +4,7 @@ import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 import { z } from "zod";
 import { IndexAndAlertMessage, UserAccountCreation } from '../../validators';
 import { Alert } from '../Alert/Alert';
+import logo from '../../Img/logo.png'
 
 interface CreateAccountFormModalProps {
   setShowCreateAccountModal: (params: boolean) => any;
@@ -79,9 +80,9 @@ const CreateAccountFormModal = ({ setShowCreateAccountModal, createUserAccount }
             </button>
           </div>
           <div style={{ marginTop: "0" }}>
-            <img
-              className="mx-auto h-12 w-auto"
-              src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg"
+          <img
+              className="mx-auto h-24 w-auto"
+              src={logo}
               alt="Workflow"
             />
             <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:bg-gray-700 dark:text-white">Create your free account</h2>

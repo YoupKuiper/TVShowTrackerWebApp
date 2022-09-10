@@ -10,9 +10,10 @@ import logo from '../../Img/logo.png'
 interface LoginFormModalProps {
   setShowLoginModal: (params: boolean) => any;
   loginUser: (emailAddress: string, password: string) => Promise<any>;
+  createAccount: () => any;
 }
 
-const LoginFormModal = ({ setShowLoginModal, loginUser }: LoginFormModalProps) => {
+const LoginFormModal = ({ setShowLoginModal, loginUser, createAccount }: LoginFormModalProps) => {
 
   const [emailAddress, setEmailAddress] = useState('');
   const [password, setPassword] = useState('');
@@ -158,6 +159,7 @@ const LoginFormModal = ({ setShowLoginModal, loginUser }: LoginFormModalProps) =
                   Sign in
                 </button>
               </div>
+              <div className='text-center'>Don't have an account yet? <button className='underline' onClick={() => createAccount()}>Create one!</button></div>
             </form>}
         </div>
       </div>

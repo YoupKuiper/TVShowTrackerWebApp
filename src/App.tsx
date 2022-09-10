@@ -256,13 +256,18 @@ const App = () => {
     }
   }
 
+  const openCreateAccountModalFromLogin = () => {
+    setShowLoginModal(false);
+    setShowCreateAccountModal(true)
+  }
+
   return (
     <div className={darkMode ? 'dark bg-gray-800 w-full h-screen text-white' : ''}>
       <NavBar
         setCurrentPage={updateCurrentPage}
         currentPage={currentPage}
         darkMode={darkMode}
-        loggedInUser={loggedInUser}
+        isLoggedIn={isLoggedIn}
         setShowLoginModal={setShowLoginModal}
         setShowCreateAccountModal={setShowCreateAccountModal}
         logout={logoutUser}
@@ -282,7 +287,7 @@ const App = () => {
         handleButtonClick={showTrackedTVShows ? removeTrackedTVShow : addTrackedTVShow}
         isLoggedIn={isLoggedIn} />
       {showTVShowDetailsModal && <TVShowsDetailsModal tvShow={tvShowDetailsToShow} setTVShow={setTVShowDetailsToShow} />}
-      {showLoginModal && <LoginFormModal setShowLoginModal={setShowLoginModal} loginUser={loginUser} />}
+      {showLoginModal && <LoginFormModal setShowLoginModal={setShowLoginModal} loginUser={loginUser} createAccount={openCreateAccountModalFromLogin}/>}
       {showCreateAccountModal && <CreateAccountFormModal setShowCreateAccountModal={setShowCreateAccountModal} createUserAccount={createUserAccount} />}
     </div>
   )

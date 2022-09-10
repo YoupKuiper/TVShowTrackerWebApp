@@ -3,11 +3,10 @@ import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { MenuIcon, XIcon } from '@heroicons/react/outline'
 import { PAGE_NAME_SEARCH, PAGE_NAME_TRACKED_TV_SHOWS } from '../../constants';
-import { User } from '../../validators';
 import logo from '../../Img/logo.png'
 
 interface NavBarProps {
-  loggedInUser: User;
+  isLoggedIn: boolean;
   setCurrentPage: (params: string) => any;
   currentPage: string;
   darkMode: boolean;
@@ -22,14 +21,10 @@ const classNames = (...classes: any) => {
 }
 
 
-export const NavBar = ({ setCurrentPage, currentPage, darkMode, loggedInUser, setShowLoginModal, setShowCreateAccountModal, logout, setDarkMode }: NavBarProps) => {
-  const isLoggedIn = !!loggedInUser.emailAddress
-  const navigation = isLoggedIn ? [
+export const NavBar = ({ setCurrentPage, currentPage, darkMode, isLoggedIn, setShowLoginModal, setShowCreateAccountModal, logout, setDarkMode }: NavBarProps) => {
+  const navigation = [
     { name: PAGE_NAME_SEARCH, href: '/#', current: currentPage === PAGE_NAME_SEARCH, onClick: setCurrentPage },
     { name: PAGE_NAME_TRACKED_TV_SHOWS, href: '/#', current: currentPage === PAGE_NAME_TRACKED_TV_SHOWS, onClick: setCurrentPage },
-    // { name: PAGE_NAME_SETTINGS, href: '/#', current: currentPage === PAGE_NAME_SETTINGS, onClick: setCurrentPage },
-  ] : [
-    { name: PAGE_NAME_SEARCH, href: '/#', current: currentPage === PAGE_NAME_SEARCH, onClick: setCurrentPage }
   ]
 
   return (
