@@ -286,6 +286,9 @@ const App = () => {
       {showTVShowDetailsModal && <TVShowsDetailsModal tvShow={tvShowDetailsToShow} setTVShow={setTVShowDetailsToShow} darkMode={darkMode} />}
       {showLoginModal && <LoginFormModal setShowLoginModal={setShowLoginModal} loginUser={loginUser} createAccount={openCreateAccountModalFromLogin}/>}
       {showCreateAccountModal && <CreateAccountFormModal setShowCreateAccountModal={setShowCreateAccountModal} createUserAccount={createUserAccount} />}
+      <div className='border-t dark:border-gray-600'>
+          <p className='text-center py-3 text-xs'> Made by Youp Kuiper</p>
+      </div>
     </div>
   )
 }
