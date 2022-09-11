@@ -70,8 +70,10 @@ return (
             <div className='h-[360px] w-[240px] relative'>
                 <img className='w-full h-full' src={tvShow.poster_path ? IMAGES_BASE_URL + IMAGE_DEFAULT_SIZE + tvShow.poster_path : "https://via.placeholder.com/400"} alt={tvShow.name} />
             </div>
-            <h1 className='font-bold'>Overview</h1>
-            <div>{tvShow.overview}</div>
+            <div>
+                <h1 className='font-bold'>Overview</h1>
+                <div className="pt-4">{tvShow.overview}</div>
+            </div>
         </div>
     </div>
 )
