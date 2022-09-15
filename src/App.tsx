@@ -135,7 +135,7 @@ const App = () => {
     if (newPage === PAGE_NAME_TRACKED_TV_SHOWS) {
       try {
         setShowSpinner(true)
-        const { data } = await axios.post<any>(
+        const { data } = await axios.post<TVShow[]>(
           `${TV_SHOW_TRACKER_API_BASE_URL}/GetTrackedTVShows`,
           { token: localStorage.getItem(JWT_TOKEN_KEY) }
         );
@@ -207,7 +207,7 @@ const App = () => {
 
   const addTrackedTVShow = async (tvShow: TVShow) => {
     console.log(`Adding: ${tvShow.id}`)
-
+    
     await updateTrackedTvShows(tvShow, false)
   }
 
@@ -225,12 +225,16 @@ const App = () => {
       }
 
       console.log(`TV show id: ${tvShow.id}`)
+      const { data: updatedTrackedTVShows} = await axios.post<TVShow[]>(
+        `${TV_SHOW_TRACKER_API_BASE_URL}/GetTrackedTVShows`,
+        { token: localStorage.getItem(JWT_TOKEN_KEY) }
+      );
       let newTrackedTvShowsList = [];
       if (toRemove) {
-        newTrackedTvShowsList = trackedTVShows.filter(e => e.id !== tvShow.id)
+        newTrackedTvShowsList = updatedTrackedTVShows.filter(trackedTVShow => trackedTVShow.id !== tvShow.id)
       } else {
         // TODO: Prevent duplicates
-        newTrackedTvShowsList = trackedTVShows.concat(tvShow)
+        newTrackedTvShowsList = updatedTrackedTVShows.concat(tvShow)
       }
 
       const { data, status } = await axios.post<TVShow[]>(
