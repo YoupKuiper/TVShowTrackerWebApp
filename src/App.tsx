@@ -13,7 +13,7 @@ import { TVShowsDetailsModal } from './Components/TVShowDetailsModal/TVShowDetai
 
 const getTrackedShowsFromLocalStorage = ():TVShow[] => {
   try {
-    const trackedTVShows = JSON.parse(localStorage.getItem(TRACKED_TV_SHOWS_KEY) || '')
+    const trackedTVShows = JSON.parse(localStorage.getItem(TRACKED_TV_SHOWS_KEY) || '[]')
     return trackedTVShows
   } catch (error) {
     return []
@@ -161,12 +161,11 @@ const App = () => {
 
   const createUserAccount = async (emailAddress: string, password: string) => {
     try {
-      const { data, status } = await axios.post<any>(
+      const { status } = await axios.post<any>(
         `${TV_SHOW_TRACKER_API_BASE_URL}/CreateAccount`,
         { emailAddress, password }
       );
 
-      console.log(`Data: ${JSON.stringify(data, null, 4)}`);
       console.log('response status is: ', status);
 
     } catch (error) {
@@ -186,7 +185,6 @@ const App = () => {
       { emailAddress, password }
     );
 
-    console.log(`Data: ${JSON.stringify(data, null, 4)}`);
     console.log('response status is: ', status);
 
     setLoggedInUser(data.user);
@@ -242,7 +240,6 @@ const App = () => {
         { token, tvShowsList: newTrackedTvShowsList }
       );
 
-      console.log(`Data: ${JSON.stringify(data, null, 4)}`);
       console.log('response status is: ', status);
       setTrackedTVShows(data)
     } catch (error) {
