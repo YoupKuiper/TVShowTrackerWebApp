@@ -236,8 +236,8 @@ const App = () => {
       }
 
       const { data, status } = await axios.post<TVShow[]>(
-        `${TV_SHOW_TRACKER_API_BASE_URL}/UpdateTrackedTVShow`,
-        { token, tvShowsList: newTrackedTvShowsList }
+        `${TV_SHOW_TRACKER_API_BASE_URL}/UpdateUser`,
+        { token, updateObject: {trackedTVShows: newTrackedTvShowsList }}
       );
 
       console.log('response status is: ', status);
