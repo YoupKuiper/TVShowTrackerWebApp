@@ -14,7 +14,9 @@ interface TvShowsListViewProps {
 }
 
 const isAlreadyInTrackedList = (tvShow: TVShow, trackedTVShows: TVShow[]) => {
-    return trackedTVShows.some((trackedShow) => trackedShow.id === tvShow.id)
+    if(trackedTVShows){
+        return trackedTVShows.some((trackedShow) => trackedShow.id === tvShow.id)
+    }
 }
 
 const shouldButtonBeShown = (isLoggedIn: boolean, isTrackedList: boolean, trackedTVShows: TVShow[], tvShow: TVShow): boolean => {
