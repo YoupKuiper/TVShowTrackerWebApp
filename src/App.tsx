@@ -265,6 +265,7 @@ const App = () => {
         currentPage={currentPage}
         darkMode={darkMode}
         isLoggedIn={isLoggedIn}
+        emailAddress={loggedInUser.emailAddress}
         setShowLoginModal={setShowLoginModal}
         setShowCreateAccountModal={setShowCreateAccountModal}
         logout={logoutUser}

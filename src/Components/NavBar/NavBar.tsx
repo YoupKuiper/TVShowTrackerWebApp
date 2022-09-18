@@ -10,6 +10,7 @@ interface NavBarProps {
   setCurrentPage: (params: string) => any;
   currentPage: string;
   darkMode: boolean;
+  emailAddress: string;
   setShowLoginModal: (params: boolean) => any;
   setShowCreateAccountModal: (params: boolean) => any;
   logout: () => any;
@@ -21,7 +22,7 @@ const classNames = (...classes: any) => {
 }
 
 
-export const NavBar = ({ setCurrentPage, currentPage, darkMode, isLoggedIn, setShowLoginModal, setShowCreateAccountModal, logout, setDarkMode }: NavBarProps) => {
+export const NavBar = ({ setCurrentPage, currentPage, darkMode, isLoggedIn, emailAddress, setShowLoginModal, setShowCreateAccountModal, logout, setDarkMode }: NavBarProps) => {
   const navigation = [
     { name: PAGE_NAME_SEARCH, href: '/#', current: currentPage === PAGE_NAME_SEARCH, onClick: setCurrentPage },
     { name: PAGE_NAME_TRACKED_TV_SHOWS, href: '/#', current: currentPage === PAGE_NAME_TRACKED_TV_SHOWS, onClick: setCurrentPage },
@@ -103,13 +104,13 @@ export const NavBar = ({ setCurrentPage, currentPage, darkMode, isLoggedIn, setS
                     leaveFrom="transform opacity-100 scale-100"
                     leaveTo="transform opacity-0 scale-95"
                   >
-                    <Menu.Items className="dark:bg-gray-700 origin-top-right absolute z-50 right-0 mt-2 w-32 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+                    <Menu.Items className="dark:bg-gray-700 origin-top-right absolute z-50 right-0 mt-2 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
                       {!isLoggedIn && <Menu.Item>
                         {({ active }) => (
                           <a
                             href="/#"
                             className={classNames(active ? 'bg-gray-100 dark:bg-gray-500' : '', 'block px-4 py-2 text-sm dark:text-white text-gray-700')}
-                            onClick={() => { setShowLoginModal(true)}}
+                            onClick={() => { setShowLoginModal(true) }}
                           >
                             Login
                           </a>
@@ -126,6 +127,15 @@ export const NavBar = ({ setCurrentPage, currentPage, darkMode, isLoggedIn, setS
                           </a>
                         )}
                       </Menu.Item>}
+                      {isLoggedIn && <Menu.Item>
+                        {({ active }) => (
+                          <p
+                            className={classNames('bg-slate-200 dark:bg-slate-900 italic block px-4 dark:text-white py-2 text-sm text-gray-700')}
+                          >
+                            {emailAddress}
+                          </p>
+                        )}
+                      </Menu.Item>}                      
                       {isLoggedIn && <Menu.Item>
                         {({ active }) => (
                           <a
