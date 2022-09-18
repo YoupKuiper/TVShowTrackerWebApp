@@ -235,13 +235,13 @@ const App = () => {
         newTrackedTvShowsList = updatedTrackedTVShows.concat(tvShow)
       }
 
-      const { data, status } = await axios.post<TVShow[]>(
+      const { data, status } = await axios.post<any>(
         `${TV_SHOW_TRACKER_API_BASE_URL}/UpdateUser`,
         { token, updateObject: {trackedTVShows: newTrackedTvShowsList }}
       );
 
       console.log('response status is: ', status);
-      setTrackedTVShows(data)
+      setTrackedTVShows(data.trackedTVShows)
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.log('error message: ', error);
