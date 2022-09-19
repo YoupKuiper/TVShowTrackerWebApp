@@ -7,7 +7,6 @@ import logo from '../../Img/logo.png'
 
 interface NavBarProps {
   isLoggedIn: boolean;
-  setCurrentPage: (params: string) => any;
   currentPage: string;
   darkMode: boolean;
   emailAddress: string;
@@ -22,10 +21,10 @@ const classNames = (...classes: any) => {
 }
 
 
-export const NavBar = ({ setCurrentPage, currentPage, darkMode, isLoggedIn, emailAddress, setShowLoginModal, setShowCreateAccountModal, logout, setDarkMode }: NavBarProps) => {
+export const NavBar = ({ currentPage, darkMode, isLoggedIn, emailAddress, setShowLoginModal, setShowCreateAccountModal, logout, setDarkMode }: NavBarProps) => {
   const navigation = [
-    { name: PAGE_NAME_SEARCH, href: '/#', current: currentPage === PAGE_NAME_SEARCH, onClick: setCurrentPage },
-    { name: PAGE_NAME_TRACKED_TV_SHOWS, href: '/#', current: currentPage === PAGE_NAME_TRACKED_TV_SHOWS, onClick: setCurrentPage },
+    { name: PAGE_NAME_SEARCH, href: '/', current: currentPage === PAGE_NAME_SEARCH },
+    { name: PAGE_NAME_TRACKED_TV_SHOWS, href: '/tracked', current: currentPage === PAGE_NAME_TRACKED_TV_SHOWS },
   ]
 
   return (
@@ -64,7 +63,6 @@ export const NavBar = ({ setCurrentPage, currentPage, darkMode, isLoggedIn, emai
                       <a
                         key={item.name}
                         href={item.href}
-                        onClick={() => item.onClick(item.name)}
                         className={classNames(
                           item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                           'px-3 py-2 rounded-md text-sm font-medium'
@@ -160,7 +158,6 @@ export const NavBar = ({ setCurrentPage, currentPage, darkMode, isLoggedIn, emai
                 <Disclosure.Button
                   key={item.name}
                   as="a"
-                  onClick={() => item.onClick(item.name)}
                   href={item.href}
                   className={classNames(
                     item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',

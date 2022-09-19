@@ -1,17 +1,18 @@
 import axios from 'axios';
-import { decodeToken } from "react-jwt";
 import { useEffect, useState } from "react";
+import { decodeToken } from "react-jwt";
+import { Outlet, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import CreateAccountFormModal from './Components/CreateAccountFormModal/CreateAccountFormModal';
 import LoginFormModal from './Components/LoginFormModal/LoginFormModal';
 import { NavBar } from './Components/NavBar/NavBar';
 import SearchBar from './Components/SearchBar/SearchBar';
+import { TVShowsDetailsModal } from './Components/TVShowDetailsModal/TVShowDetailsModal';
 import TVShowsListView from './Components/TVShowsListView/TVShowsListView';
+import UnsubscribeEmailModal from './Components/UnsubscribeEmailModal/UnsubscribeEmailModal';
 import { DARK_MODE_KEY, DEFAULT_TOKEN, DEFAULT_TV_SHOW, DEFAULT_USER, JWT_TOKEN_KEY, PAGE_NAME_SEARCH, PAGE_NAME_TRACKED_TV_SHOWS, TRACKED_TV_SHOWS_KEY } from './constants';
 import { LoginResponse, TVShow, User, UserObject } from './validators';
-import { TVShowsDetailsModal } from './Components/TVShowDetailsModal/TVShowDetailsModal';
 
-
-const getTrackedShowsFromLocalStorage = ():TVShow[] => {
+const getTrackedShowsFromLocalStorage = (): TVShow[] => {
   try {
     const trackedTVShows = JSON.parse(localStorage.getItem(TRACKED_TV_SHOWS_KEY) || '[]')
     return trackedTVShows
@@ -36,15 +37,15 @@ const App = () => {
   const [showCreateAccountModal, setShowCreateAccountModal] = useState(false);
   const [tvShowDetailsToShow, setTVShowDetailsToShow] = useState<TVShow>(DEFAULT_TV_SHOW);
   const [loggedInUser, setLoggedInUser] = useState<User>(DEFAULT_USER);
-  const [currentPage, setCurrentPage] = useState(PAGE_NAME_SEARCH)
   const [showSpinner, setShowSpinner] = useState(false)
   const [darkMode, setDarkMode] = useState(getDarkModeStateFromLocalStorage)
   const [searchTerm, setSearchTerm] = useState('');
-  const showTrackedTVShows = currentPage === PAGE_NAME_TRACKED_TV_SHOWS
   const TV_SHOW_TRACKER_API_BASE_URL = process.env.REACT_APP_API_BASE_URL
   const showTVShowDetailsModal = tvShowDetailsToShow && tvShowDetailsToShow.id !== DEFAULT_TV_SHOW.id
   const isLoggedIn = !!loggedInUser.emailAddress
-
+  const location = useLocation();
+  const navigate = useNavigate();
+  
   useEffect(() => {
     try {
       const token = localStorage.getItem(JWT_TOKEN_KEY)
@@ -54,12 +55,11 @@ const App = () => {
         setLoggedInUser(loggedInUser);
       }
 
-      
-      const fetchPopularTVShows = async () => {
-        await getPopularTVShows()
+      const fetchTVShows = async () => {
+        location.pathname === '/tracked' ? await getTrackedTVShows() : await getPopularTVShows()
       }
 
-      fetchPopularTVShows();
+      fetchTVShows();
 
     } catch (error) {
       console.log(error)
@@ -111,9 +111,9 @@ const App = () => {
   const searchTvShow = async (title: string) => {
     try {
       setShowSpinner(true)
-      if(currentPage === PAGE_NAME_SEARCH){
+      if (location.pathname === '/') {
         await searchAllTVShows(title)
-      }else if(currentPage === PAGE_NAME_TRACKED_TV_SHOWS){
+      } else if (location.pathname === '/tracked') {
         await searchTrackedTVShows(title)
       }
       setShowSpinner(false)
@@ -130,33 +130,28 @@ const App = () => {
     }
   }
 
-  const updateCurrentPage = async (newPage: string) => {
-    setSearchTerm('')
-    if (newPage === PAGE_NAME_TRACKED_TV_SHOWS) {
-      try {
-        setShowSpinner(true)
-        const { data } = await axios.post<TVShow[]>(
-          `${TV_SHOW_TRACKER_API_BASE_URL}/GetTrackedTVShows`,
-          { token: localStorage.getItem(JWT_TOKEN_KEY) }
-        );
+  const getTrackedTVShows = async () => {
+    try {
+      setShowSpinner(true)
+      const { data } = await axios.post<TVShow[]>(
+        `${TV_SHOW_TRACKER_API_BASE_URL}/GetTrackedTVShows`,
+        { token: localStorage.getItem(JWT_TOKEN_KEY) }
+      );
+      console.log(data)
+      setShowSpinner(false)
+      setTrackedTVShows(data);
+      localStorage.setItem(TRACKED_TV_SHOWS_KEY, JSON.stringify(data));
 
-        setShowSpinner(false)
-        setTrackedTVShows(data);
-        localStorage.setItem(TRACKED_TV_SHOWS_KEY, JSON.stringify(data));
-
-      } catch (error) {
-        setShowSpinner(false)
-        if (axios.isAxiosError(error)) {
-          console.log('error message: ', error.message);
-          // request failed, relog user in
-          setShowLoginModal(true)
-        } else {
-          console.log('unexpected error: ', error);
-        }
+    } catch (error) {
+      setShowSpinner(false)
+      if (axios.isAxiosError(error)) {
+        console.log('error message: ', error.message);
+        // request failed, relog user in
+        setShowLoginModal(true)
+      } else {
+        console.log('unexpected error: ', error);
       }
     }
-
-    setCurrentPage(newPage)
   }
 
   const createUserAccount = async (emailAddress: string, password: string) => {
@@ -189,8 +184,10 @@ const App = () => {
 
     setLoggedInUser(data.user);
     localStorage.setItem(JWT_TOKEN_KEY, data.token);
-
-    updateCurrentPage(PAGE_NAME_TRACKED_TV_SHOWS);
+    
+    //Navigate to tracked shows page
+    navigate('/tracked')
+    await getTrackedTVShows()
   }
 
   const logoutUser = () => {
@@ -205,7 +202,7 @@ const App = () => {
 
   const addTrackedTVShow = async (tvShow: TVShow) => {
     console.log(`Adding: ${tvShow.id}`)
-    
+
     await updateTrackedTvShows(tvShow, false)
   }
 
@@ -223,7 +220,7 @@ const App = () => {
       }
 
       console.log(`TV show id: ${tvShow.id}`)
-      const { data: updatedTrackedTVShows} = await axios.post<TVShow[]>(
+      const { data: updatedTrackedTVShows } = await axios.post<TVShow[]>(
         `${TV_SHOW_TRACKER_API_BASE_URL}/GetTrackedTVShows`,
         { token: localStorage.getItem(JWT_TOKEN_KEY) }
       );
@@ -237,7 +234,7 @@ const App = () => {
 
       const { data, status } = await axios.post<any>(
         `${TV_SHOW_TRACKER_API_BASE_URL}/UpdateUser`,
-        { token, updateObject: {trackedTVShows: newTrackedTvShowsList }}
+        { token, updateObject: { trackedTVShows: newTrackedTvShowsList } }
       );
 
       console.log('response status is: ', status);
@@ -258,40 +255,99 @@ const App = () => {
     setShowCreateAccountModal(true)
   }
 
-  return (
-    <div className={darkMode ? 'dark bg-gray-800 w-full h-screen text-white' : ''}>
-      <NavBar
-        setCurrentPage={updateCurrentPage}
-        currentPage={currentPage}
-        darkMode={darkMode}
-        isLoggedIn={isLoggedIn}
-        emailAddress={loggedInUser.emailAddress}
-        setShowLoginModal={setShowLoginModal}
-        setShowCreateAccountModal={setShowCreateAccountModal}
-        logout={logoutUser}
-        setDarkMode={setDarkMode} />
-      {!isLoggedIn && <div className='container mx-auto text-center py-5'>
-        <div className='text-4xl pb-5'>Welcome to TVTracker</div>
-        <div className='text-lg'>Add shows to your list and get email notifications when episodes air!</div>
-        <div className='text-lg'><button onClick={() => setShowCreateAccountModal(true)} className='underline'>Create an account</button> or <button onClick={() => setShowLoginModal(true)} className='underline'>Login</button> to get started</div>
-      </div>}
-      <SearchBar search={searchTvShow} setSearchTerm={setSearchTerm} searchTerm={searchTerm}/>
-      <TVShowsListView
-        isTrackedList={showTrackedTVShows}
-        tvShows={tvShows}
-        trackedTVShows={trackedTVShows}
-        showSpinner={showSpinner}
-        setShowDetails={setTVShowDetailsToShow}
-        handleButtonClick={showTrackedTVShows ? removeTrackedTVShow : addTrackedTVShow}
-        isLoggedIn={isLoggedIn}
-        getPopular={getPopularTVShows} />
-      {showTVShowDetailsModal && <TVShowsDetailsModal tvShow={tvShowDetailsToShow} setTVShow={setTVShowDetailsToShow} darkMode={darkMode} />}
-      {showLoginModal && <LoginFormModal setShowLoginModal={setShowLoginModal} loginUser={loginUser} createAccount={openCreateAccountModalFromLogin}/>}
-      {showCreateAccountModal && <CreateAccountFormModal setShowCreateAccountModal={setShowCreateAccountModal} createUserAccount={createUserAccount} />}
-      <div className='border-t dark:border-gray-600'>
+  const Home = () => {
+    return (
+      <div className={darkMode ? 'dark bg-gray-800 w-full h-screen text-white' : ''}>
+        <NavBar
+          currentPage={PAGE_NAME_SEARCH}
+          darkMode={darkMode}
+          isLoggedIn={isLoggedIn}
+          emailAddress={loggedInUser.emailAddress}
+          setShowLoginModal={setShowLoginModal}
+          setShowCreateAccountModal={setShowCreateAccountModal}
+          logout={logoutUser}
+          setDarkMode={setDarkMode} />
+        {!isLoggedIn && <div className='container mx-auto text-center py-5'>
+          <div className='text-4xl pb-5'>Welcome to TVTracker</div>
+          <div className='text-lg'>Add shows to your list and get email notifications when episodes air!</div>
+          <div className='text-lg'><button onClick={() => setShowCreateAccountModal(true)} className='underline'>Create an account</button> or <button onClick={() => setShowLoginModal(true)} className='underline'>Login</button> to get started</div>
+        </div>}
+        <SearchBar search={searchTvShow} setSearchTerm={setSearchTerm} searchTerm={searchTerm} />
+        <TVShowsListView
+          isTrackedList={false}
+          tvShows={tvShows}
+          trackedTVShows={trackedTVShows}
+          showSpinner={showSpinner}
+          setShowDetails={setTVShowDetailsToShow}
+          handleButtonClick={addTrackedTVShow}
+          isLoggedIn={isLoggedIn}
+          getPopular={getPopularTVShows} />
+        {showTVShowDetailsModal && <TVShowsDetailsModal tvShow={tvShowDetailsToShow} setTVShow={setTVShowDetailsToShow} darkMode={darkMode} />}
+        {showLoginModal && <LoginFormModal setShowLoginModal={setShowLoginModal} loginUser={loginUser} createAccount={openCreateAccountModalFromLogin} />}
+        {showCreateAccountModal && <CreateAccountFormModal setShowCreateAccountModal={setShowCreateAccountModal} createUserAccount={createUserAccount} />}
+        <div className='border-t dark:border-gray-600'>
           <p className='text-center py-3 text-xs'> Made by Youp Kuiper</p>
+        </div>
+        <Outlet />
       </div>
-    </div>
+    );
+  }
+
+  const MyTrackedList = () => {
+    return (
+      <div className={darkMode ? 'dark bg-gray-800 w-full h-screen text-white' : ''}>
+        <NavBar
+          currentPage={PAGE_NAME_TRACKED_TV_SHOWS}
+          darkMode={darkMode}
+          isLoggedIn={isLoggedIn}
+          emailAddress={loggedInUser.emailAddress}
+          setShowLoginModal={setShowLoginModal}
+          setShowCreateAccountModal={setShowCreateAccountModal}
+          logout={logoutUser}
+          setDarkMode={setDarkMode} />
+        {!isLoggedIn && <div className='container mx-auto text-center py-5'>
+          <div className='text-4xl pb-5'>Welcome to TVTracker</div>
+          <div className='text-lg'>Add shows to your list and get email notifications when episodes air!</div>
+          <div className='text-lg'><button onClick={() => setShowCreateAccountModal(true)} className='underline'>Create an account</button> or <button onClick={() => setShowLoginModal(true)} className='underline'>Login</button> to get started</div>
+        </div>}
+        <SearchBar search={searchTvShow} setSearchTerm={setSearchTerm} searchTerm={searchTerm} />
+        <TVShowsListView
+          isTrackedList={true}
+          tvShows={tvShows}
+          trackedTVShows={trackedTVShows}
+          showSpinner={showSpinner}
+          setShowDetails={setTVShowDetailsToShow}
+          handleButtonClick={removeTrackedTVShow}
+          isLoggedIn={isLoggedIn}
+          getPopular={getPopularTVShows} />
+        {showTVShowDetailsModal && <TVShowsDetailsModal tvShow={tvShowDetailsToShow} setTVShow={setTVShowDetailsToShow} darkMode={darkMode} />}
+        {showLoginModal && <LoginFormModal setShowLoginModal={setShowLoginModal} loginUser={loginUser} createAccount={openCreateAccountModalFromLogin} />}
+        {showCreateAccountModal && <CreateAccountFormModal setShowCreateAccountModal={setShowCreateAccountModal} createUserAccount={createUserAccount} />}
+        <div className='border-t dark:border-gray-600'>
+          <p className='text-center py-3 text-xs'> Made by Youp Kuiper</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="tracked" element={<MyTrackedList />} />
+        <Route path="/unsubscribe" element={<Home />} >
+          <Route path=":emailAddress/:token" element={<UnsubscribeEmailModal />} />
+        </Route>
+        <Route
+          path="*"
+          element={
+            <main style={{ padding: "1rem" }}>
+              <p>There's nothing here!</p>
+            </main>
+          }
+        />
+      </Routes>
+    </>
   )
 }
 
