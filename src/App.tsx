@@ -355,8 +355,8 @@ const App = () => {
   return (
     <>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="tracked" element={<MyTrackedList />} />
+        <Route path="/" element={Home()} />
+        <Route path="tracked" element={MyTrackedList()} />
         <Route path="/unsubscribe" element={<UnsubscribeEmailModal />} >
           <Route path=":emailAddress/:token" element={<UnsubscribeEmailModal />} />
         </Route>
