@@ -47,7 +47,6 @@ const LoginFormModal = ({ setShowLoginModal, loginUser, createAccount }: LoginFo
 
       setShowSpinner(true)
       await loginUser(emailAddress, password)
-      setShowLoginModal(false)
     } catch (error) {
       if (error instanceof z.ZodError) {
         console.log(JSON.stringify(error.issues))

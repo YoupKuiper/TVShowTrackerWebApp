@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from "react";
 import { decodeToken } from "react-jwt";
-import { Outlet, Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import CreateAccountFormModal from './Components/CreateAccountFormModal/CreateAccountFormModal';
 import LoginFormModal from './Components/LoginFormModal/LoginFormModal';
 import { NavBar } from './Components/NavBar/NavBar';
@@ -45,7 +45,7 @@ const App = () => {
   const isLoggedIn = !!loggedInUser.emailAddress
   const location = useLocation();
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     try {
       const token = localStorage.getItem(JWT_TOKEN_KEY)
@@ -58,7 +58,6 @@ const App = () => {
       const fetchTVShows = async () => {
         location.pathname === '/tracked' ? await getTrackedTVShows() : await getPopularTVShows()
       }
-
       fetchTVShows();
 
     } catch (error) {
@@ -184,8 +183,9 @@ const App = () => {
 
     setLoggedInUser(data.user);
     localStorage.setItem(JWT_TOKEN_KEY, data.token);
-    
+
     //Navigate to tracked shows page
+    setShowLoginModal(false)
     navigate('/tracked')
     await getTrackedTVShows()
   }
@@ -257,39 +257,40 @@ const App = () => {
 
   const Home = () => {
     return (
-      <div className={darkMode ? 'dark bg-gray-800 w-full h-screen text-white' : ''}>
-        <NavBar
-          currentPage={PAGE_NAME_SEARCH}
-          darkMode={darkMode}
-          isLoggedIn={isLoggedIn}
-          emailAddress={loggedInUser.emailAddress}
-          setShowLoginModal={setShowLoginModal}
-          setShowCreateAccountModal={setShowCreateAccountModal}
-          logout={logoutUser}
-          setDarkMode={setDarkMode} />
-        {!isLoggedIn && <div className='container mx-auto text-center py-5'>
-          <div className='text-4xl pb-5'>Welcome to TVTracker</div>
-          <div className='text-lg'>Add shows to your list and get email notifications when episodes air!</div>
-          <div className='text-lg'><button onClick={() => setShowCreateAccountModal(true)} className='underline'>Create an account</button> or <button onClick={() => setShowLoginModal(true)} className='underline'>Login</button> to get started</div>
-        </div>}
-        <SearchBar search={searchTvShow} setSearchTerm={setSearchTerm} searchTerm={searchTerm} />
-        <TVShowsListView
-          isTrackedList={false}
-          tvShows={tvShows}
-          trackedTVShows={trackedTVShows}
-          showSpinner={showSpinner}
-          setShowDetails={setTVShowDetailsToShow}
-          handleButtonClick={addTrackedTVShow}
-          isLoggedIn={isLoggedIn}
-          getPopular={getPopularTVShows} />
-        {showTVShowDetailsModal && <TVShowsDetailsModal tvShow={tvShowDetailsToShow} setTVShow={setTVShowDetailsToShow} darkMode={darkMode} />}
-        {showLoginModal && <LoginFormModal setShowLoginModal={setShowLoginModal} loginUser={loginUser} createAccount={openCreateAccountModalFromLogin} />}
-        {showCreateAccountModal && <CreateAccountFormModal setShowCreateAccountModal={setShowCreateAccountModal} createUserAccount={createUserAccount} />}
-        <div className='border-t dark:border-gray-600'>
-          <p className='text-center py-3 text-xs'> Made by Youp Kuiper</p>
+      <>
+        <div className={darkMode ? 'dark bg-gray-800 w-full h-screen text-white' : ''}>
+          <NavBar
+            currentPage={PAGE_NAME_SEARCH}
+            darkMode={darkMode}
+            isLoggedIn={isLoggedIn}
+            emailAddress={loggedInUser.emailAddress}
+            setShowLoginModal={setShowLoginModal}
+            setShowCreateAccountModal={setShowCreateAccountModal}
+            logout={logoutUser}
+            setDarkMode={setDarkMode} />
+          {!isLoggedIn && <div className='container mx-auto text-center py-5'>
+            <div className='text-4xl pb-5'>Welcome to TVTracker</div>
+            <div className='text-lg'>Add shows to your list and get email notifications when episodes air!</div>
+            <div className='text-lg'><button onClick={() => setShowCreateAccountModal(true)} className='underline'>Create an account</button> or <button onClick={() => setShowLoginModal(true)} className='underline'>Login</button> to get started</div>
+          </div>}
+          <SearchBar search={searchTvShow} setSearchTerm={setSearchTerm} searchTerm={searchTerm} />
+          <TVShowsListView
+            isTrackedList={false}
+            tvShows={tvShows}
+            trackedTVShows={trackedTVShows}
+            showSpinner={showSpinner}
+            setShowDetails={setTVShowDetailsToShow}
+            handleButtonClick={addTrackedTVShow}
+            isLoggedIn={isLoggedIn}
+            getPopular={getPopularTVShows} />
+          {showTVShowDetailsModal && <TVShowsDetailsModal tvShow={tvShowDetailsToShow} setTVShow={setTVShowDetailsToShow} darkMode={darkMode} />}
+          {showLoginModal && <LoginFormModal setShowLoginModal={setShowLoginModal} loginUser={loginUser} createAccount={openCreateAccountModalFromLogin} />}
+          {showCreateAccountModal && <CreateAccountFormModal setShowCreateAccountModal={setShowCreateAccountModal} createUserAccount={createUserAccount} />}
+          <div className='border-t dark:border-gray-600'>
+            <p className='text-center py-3 text-xs'> Made by Youp Kuiper</p>
+          </div>
         </div>
-        <Outlet />
-      </div>
+      </>
     );
   }
 
@@ -335,7 +336,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="tracked" element={<MyTrackedList />} />
-        <Route path="/unsubscribe" element={<Home />} >
+        <Route path="/unsubscribe" element={<UnsubscribeEmailModal />} >
           <Route path=":emailAddress/:token" element={<UnsubscribeEmailModal />} />
         </Route>
         <Route
