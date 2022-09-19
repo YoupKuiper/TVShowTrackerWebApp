@@ -14,9 +14,8 @@ export const TVShowObject = z.object({
 export const UserObject = z.object({
     emailAddress: z.string().email({ message: "Invalid email address" }),
     settings: z.object({
-        emailAddressVerified: z.boolean(),
         wantsEmailNotifications: z.boolean()
-      }).optional()
+      })
 })
 
 export const LoginResponseObject = z.object({

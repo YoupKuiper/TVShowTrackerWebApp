@@ -10,6 +10,8 @@ interface NavBarProps {
   currentPage: string;
   darkMode: boolean;
   emailAddress: string;
+  wantsNotifications: boolean;
+  setWantsNotifications: (newSetting: boolean) => any;
   setShowLoginModal: (params: boolean) => any;
   setShowCreateAccountModal: (params: boolean) => any;
   logout: () => any;
@@ -21,11 +23,15 @@ const classNames = (...classes: any) => {
 }
 
 
-export const NavBar = ({ currentPage, darkMode, isLoggedIn, emailAddress, setShowLoginModal, setShowCreateAccountModal, logout, setDarkMode }: NavBarProps) => {
+export const NavBar = ({ currentPage, darkMode, isLoggedIn, emailAddress, wantsNotifications, setWantsNotifications, setShowLoginModal, setShowCreateAccountModal, logout, setDarkMode }: NavBarProps) => {
   const navigation = [
     { name: PAGE_NAME_SEARCH, href: '/', current: currentPage === PAGE_NAME_SEARCH },
     { name: PAGE_NAME_TRACKED_TV_SHOWS, href: '/tracked', current: currentPage === PAGE_NAME_TRACKED_TV_SHOWS },
   ]
+
+  const handleChange = (event: any) => {
+    setWantsNotifications(!wantsNotifications)
+  }
 
   return (
     <Disclosure as="nav" className="bg-gray-800">
@@ -133,7 +139,14 @@ export const NavBar = ({ currentPage, darkMode, isLoggedIn, emailAddress, setSho
                             {emailAddress}
                           </p>
                         )}
-                      </Menu.Item>}                      
+                      </Menu.Item>}
+                      {isLoggedIn && 
+                          <label htmlFor="small-toggle" className="inline-flex px-4 dark:text-white py-2 text-sm text-gray-700 relative items-center cursor-pointer">
+                            <input type="checkbox" id="small-toggle" className="sr-only peer" checked={wantsNotifications} onChange={handleChange} />
+                            <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-400 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[10px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all after:mx-4 dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                            <span className="ml-3 text-sm text-gray-900 dark:text-white">Notifications</span>
+                          </label>
+                      }
                       {isLoggedIn && <Menu.Item>
                         {({ active }) => (
                           <a

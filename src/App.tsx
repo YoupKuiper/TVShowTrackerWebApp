@@ -34,6 +34,7 @@ const App = () => {
   const [tvShows, setTvShows] = useState<TVShow[]>([]);
   const [trackedTVShows, setTrackedTVShows] = useState<TVShow[]>(getTrackedShowsFromLocalStorage);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [wantsEmailNotifications, setWantsEmailNotifications] = useState(false);
   const [showCreateAccountModal, setShowCreateAccountModal] = useState(false);
   const [tvShowDetailsToShow, setTVShowDetailsToShow] = useState<TVShow>(DEFAULT_TV_SHOW);
   const [loggedInUser, setLoggedInUser] = useState<User>(DEFAULT_USER);
@@ -53,6 +54,7 @@ const App = () => {
         const decodedToken: any = decodeToken(token);
         const loggedInUser = UserObject.parse(decodedToken.data);
         setLoggedInUser(loggedInUser);
+        setWantsEmailNotifications(loggedInUser.settings.wantsEmailNotifications)
       }
 
       const fetchTVShows = async () => {
@@ -183,7 +185,6 @@ const App = () => {
 
     setLoggedInUser(data.user);
     localStorage.setItem(JWT_TOKEN_KEY, data.token);
-
     //Navigate to tracked shows page
     setShowLoginModal(false)
     navigate('/tracked')
@@ -204,6 +205,22 @@ const App = () => {
     console.log(`Adding: ${tvShow.id}`)
 
     await updateTrackedTvShows(tvShow, false)
+  }
+
+  const updateWantsNotifications = async (newSetting: boolean) => {
+    console.log(`Setting wants notifications to: ${newSetting}`)
+    const token = localStorage.getItem(JWT_TOKEN_KEY);
+    if (!token) {
+      console.error('No token found')
+      return;
+    }
+    const { status } = await axios.post<any>(
+      `${TV_SHOW_TRACKER_API_BASE_URL}/UpdateUser`,
+      { token, updateObject: { settings: { wantsEmailNotifications: newSetting }}}
+    );
+    
+    setWantsEmailNotifications(newSetting)
+    console.log(`Response status: ${status}`)
   }
 
   const removeTrackedTVShow = async (tvShow: TVShow) => {
@@ -264,6 +281,8 @@ const App = () => {
             darkMode={darkMode}
             isLoggedIn={isLoggedIn}
             emailAddress={loggedInUser.emailAddress}
+            wantsNotifications={wantsEmailNotifications}
+            setWantsNotifications={updateWantsNotifications}
             setShowLoginModal={setShowLoginModal}
             setShowCreateAccountModal={setShowCreateAccountModal}
             logout={logoutUser}
@@ -302,6 +321,8 @@ const App = () => {
           darkMode={darkMode}
           isLoggedIn={isLoggedIn}
           emailAddress={loggedInUser.emailAddress}
+          wantsNotifications={wantsEmailNotifications}
+          setWantsNotifications={updateWantsNotifications}
           setShowLoginModal={setShowLoginModal}
           setShowCreateAccountModal={setShowCreateAccountModal}
           logout={logoutUser}
