@@ -61,7 +61,7 @@ const UnsubscribeEmailModal = () => {
                         />
                         <h2 className="mt-6 text-center text-md font-extrabold text-gray-900 dark:text-white">Unsubscribing {params.emailAddress} from emails</h2>
                     </div>
-                    {showSpinner ? <div className="mt-8 space-y-6"><LoadingSpinner /></div> :
+                    {showSpinner ? <div className="inline-flex justify-center w-full"><LoadingSpinner/></div> :
                         <div className='text-center'>
                             {message}
                         </div>}

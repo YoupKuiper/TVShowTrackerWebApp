@@ -87,7 +87,7 @@ const CreateAccountFormModal = ({ setShowCreateAccountModal, createUserAccount }
             />
             <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:bg-gray-700 dark:text-white">Create your free account</h2>
           </div>
-          {showSpinner ? <div className="mt-8 space-y-6"><LoadingSpinner /></div> :
+          {showSpinner ? <div className="inline-flex justify-center w-full"><LoadingSpinner/></div> :
             <form className="mt-8 space-y-6" action="#" method="POST">
               {errorMessages ? renderErrorMessages(errorMessages) : null}
               <input type="hidden" name="remember" defaultValue="true" />

@@ -1,8 +1,9 @@
 /* This example requires Tailwind CSS v2.0+ */
-import { Fragment } from 'react'
+import { Fragment, useState } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { MenuIcon, XIcon } from '@heroicons/react/outline'
 import { PAGE_NAME_SEARCH, PAGE_NAME_TRACKED_TV_SHOWS } from '../../constants';
+import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 import logo from '../../Img/logo.png'
 
 interface NavBarProps {
@@ -24,13 +25,17 @@ const classNames = (...classes: any) => {
 
 
 export const NavBar = ({ currentPage, darkMode, isLoggedIn, emailAddress, wantsNotifications, setWantsNotifications, setShowLoginModal, setShowCreateAccountModal, logout, setDarkMode }: NavBarProps) => {
+  
+  const [showSpinner, setShowSpinner] = useState(false);
   const navigation = [
     { name: PAGE_NAME_SEARCH, href: '/', current: currentPage === PAGE_NAME_SEARCH },
     { name: PAGE_NAME_TRACKED_TV_SHOWS, href: '/tracked', current: currentPage === PAGE_NAME_TRACKED_TV_SHOWS },
   ]
 
-  const handleChange = (event: any) => {
-    setWantsNotifications(!wantsNotifications)
+  const handleChange = async (event: any) => {
+    setShowSpinner(true)
+    await setWantsNotifications(!wantsNotifications)
+    setShowSpinner(false)
   }
 
   return (
@@ -142,8 +147,9 @@ export const NavBar = ({ currentPage, darkMode, isLoggedIn, emailAddress, wantsN
                       </Menu.Item>}
                       {isLoggedIn && 
                           <label htmlFor="small-toggle" className="inline-flex px-4 dark:text-white py-2 text-sm text-gray-700 relative items-center cursor-pointer">
-                            <input type="checkbox" id="small-toggle" className="sr-only peer" checked={wantsNotifications} onChange={handleChange} />
+                            {showSpinner ? <LoadingSpinner size={5}/> : <div><input type="checkbox" id="small-toggle" className="sr-only peer" checked={wantsNotifications} onChange={handleChange} />
                             <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-400 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[10px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all after:mx-4 dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                            </div>}
                             <span className="ml-3 text-sm text-gray-900 dark:text-white">Notifications</span>
                           </label>
                       }
