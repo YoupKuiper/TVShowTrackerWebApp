@@ -17,7 +17,8 @@ const CreateAccountFormModal = ({ setShowCreateAccountModal, createUserAccount }
   const [password, setPassword] = useState('');
   const [repeatedPassword, setRepeatedPassword] = useState('');
   const [showSpinner, setShowSpinner] = useState(false);
-  const [errorMessages, setErrorMessages] = useState<IndexAndAlertMessage[]>([]);
+  const [errorMessages, setErrorMessages] = useState<IndexAndAlertMessage[]>([]); 
+  const [showSuccessfulCreation, setShowSuccessfulCreation] = useState(false)
   // Index added to try to be able to remove alerts after timeout and still have known unique indices
   const [errorMessageLastIndex, setErrorMessageLastIndex] = useState(0);
 
@@ -43,7 +44,15 @@ const CreateAccountFormModal = ({ setShowCreateAccountModal, createUserAccount }
 
     try {
       UserAccountCreation.parse({ emailAddress, password, repeatedPassword })
-    } catch (error) {
+      // Show loading spinner
+      setShowSpinner(true)
+      // Do api call to log in
+      await createUserAccount(emailAddress, password)
+      // If success, show successful account creation message
+      setShowSpinner(false)
+      setShowSuccessfulCreation(true)
+    } catch (error: any) {
+      setShowSpinner(false)
       if (error instanceof z.ZodError) {
         console.log(JSON.stringify(error.issues))
         let currentIndex = errorMessageLastIndex;
@@ -54,17 +63,12 @@ const CreateAccountFormModal = ({ setShowCreateAccountModal, createUserAccount }
         setErrorMessageLastIndex(currentIndex)
         setErrorMessages(errorMessages.concat(errorsToAdd))
         return;
+      }else{
+        let currentIndex = errorMessageLastIndex;
+        setErrorMessageLastIndex(currentIndex+1)
+        setErrorMessages(errorMessages.concat([{index: currentIndex, message: error}])) 
       }
     }
-
-    // Show loading spinner
-    setShowSpinner(true)
-    // Do api call to log in
-    await createUserAccount(emailAddress, password)
-    // If success, save token to localstorage and close the modal
-    setShowCreateAccountModal(false)
-    // If fail, show invalid credentials message
-    return true;
   }
 
   return (
@@ -80,15 +84,15 @@ const CreateAccountFormModal = ({ setShowCreateAccountModal, createUserAccount }
             </button>
           </div>
           <div style={{ marginTop: "0" }}>
-          <img
+            <img
               className="mx-auto h-24 w-auto"
               src={logo}
               alt="Workflow"
             />
             <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:bg-gray-700 dark:text-white">Create your free account</h2>
           </div>
-          {showSpinner ? <div className="inline-flex justify-center w-full"><LoadingSpinner/></div> :
-            <form className="mt-8 space-y-6" action="#" method="POST">
+          {showSpinner && <div className="inline-flex justify-center w-full"><LoadingSpinner /></div>}
+            {!showSuccessfulCreation && !showSpinner && <form className="mt-8 space-y-6" action="#" method="POST">
               {errorMessages ? renderErrorMessages(errorMessages) : null}
               <input type="hidden" name="remember" defaultValue="true" />
               <div className="rounded-md shadow-sm -space-y-px">
@@ -154,6 +158,11 @@ const CreateAccountFormModal = ({ setShowCreateAccountModal, createUserAccount }
                 </button>
               </div>
             </form>}
+            {showSuccessfulCreation && <div className='text-center'>
+              <h1>Great success!</h1>
+              <p>Check your inbox for a verification link!</p>
+              <p>Email verification is needed to receive notifications</p>
+            </div>}
         </div>
       </div>
     </>

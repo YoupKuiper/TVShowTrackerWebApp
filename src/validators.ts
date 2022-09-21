@@ -4,6 +4,11 @@ export const TVShowObject = z.object({
     id: z.number(),
     name: z.string(),
     poster_path: z.string(),
+    genre_ids: z.array(z.number()),
+    origin_country: z.array(z.string()),
+    original_language: z.string(),
+    original_name: z.string(),
+    popularity: z.number(),
     first_air_date: z.string(),
     overview: z.string(),
     backdrop_path: z.string(),
@@ -13,9 +18,7 @@ export const TVShowObject = z.object({
 
 export const UserObject = z.object({
     emailAddress: z.string().email({ message: "Invalid email address" }),
-    settings: z.object({
-        wantsEmailNotifications: z.boolean()
-      })
+    wantsEmailNotifications: z.boolean()
 })
 
 export const LoginResponseObject = z.object({

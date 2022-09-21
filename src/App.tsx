@@ -54,7 +54,7 @@ const App = () => {
         const decodedToken: any = decodeToken(token);
         const loggedInUser = UserObject.parse(decodedToken.data);
         setLoggedInUser(loggedInUser);
-        setWantsEmailNotifications(loggedInUser.settings.wantsEmailNotifications)
+        setWantsEmailNotifications(loggedInUser.wantsEmailNotifications)
       }
 
       const fetchTVShows = async () => {
@@ -167,7 +167,7 @@ const App = () => {
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.error('error message: ', error);
-        return error.message;
+        throw(error.response?.data || error.message)
       } else {
         console.error('unexpected error: ', error);
         return 'An unexpected error occurred';

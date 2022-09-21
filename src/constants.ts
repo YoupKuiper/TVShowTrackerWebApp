@@ -10,10 +10,7 @@ export const PAGE_NAME_TRACKED_TV_SHOWS = 'My Tracked Shows'
 export const PAGE_NAME_SETTINGS = 'Settings'
 export const DEFAULT_USER = {
   emailAddress: '',
-  settings: {
-    emailAddressVerified: false,
-    wantsEmailNotifications: false,
-  }
+  wantsEmailNotifications: false,
 }
 export const DEFAULT_TV_SHOW = {
   id: 9999999999,
@@ -23,5 +20,10 @@ export const DEFAULT_TV_SHOW = {
   overview: '',
   backdrop_path: '',
   vote_average: 0,
-  vote_count: 0
+  vote_count: 0,
+  popularity: 0,
+  genre_ids: [],
+  origin_country: [''],
+  original_language: '',
+  original_name: ''
 }
