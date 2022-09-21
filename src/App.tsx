@@ -216,7 +216,7 @@ const App = () => {
     }
     const { status } = await axios.post<any>(
       `${TV_SHOW_TRACKER_API_BASE_URL}/UpdateUser`,
-      { token, updateObject: { settings: { wantsEmailNotifications: newSetting }}}
+      { token, updateObject: { wantsEmailNotifications: newSetting }}
     );
     
     setWantsEmailNotifications(newSetting)

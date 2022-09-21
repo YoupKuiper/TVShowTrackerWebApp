@@ -7,7 +7,6 @@ export const DARK_MODE_KEY = 'dark-mode'
 export const DEFAULT_TOKEN = 'no-token'
 export const PAGE_NAME_SEARCH = 'Search'
 export const PAGE_NAME_TRACKED_TV_SHOWS = 'My Tracked Shows'
-export const PAGE_NAME_SETTINGS = 'Settings'
 export const DEFAULT_USER = {
   emailAddress: '',
   wantsEmailNotifications: false,
