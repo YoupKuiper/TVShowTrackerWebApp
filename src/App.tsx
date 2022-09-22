@@ -5,6 +5,7 @@ import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import CreateAccountFormModal from './Components/CreateAccountFormModal/CreateAccountFormModal';
 import LoginFormModal from './Components/LoginFormModal/LoginFormModal';
 import { NavBar } from './Components/NavBar/NavBar';
+import ResetPasswordModal from './Components/ResetPasswordModal/ResetPasswordModal';
 import SearchBar from './Components/SearchBar/SearchBar';
 import { TVShowsDetailsModal } from './Components/TVShowDetailsModal/TVShowDetailsModal';
 import TVShowsListView from './Components/TVShowsListView/TVShowsListView';
@@ -359,6 +360,9 @@ const App = () => {
         <Route path="tracked" element={MyTrackedList()} />
         <Route path="/unsubscribe" element={<UnsubscribeEmailModal />} >
           <Route path=":emailAddress/:token" element={<UnsubscribeEmailModal />} />
+        </Route>
+        <Route path="/resetpassword" element={<ResetPasswordModal />} >
+          <Route path=":emailAddress/:token" element={<ResetPasswordModal />} />
         </Route>
         <Route
           path="*"

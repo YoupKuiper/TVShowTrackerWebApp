@@ -31,6 +31,14 @@ export const LoginUserObject = z.object({
     password: z.string().min(1, { message: 'Please enter a password' })
 })
 
+export const PasswordResetObject = z.object({
+    newPassword: z.string(),
+    repeatedPassword: z.string()
+}).refine((data) => data.newPassword === data.repeatedPassword, {
+    message: "Passwords don't match",
+    path: ["confirm"], // path of error
+})
+
 export const UserAccountCreation = z.object({
     emailAddress: z.string().email({ message: "Invalid email address" }),
     password: z.string(),
