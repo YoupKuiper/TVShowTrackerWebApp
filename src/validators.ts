@@ -31,6 +31,8 @@ export const LoginUserObject = z.object({
     password: z.string().min(1, { message: 'Please enter a password' })
 })
 
+export const PasswordResetEmail = z.string().email({ message: 'Invalid email address' })
+
 export const PasswordResetObject = z.object({
     newPassword: z.string(),
     repeatedPassword: z.string()

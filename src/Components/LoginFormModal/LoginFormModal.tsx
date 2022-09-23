@@ -1,11 +1,12 @@
-import { LockClosedIcon } from '@heroicons/react/solid'
+import { LockClosedIcon } from '@heroicons/react/solid';
 import axios from 'axios';
 import { useState } from 'react';
 import { z } from 'zod';
-import { IndexAndAlertMessage, LoginUserObject } from '../../validators';
+import logo from '../../Img/logo.png';
+import { IndexAndAlertMessage, LoginUserObject, PasswordResetEmail } from '../../validators';
 import { Alert } from '../Alert/Alert';
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
-import logo from '../../Img/logo.png'
+const TV_SHOW_TRACKER_API_BASE_URL = process.env.REACT_APP_API_BASE_URL
 
 interface LoginFormModalProps {
   setShowLoginModal: (params: boolean) => any;
@@ -18,6 +19,8 @@ const LoginFormModal = ({ setShowLoginModal, loginUser, createAccount }: LoginFo
   const [emailAddress, setEmailAddress] = useState('');
   const [password, setPassword] = useState('');
   const [showSpinner, setShowSpinner] = useState(false);
+  const [showPasswordResetForm, setShowPasswordResetForm] = useState(false);
+  const [message, setMessage] = useState('');
   const [errorMessages, setErrorMessages] = useState<IndexAndAlertMessage[]>([]);
   // Index added to try to be able to remove alerts after timeout and still have known unique indices
   const [errorMessageLastIndex, setErrorMessageLastIndex] = useState(0);
@@ -26,6 +29,42 @@ const LoginFormModal = ({ setShowLoginModal, loginUser, createAccount }: LoginFo
     // Only close when background is clicked
     if (event.target.id === 'container' || event.target.id === 'closebutton') {
       setShowLoginModal(false);
+    }
+  }
+
+  const openPasswordResetForm = () => {
+    setShowPasswordResetForm(true)
+  }
+
+  const handleSendPasswordResetEmail = async (event: any) => {
+    event.preventDefault();
+    
+    try {
+      setShowSpinner(true)
+      PasswordResetEmail.parse(emailAddress)
+      const { data, status } = await axios.post<any>(
+        `${TV_SHOW_TRACKER_API_BASE_URL}/ResetPassword`,
+        { emailAddress }
+      );
+      console.log(`Response status: ${status}`)
+      setMessage(data)
+      setShowSpinner(false)
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        console.log(JSON.stringify(error.issues))
+        let currentIndex = errorMessageLastIndex;
+        const errorsToAdd = error.issues.map((issue) => {
+          currentIndex++
+          return { index: currentIndex, message: issue.message }
+        })
+        setErrorMessageLastIndex(currentIndex)
+        setErrorMessages(errorMessages.concat(errorsToAdd))
+        return;
+      }
+      setShowSpinner(false)
+      setErrorMessageLastIndex(errorMessageLastIndex + 1)
+      const message = axios.isAxiosError(error) ? 'Email address incorrect' : 'Sending email failed'
+      setErrorMessages([...errorMessages, { index: errorMessageLastIndex + 1, message }])
     }
   }
 
@@ -86,14 +125,14 @@ const LoginFormModal = ({ setShowLoginModal, loginUser, createAccount }: LoginFo
               src={logo}
               alt="Workflow"
             />
-            <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white">Sign in to your account</h2>
+            <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white">{showPasswordResetForm ? 'Please enter your email address' : 'Sign in to your account'}</h2>
           </div>
           {showSpinner ? <div className="inline-flex justify-center w-full"><LoadingSpinner/></div> :
             <form className="mt-8 space-y-6" action="#" method="POST">
               {errorMessages ? renderErrorMessages(errorMessages) : null}
               <input type="hidden" name="remember" defaultValue="true" />
               <div className="rounded-md shadow-sm -space-y-px">
-                <div>
+                {!message && <div>
                   <label htmlFor="email-address" className="sr-only">
                     Email address
                   </label>
@@ -108,8 +147,8 @@ const LoginFormModal = ({ setShowLoginModal, loginUser, createAccount }: LoginFo
                     className="appearance-none rounded-none relative block w-full px-3 py-2 border dark:bg-gray-700 dark:text-white border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                     placeholder="Email address"
                   />
-                </div>
-                <div>
+                </div>}
+                {!showPasswordResetForm && <div>
                   <label htmlFor="password" className="sr-only">
                     Password
                   </label>
@@ -124,10 +163,10 @@ const LoginFormModal = ({ setShowLoginModal, loginUser, createAccount }: LoginFo
                     className="appearance-none rounded-none dark:bg-gray-700 dark:text-white relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                     placeholder="Password"
                   />
-                </div>
+                </div>}
               </div>
 
-              <div className="flex items-center justify-between">
+              {!showPasswordResetForm && <div className="flex items-center justify-between">
                 <div className="flex items-center">
                   <input
                     id="remember-me"
@@ -141,22 +180,23 @@ const LoginFormModal = ({ setShowLoginModal, loginUser, createAccount }: LoginFo
                 </div>
 
                 <div className="text-sm">
-                  <a href="/#" className="font-medium text-indigo-600 hover:text-indigo-500 dark:text-white">
+                  <button onClick={openPasswordResetForm} className="font-medium text-indigo-600 hover:text-indigo-500 dark:text-white">
                     Forgot your password?
-                  </a>
+                  </button>
                 </div>
-              </div>
+              </div>}
 
               <div>
-                <button
-                  onClick={handleLogin}
+                {!message ? <button
+                  onClick={showPasswordResetForm ? handleSendPasswordResetEmail : handleLogin}
                   className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
                   <span className="absolute left-0 inset-y-0 flex items-center pl-3">
                     <LockClosedIcon className="h-5 w-5 text-indigo-500 group-hover:text-indigo-400" aria-hidden="true" />
                   </span>
-                  Sign in
-                </button>
+                  {showPasswordResetForm ? 'Send reset email' : 'Sign in'}
+                </button> :
+                <div className='text-center'><b>{message}</b></div>}
               </div>
               <div className='text-center'>Don't have an account yet? <button className='underline' onClick={() => createAccount()}>Create one!</button></div>
             </form>}
