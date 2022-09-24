@@ -36,6 +36,7 @@ const LoginFormModal = ({ setShowLoginModal, loginUser, createAccount }: LoginFo
     // Only close when background or button is clicked
     if (event.target.id === 'backbutton') {
       setShowPasswordResetForm(false)
+      setShowSpinner(false)
     }
   }
 
@@ -64,6 +65,7 @@ const LoginFormModal = ({ setShowLoginModal, loginUser, createAccount }: LoginFo
           currentIndex++
           return { index: currentIndex, message: issue.message }
         })
+        setShowSpinner(false)
         setErrorMessageLastIndex(currentIndex)
         setErrorMessages(errorMessages.concat(errorsToAdd))
         return;
