@@ -26,9 +26,16 @@ const LoginFormModal = ({ setShowLoginModal, loginUser, createAccount }: LoginFo
   const [errorMessageLastIndex, setErrorMessageLastIndex] = useState(0);
 
   const handleOnClose = (event: any) => {
-    // Only close when background is clicked
+    // Only close when background or button is clicked
     if (event.target.id === 'container' || event.target.id === 'closebutton') {
       setShowLoginModal(false);
+    }
+  }
+
+  const handleBackToLogin = (event: any) => {
+    // Only close when background or button is clicked
+    if (event.target.id === 'backbutton') {
+      setShowPasswordResetForm(false)
     }
   }
 
@@ -38,7 +45,7 @@ const LoginFormModal = ({ setShowLoginModal, loginUser, createAccount }: LoginFo
 
   const handleSendPasswordResetEmail = async (event: any) => {
     event.preventDefault();
-    
+
     try {
       setShowSpinner(true)
       PasswordResetEmail.parse(emailAddress)
@@ -114,12 +121,20 @@ const LoginFormModal = ({ setShowLoginModal, loginUser, createAccount }: LoginFo
 
         <div className="bg-white max-w-md w-full space-y-8 p-10 rounded-md dark:bg-gray-700 dark:text-white">
           <div className="flex justify-between items-start rounded-t">
+            {showPasswordResetForm && <button id='backbutton' type="button" onClick={handleBackToLogin} className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="defaultModal">
+              <svg id='backbutton' xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                <path id='backbutton' strokeLinecap="round" strokeLinejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
+              </svg>
+              <span className="sr-only pointer-events-none">Back to login</span>
+            </button>}
             <button id='closebutton' type="button" onClick={handleOnClose} className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="defaultModal">
-              <svg aria-hidden="true" className="w-5 h-5 pointer-events-none" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"></path></svg>
+              <svg id='closebutton' xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                <path id='closebutton' strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
               <span className="sr-only pointer-events-none">Close modal</span>
             </button>
           </div>
-          <div style={{marginTop: "0"}}>
+          <div style={{ marginTop: "0" }}>
             <img
               className="mx-auto h-24 w-auto"
               src={logo}
@@ -127,7 +142,7 @@ const LoginFormModal = ({ setShowLoginModal, loginUser, createAccount }: LoginFo
             />
             <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white">{showPasswordResetForm ? 'Please enter your email address' : 'Sign in to your account'}</h2>
           </div>
-          {showSpinner ? <div className="inline-flex justify-center w-full"><LoadingSpinner/></div> :
+          {showSpinner ? <div className="inline-flex justify-center w-full"><LoadingSpinner /></div> :
             <form className="mt-8 space-y-6" action="#" method="POST">
               {errorMessages ? renderErrorMessages(errorMessages) : null}
               <input type="hidden" name="remember" defaultValue="true" />
@@ -196,7 +211,7 @@ const LoginFormModal = ({ setShowLoginModal, loginUser, createAccount }: LoginFo
                   </span>
                   {showPasswordResetForm ? 'Send reset email' : 'Sign in'}
                 </button> :
-                <div className='text-center'><b>{message}</b></div>}
+                  <div className='text-center'><b>{message}</b></div>}
               </div>
               <div className='text-center'>Don't have an account yet? <button className='underline' onClick={() => createAccount()}>Create one!</button></div>
             </form>}
