@@ -6,7 +6,6 @@ interface SearchBarProps {
 
 const SearchBar = ({search, setSearchTerm, searchTerm}: SearchBarProps) => {
     
-
     const onKeypressed = (event: any) => {
         if (event.key === 'Enter') {
             event.preventDefault();

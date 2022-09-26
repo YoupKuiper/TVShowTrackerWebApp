@@ -13,7 +13,13 @@ export const TVShowObject = z.object({
     overview: z.string(),
     backdrop_path: z.string(),
     vote_average: z.number(),
-    vote_count: z.number()
+    vote_count: z.number(),
+    network: z.object({
+        logo_path: z.string(),
+        name: z.string(),
+        id: z.number(),
+        origin_country: z.string()
+    }).optional()
 })
 
 export const UserObject = z.object({
