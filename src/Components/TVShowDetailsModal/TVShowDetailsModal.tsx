@@ -47,8 +47,8 @@ export const TVShowsDetailsModal = ({ tvShow, setTVShow, darkMode }: showTVShowD
     return (
         <div id='container' onClick={handleOnClose} className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm
         flex justify-center items-center">
-            <div className="bg-white relative max-w-3xl w-full h-full sm:h-auto space-y-8 p-10 sm:rounded-md overflow-auto dark:bg-gray-700 dark:text-white">
-                <div className="justify-between items-start rounded-t border-b dark:border-gray-600">
+            <div className="bg-white grid max-w-3xl w-full h-full sm:h-auto space-y-8 p-8 sm:rounded-md overflow-auto dark:bg-gray-700 dark:text-white">
+                <div className="h-fit rounded-t border-b dark:border-gray-600">
                     <h3 className="text-xl font-semibold text-gray-900 dark:text-white inline-block">
                         {tvShow.name}
                     </h3>
@@ -58,7 +58,7 @@ export const TVShowsDetailsModal = ({ tvShow, setTVShow, darkMode }: showTVShowD
                         </svg>
                         <span className="sr-only pointer-events-none">Close modal</span>
                     </button>
-                    <div className="block">
+                    <div className="block pb-2">
                         <div className="inline-block">
                             {renderStars(tvShow.vote_average)}
                         </div>
@@ -69,8 +69,13 @@ export const TVShowsDetailsModal = ({ tvShow, setTVShow, darkMode }: showTVShowD
 
                 </div>
 
-                <div className='h-[360px] w-[240px] relative'>
-                    <img className='w-full h-full' src={tvShow.poster_path ? IMAGES_BASE_URL + IMAGE_DEFAULT_SIZE + tvShow.poster_path : "https://via.placeholder.com/400"} alt={tvShow.name} />
+                <div className='w-full h-full'>
+                    <div className="min-h-[360px] min-w-[240px] w-6/12 float-left pr-4 flex-none">
+                        <img className='' src={tvShow.poster_path ? IMAGES_BASE_URL + IMAGE_DEFAULT_SIZE + tvShow.poster_path : "https://via.placeholder.com/400"} alt={tvShow.name} />
+                    </div>
+                    <div className="w-6/12 flex-none float-left">
+                        <img className="" src={tvShow.network ? IMAGES_BASE_URL + IMAGE_DEFAULT_SIZE + tvShow.network.logo_path : ""} alt={tvShow.name}  width={40} />
+                    </div>
                 </div>
                 <div>
                     <h1 className='font-bold'>Overview</h1>
