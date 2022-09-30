@@ -1,6 +1,8 @@
-import React from "react"
+import axios from "axios";
+import React, { useEffect, useState } from "react"
 import { DEFAULT_TV_SHOW, IMAGES_BASE_URL, IMAGE_DEFAULT_SIZE } from "../../constants";
 import { TVShow } from "../../validators";
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 
 interface showTVShowDetailsModalProps {
     tvShow: TVShow
@@ -9,6 +11,41 @@ interface showTVShowDetailsModalProps {
 }
 
 export const TVShowsDetailsModal = ({ tvShow, setTVShow, darkMode }: showTVShowDetailsModalProps) => {
+    const [showSpinner, setShowSpinner] = useState(false)
+
+    const appendDetailsToShow = (tvShow: TVShow, tvShowDetails: any) => {
+        try {
+            const tvShowsWithDetails: TVShow = { ...tvShow, details: tvShowDetails[0] }
+            setTVShow(tvShowsWithDetails)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const getTVShowDetails = async () => {
+        const { data: details } = await axios.post<any>(
+            `${process.env.REACT_APP_API_BASE_URL}/SearchTVShows`,
+            { getDetails: true, tvShowsIds: [tvShow.id] }
+        );
+
+        appendDetailsToShow(tvShow, details)
+    }
+
+    useEffect(() => {
+        try {
+            setShowSpinner(true)
+            const fetchTVShowDetails = async () => {
+                await getTVShowDetails(); 
+                setShowSpinner(false)
+            }
+            fetchTVShowDetails();
+        } catch (error) {
+            console.log(error)
+            setShowSpinner(false)
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
 
     const handleOnClose = (event: any) => {
         // Only close when background is clicked
@@ -24,14 +61,14 @@ export const TVShowsDetailsModal = ({ tvShow, setTVShow, darkMode }: showTVShowD
         for (let i = 0; i < 5; i++) {
             if (i < votesRounded) {
                 elements.push(
-                    <div className="inline-block mr-1 align-middle">
+                    <div key={i} className="inline-block mr-1 align-middle">
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M20 7.91677H12.4167L10 0.416763L7.58333 7.91677H0L6.18335 12.3168L3.81668 19.5834L10 15.0834L16.1834 19.5834L13.8167 12.3168L20 7.91677Z" fill="#FFCB00"></path>
                         </svg>
                     </div>)
             } else {
                 elements.push(
-                    <div className={darkMode ? "inline-block text-gray-200 align-middle" : 'inline-block text-gray-500 align-middle'}>
+                    <div key={i} className={darkMode ? "inline-block text-gray-200 align-middle" : 'inline-block text-gray-500 align-middle'}>
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M20 7.91677H12.4167L10 0.416763L7.58333 7.91677H0L6.18335 12.3168L3.81668 19.5834L10 15.0834L16.1834 19.5834L13.8167 12.3168L20 7.91677Z" fill="currentColor"></path>
                         </svg>
@@ -74,7 +111,14 @@ export const TVShowsDetailsModal = ({ tvShow, setTVShow, darkMode }: showTVShowD
                         <img className='' src={tvShow.poster_path ? IMAGES_BASE_URL + IMAGE_DEFAULT_SIZE + tvShow.poster_path : "https://via.placeholder.com/400"} alt={tvShow.name} />
                     </div>
                     <div className="w-6/12 flex-none float-left">
-                        <img className="" src={tvShow.network ? IMAGES_BASE_URL + IMAGE_DEFAULT_SIZE + tvShow.network.logo_path : ""} alt={tvShow.name}  width={40} />
+                        {showSpinner && <LoadingSpinner/>}
+                        {tvShow.details && <div>
+                            <p>Network: {<img className="inline" src={tvShow.details.networks ? IMAGES_BASE_URL + IMAGE_DEFAULT_SIZE + tvShow.details.networks[0].logo_path : ""} alt={tvShow.name} width={40} />}</p>
+                            <p>Total Episodes: {tvShow.details.number_of_episodes ? tvShow.details.number_of_episodes : ''}</p>
+                            <p>Seasons: {tvShow.details.number_of_seasons ? tvShow.details.number_of_seasons : ''}</p>
+                            <p>Episode duration: {tvShow.details.episode_run_time.length ? tvShow.details.episode_run_time[0].toString() + ' minutes' : 'Unknown'}</p>
+                            <p>Next episode:  {tvShow.details.next_episode_to_air ? tvShow.details.next_episode_to_air.air_date : 'Unknown'}</p>
+                        </div>}
                     </div>
                 </div>
                 <div>

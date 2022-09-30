@@ -92,26 +92,6 @@ const App = () => {
     }
   }
 
-  const appendDetailsToShows = (tvShows: TVShow[], tvShowsDetails: any[]) => {
-    try {
-      const tvShowsWithDetails: TVShow[] = [] 
-
-      for (let i = 0; i < tvShows.length; i++) {
-        const tvShow = tvShows[i];
-        for (let j = 0; j < tvShowsDetails.length; j++) {
-          const details = tvShowsDetails[j];
-          if(tvShow.id === details.id){
-            tvShowsWithDetails.push({...tvShow, network: details.networks[0]})
-          }
-        }
-        
-      }
-      console.log(tvShowsWithDetails)
-      setTvShows(tvShowsWithDetails)
-    } catch (error) {
-      console.log(error)
-    }
-  }
 
   const searchAllTVShows = async (title: string) => {
     const { data } = await axios.post<TVShow[]>(
@@ -120,15 +100,6 @@ const App = () => {
     );
     console.log('Response status is: ', data);
     setTvShows(data);
-
-    const allIds = data.map(tvShow => tvShow.id)
-
-    const { data: details } = await axios.post<any>(
-      `${TV_SHOW_TRACKER_API_BASE_URL}/SearchTVShows`,
-      { getDetails: true, tvShowsIds: allIds}
-    );
-    console.log('Response2 status is: ', details);
-    appendDetailsToShows(data, details)
   }
 
   const searchTrackedTVShows = async (title: string) => {
