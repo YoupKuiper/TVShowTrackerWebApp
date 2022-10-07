@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react"
 import { DEFAULT_TV_SHOW, IMAGES_BASE_URL, IMAGE_DEFAULT_SIZE } from "../../constants";
-import { TVShow } from "../../validators";
+import { SimpleTVShow, TVShow } from "../../validators";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 
 interface showTVShowDetailsModalProps {
@@ -29,6 +29,11 @@ export const TVShowsDetailsModal = ({ tvShow, setTVShow, darkMode }: showTVShowD
         );
 
         appendDetailsToShow(tvShow, details)
+    }
+
+    const renderSimilarShows = (similarShows: SimpleTVShow[]) => {
+        const firstSimilarShows = similarShows.slice(0, 5)
+        return firstSimilarShows.map((show) => (<div key={show.id} className='italic' >{show.name}</div>))
     }
 
     useEffect(() => {
@@ -113,11 +118,17 @@ export const TVShowsDetailsModal = ({ tvShow, setTVShow, darkMode }: showTVShowD
                     <div className="w-6/12 flex-none float-left">
                         {showSpinner && <LoadingSpinner/>}
                         {tvShow.details && <div>
+                        <div>
                             <p>Network: {<img className="inline" src={tvShow.details.networks ? IMAGES_BASE_URL + IMAGE_DEFAULT_SIZE + tvShow.details.networks[0].logo_path : ""} alt={tvShow.name} width={40} />}</p>
                             <p>Total Episodes: {tvShow.details.number_of_episodes ? tvShow.details.number_of_episodes : ''}</p>
                             <p>Seasons: {tvShow.details.number_of_seasons ? tvShow.details.number_of_seasons : ''}</p>
                             <p>Episode duration: {tvShow.details.episode_run_time.length ? tvShow.details.episode_run_time[0].toString() + ' minutes' : 'Unknown'}</p>
                             <p>Next episode:  {tvShow.details.next_episode_to_air ? tvShow.details.next_episode_to_air.air_date : 'Unknown'}</p>
+                        </div>
+                        <div className="pt-2">
+                            <p>Similar shows: </p>
+                            {renderSimilarShows(tvShow.details.similar.results)}
+                        </div>
                         </div>}
                     </div>
                 </div>
