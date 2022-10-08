@@ -18,8 +18,8 @@ export const TVShowsDetailsModal = ({ tvShow, setTVShow, darkMode }: showTVShowD
 
     const getTVShowDetails = async () => {
         try {
-            console.log(params.tvShowId)
             let id: number = tvShow.id
+            // Maybe can implement routing here
             if (tvShow.id === DEFAULT_TV_SHOW.id) {
                 id = parseInt(params.tvShowId!)
             }
@@ -35,7 +35,6 @@ export const TVShowsDetailsModal = ({ tvShow, setTVShow, darkMode }: showTVShowD
     }
 
     useEffect(() => {
-        console.log('useeffect called')
         try {
             setShowSpinner(true)
             const fetchTVShowDetails = async () => {
