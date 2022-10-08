@@ -360,6 +360,7 @@ const App = () => {
         <Route path="/resetpassword" element={<ResetPasswordModal />} >
           <Route path=":emailAddress/:token" element={<ResetPasswordModal />} />
         </Route>
+        <Route path="/:tvShowId" element={<TVShowsDetailsModal tvShow={tvShowDetailsToShow} setTVShow={setTVShowDetailsToShow} darkMode={darkMode} />} />
         <Route
           path="*"
           element={

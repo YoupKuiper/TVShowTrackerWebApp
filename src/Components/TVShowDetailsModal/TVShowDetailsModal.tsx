@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react"
 import { DEFAULT_TV_SHOW, IMAGES_BASE_URL, IMAGE_DEFAULT_SIZE } from "../../constants";
 import { SimpleTVShow, TVShow } from "../../validators";
+import Carousel from "../Carousel/Carousel";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 
 interface showTVShowDetailsModalProps {
@@ -31,16 +32,11 @@ export const TVShowsDetailsModal = ({ tvShow, setTVShow, darkMode }: showTVShowD
         appendDetailsToShow(tvShow, details)
     }
 
-    const renderSimilarShows = (similarShows: SimpleTVShow[]) => {
-        const firstSimilarShows = similarShows.slice(0, 5)
-        return firstSimilarShows.map((show) => (<div key={show.id} className='italic' >{show.name}</div>))
-    }
-
     useEffect(() => {
         try {
             setShowSpinner(true)
             const fetchTVShowDetails = async () => {
-                await getTVShowDetails(); 
+                await getTVShowDetails();
                 setShowSpinner(false)
             }
             fetchTVShowDetails();
@@ -88,7 +84,7 @@ export const TVShowsDetailsModal = ({ tvShow, setTVShow, darkMode }: showTVShowD
 
     return (
         <div id='container' onClick={handleOnClose} className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm
-        flex justify-center items-center">
+        flex justify-center overflow-y-scroll">
             <div className="bg-white grid max-w-3xl w-full h-full sm:h-auto space-y-8 p-8 sm:rounded-md overflow-auto dark:bg-gray-700 dark:text-white">
                 <div className="h-fit rounded-t border-b dark:border-gray-600">
                     <h3 className="text-xl font-semibold text-gray-900 dark:text-white inline-block">
@@ -116,19 +112,15 @@ export const TVShowsDetailsModal = ({ tvShow, setTVShow, darkMode }: showTVShowD
                         <img className='' src={tvShow.poster_path ? IMAGES_BASE_URL + IMAGE_DEFAULT_SIZE + tvShow.poster_path : "https://via.placeholder.com/400"} alt={tvShow.name} />
                     </div>
                     <div className="w-6/12 flex-none float-left">
-                        {showSpinner && <LoadingSpinner/>}
+                        {showSpinner && <LoadingSpinner />}
                         {tvShow.details && <div>
-                        <div>
-                            <p>Network: {<img className="inline" src={tvShow.details.networks ? IMAGES_BASE_URL + IMAGE_DEFAULT_SIZE + tvShow.details.networks[0].logo_path : ""} alt={tvShow.name} width={40} />}</p>
-                            <p>Total Episodes: {tvShow.details.number_of_episodes ? tvShow.details.number_of_episodes : ''}</p>
-                            <p>Seasons: {tvShow.details.number_of_seasons ? tvShow.details.number_of_seasons : ''}</p>
-                            <p>Episode duration: {tvShow.details.episode_run_time.length ? tvShow.details.episode_run_time[0].toString() + ' minutes' : 'Unknown'}</p>
-                            <p>Next episode:  {tvShow.details.next_episode_to_air ? tvShow.details.next_episode_to_air.air_date : 'Unknown'}</p>
-                        </div>
-                        <div className="pt-2">
-                            <p>Similar shows: </p>
-                            {renderSimilarShows(tvShow.details.similar.results)}
-                        </div>
+                            <div>
+                                <p>Network: {<img className="inline" src={tvShow.details.networks ? IMAGES_BASE_URL + IMAGE_DEFAULT_SIZE + tvShow.details.networks[0].logo_path : ""} alt={tvShow.name} width={40} />}</p>
+                                <p>Total Episodes: {tvShow.details.number_of_episodes ? tvShow.details.number_of_episodes : ''}</p>
+                                <p>Seasons: {tvShow.details.number_of_seasons ? tvShow.details.number_of_seasons : ''}</p>
+                                <p>Episode duration: {tvShow.details.episode_run_time.length ? tvShow.details.episode_run_time[0].toString() + ' minutes' : 'Unknown'}</p>
+                                <p>Next episode:  {tvShow.details.next_episode_to_air ? tvShow.details.next_episode_to_air.air_date : 'Unknown'}</p>
+                            </div>
                         </div>}
                     </div>
                 </div>
@@ -136,6 +128,11 @@ export const TVShowsDetailsModal = ({ tvShow, setTVShow, darkMode }: showTVShowD
                     <h1 className='font-bold'>Overview</h1>
                     <div className="pt-4">{tvShow.overview}</div>
                 </div>
+                {tvShow.details ? <div>
+                    <p>Similar shows: </p>
+                    <Carousel tvShows={tvShow.details.similar.results} />
+                </div> : 
+                <LoadingSpinner /> }
             </div>
         </div>
     )
