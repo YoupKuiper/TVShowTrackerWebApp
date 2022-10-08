@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from "react";
 import { decodeToken } from "react-jwt";
-import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate, useParams } from "react-router-dom";
 import CreateAccountFormModal from './Components/CreateAccountFormModal/CreateAccountFormModal';
 import LoginFormModal from './Components/LoginFormModal/LoginFormModal';
 import { NavBar } from './Components/NavBar/NavBar';
@@ -44,10 +44,10 @@ const App = () => {
   const [darkMode, setDarkMode] = useState(getDarkModeStateFromLocalStorage)
   const [searchTerm, setSearchTerm] = useState('');
   const TV_SHOW_TRACKER_API_BASE_URL = process.env.REACT_APP_API_BASE_URL
-  const showTVShowDetailsModal = tvShowDetailsToShow && tvShowDetailsToShow.id !== DEFAULT_TV_SHOW.id
   const isLoggedIn = !!loggedInUser.emailAddress
   const location = useLocation();
   const navigate = useNavigate();
+  const showTVShowDetailsModal = tvShowDetailsToShow && tvShowDetailsToShow.id !== DEFAULT_TV_SHOW.id
 
   useEffect(() => {
     try {
@@ -270,6 +270,8 @@ const App = () => {
   }
 
   const Home = () => {
+    const id = useParams();
+    console.log(id)
     return (
       <>
         <div className={darkMode ? 'dark bg-gray-800 w-full h-screen text-white' : ''}>
@@ -353,6 +355,9 @@ const App = () => {
     <>
       <Routes>
         <Route path="/" element={Home()} />
+        {/* <Route path="/details" element={Home()}>
+          <Route path=":tvShowId" element={Home()} />
+        </Route> */}
         <Route path="tracked" element={MyTrackedList()} />
         <Route path="/unsubscribe" element={<UnsubscribeEmailModal />} >
           <Route path=":emailAddress/:token" element={<UnsubscribeEmailModal />} />
@@ -360,7 +365,6 @@ const App = () => {
         <Route path="/resetpassword" element={<ResetPasswordModal />} >
           <Route path=":emailAddress/:token" element={<ResetPasswordModal />} />
         </Route>
-        <Route path="/:tvShowId" element={<TVShowsDetailsModal tvShow={tvShowDetailsToShow} setTVShow={setTVShowDetailsToShow} darkMode={darkMode} />} />
         <Route
           path="*"
           element={

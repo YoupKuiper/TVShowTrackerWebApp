@@ -5,10 +5,11 @@ import { TVShow } from '../../validators';
 
 interface CarouselProps {
     tvShows: TVShow[]
+    setTVShow: (tvShow: TVShow) => any;
   }
   
 
-const Carousel = ({ tvShows }: CarouselProps) => {
+const Carousel = ({ tvShows, setTVShow }: CarouselProps) => {
   const maxScrollWidth = useRef(0);
   const [currentIndex, setCurrentIndex] = useState(0);
   const carousel: any = useRef(null);
@@ -26,6 +27,10 @@ const Carousel = ({ tvShows }: CarouselProps) => {
     ) {
       setCurrentIndex((prevState) => prevState + 1);
     }
+  };
+
+  const handleClick = (tvShow: TVShow) => {
+    setTVShow(tvShow)
   };
 
   const isDisabled = (direction: string) => {
@@ -112,8 +117,8 @@ const Carousel = ({ tvShows }: CarouselProps) => {
                 key={index}
                 className="carousel-item text-center relative h-72 w-48 snap-start"
               >
-                <a
-                  href={'/' + tvShow.id.toString()}
+                <button
+                  onClick={() => handleClick(tvShow)}
                   className="h-full w-full aspect-square block bg-origin-padding bg-left-top bg-cover bg-no-repeat z-0"
                   style={{ backgroundImage: `url(${IMAGES_BASE_URL + IMAGE_DEFAULT_SIZE + tvShow.poster_path || 'https://via.placeholder.com/400'})` }}
                 >
@@ -122,15 +127,15 @@ const Carousel = ({ tvShows }: CarouselProps) => {
                     alt={tvShow.name}
                     className="w-full aspect-square hidden"
                   />
-                </a>
-                <a
-                  href={'/' + tvShow.id.toString()}
+                </button>
+                <button
+                  onClick={() => handleClick(tvShow)}
                   className="h-full w-full aspect-square block absolute top-0 left-0 transition-opacity duration-300 opacity-0 hover:opacity-100 bg-blue-800/75 z-10"
                 >
                   <h3 className="text-white py-6 px-3 mx-auto text-xl">
                     {tvShow.name}
                   </h3>
-                </a>
+                </button>
               </div>
             );
           })}

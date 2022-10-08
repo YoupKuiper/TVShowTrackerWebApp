@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react"
+import { useParams } from "react-router-dom";
 import { DEFAULT_TV_SHOW, IMAGES_BASE_URL, IMAGE_DEFAULT_SIZE } from "../../constants";
 import { TVShow } from "../../validators";
 import Carousel from "../Carousel/Carousel";
@@ -12,27 +13,29 @@ interface showTVShowDetailsModalProps {
 }
 
 export const TVShowsDetailsModal = ({ tvShow, setTVShow, darkMode }: showTVShowDetailsModalProps) => {
+    let params = useParams();
     const [showSpinner, setShowSpinner] = useState(false)
 
-    const appendDetailsToShow = (tvShow: TVShow, tvShowDetails: any) => {
+    const getTVShowDetails = async () => {
         try {
-            const tvShowsWithDetails: TVShow = { ...tvShow, details: tvShowDetails[0] }
-            setTVShow(tvShowsWithDetails)
+            console.log(params.tvShowId)
+            let id: number = tvShow.id
+            if (tvShow.id === DEFAULT_TV_SHOW.id) {
+                id = parseInt(params.tvShowId!)
+            }
+            const { data } = await axios.post<any>(
+                `${process.env.REACT_APP_API_BASE_URL}/SearchTVShows`,
+                { getDetails: true, tvShowsIds: [id] }
+            );
+
+            setTVShow(data[0])
         } catch (error) {
-            console.log(error)
+            console.log('no tv show found for this id')
         }
     }
 
-    const getTVShowDetails = async () => {
-        const { data: details } = await axios.post<any>(
-            `${process.env.REACT_APP_API_BASE_URL}/SearchTVShows`,
-            { getDetails: true, tvShowsIds: [tvShow.id] }
-        );
-
-        appendDetailsToShow(tvShow, details)
-    }
-
     useEffect(() => {
+        console.log('useeffect called')
         try {
             setShowSpinner(true)
             const fetchTVShowDetails = async () => {
@@ -45,7 +48,7 @@ export const TVShowsDetailsModal = ({ tvShow, setTVShow, darkMode }: showTVShowD
             setShowSpinner(false)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [tvShow.id]);
 
 
     const handleOnClose = (event: any) => {
@@ -113,13 +116,13 @@ export const TVShowsDetailsModal = ({ tvShow, setTVShow, darkMode }: showTVShowD
                     </div>
                     <div className="w-6/12 flex-none float-left">
                         {showSpinner && <LoadingSpinner />}
-                        {tvShow.details && <div>
+                        {tvShow.number_of_episodes && <div>
                             <div>
-                                <p>Network: {<img className="inline" src={tvShow.details.networks ? IMAGES_BASE_URL + IMAGE_DEFAULT_SIZE + tvShow.details.networks[0].logo_path : ""} alt={tvShow.name} width={40} />}</p>
-                                <p>Total Episodes: {tvShow.details.number_of_episodes ? tvShow.details.number_of_episodes : ''}</p>
-                                <p>Seasons: {tvShow.details.number_of_seasons ? tvShow.details.number_of_seasons : ''}</p>
-                                <p>Episode duration: {tvShow.details.episode_run_time.length ? tvShow.details.episode_run_time[0].toString() + ' minutes' : 'Unknown'}</p>
-                                <p>Next episode:  {tvShow.details.next_episode_to_air ? tvShow.details.next_episode_to_air.air_date : 'Unknown'}</p>
+                                <p>Network: {<img className="inline" src={tvShow.networks ? IMAGES_BASE_URL + IMAGE_DEFAULT_SIZE + tvShow.networks[0].logo_path : ""} alt={tvShow.name} width={40} />}</p>
+                                <p>Total Episodes: {tvShow.number_of_episodes ? tvShow.number_of_episodes : ''}</p>
+                                <p>Seasons: {tvShow.number_of_seasons ? tvShow.number_of_seasons : ''}</p>
+                                <p>Episode duration: {tvShow.episode_run_time && tvShow.episode_run_time.length ? tvShow.episode_run_time[0].toString() + ' minutes' : 'Unknown'}</p>
+                                <p>Next episode:  {tvShow.next_episode_to_air ? tvShow.next_episode_to_air.air_date : 'Unknown'}</p>
                             </div>
                         </div>}
                     </div>
@@ -128,11 +131,11 @@ export const TVShowsDetailsModal = ({ tvShow, setTVShow, darkMode }: showTVShowD
                     <h1 className='font-bold'>Overview</h1>
                     <div className="pt-4">{tvShow.overview}</div>
                 </div>
-                {tvShow.details ? <div>
+                {tvShow.similar ? <div>
                     <p>Similar shows: </p>
-                    <Carousel tvShows={tvShow.details.similar.results} />
-                </div> : 
-                <LoadingSpinner /> }
+                    <Carousel tvShows={tvShow.similar.results} setTVShow={setTVShow}/>
+                </div> :
+                    <LoadingSpinner />}
             </div>
         </div>
     )
