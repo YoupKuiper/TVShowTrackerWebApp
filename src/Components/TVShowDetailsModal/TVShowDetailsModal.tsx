@@ -130,9 +130,9 @@ export const TVShowsDetailsModal = ({ tvShow, setTVShow, darkMode }: showTVShowD
                     <h1 className='font-bold'>Overview</h1>
                     <div className="pt-4">{tvShow.overview}</div>
                 </div>
-                {tvShow.similar ? <div>
-                    <p>Similar shows: </p>
-                    <Carousel tvShows={tvShow.similar.results} setTVShow={setTVShow}/>
+                {tvShow.recommendations ? <div>
+                    <p>Recommended shows: </p>
+                    <Carousel tvShows={tvShow.recommendations.results} setTVShow={setTVShow}/>
                 </div> :
                     <LoadingSpinner />}
             </div>

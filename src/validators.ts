@@ -125,7 +125,7 @@ export const TVShowDetailsObject = z.object({
     status: z.string().optional(),
     tagline: z.string().optional(),
     type: z.string().optional(),
-    similar: z.object({
+    recommendations: z.object({
         page: z.number(),
         results: z.array(TVShowObject)
     }).optional()
