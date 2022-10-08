@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react"
 import { DEFAULT_TV_SHOW, IMAGES_BASE_URL, IMAGE_DEFAULT_SIZE } from "../../constants";
-import { SimpleTVShow, TVShow } from "../../validators";
+import { TVShow } from "../../validators";
 import Carousel from "../Carousel/Carousel";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 
