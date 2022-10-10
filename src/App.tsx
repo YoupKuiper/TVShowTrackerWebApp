@@ -301,7 +301,7 @@ const App = () => {
             handleButtonClick={addTrackedTVShow}
             isLoggedIn={isLoggedIn}
             getPopular={getPopularTVShows} />
-          {showTVShowDetailsModal && <TVShowsDetailsModal tvShow={tvShowDetailsToShow} setTVShow={setTVShowDetailsToShow} darkMode={darkMode} />}
+          {showTVShowDetailsModal && <TVShowsDetailsModal tvShow={tvShowDetailsToShow} setTVShow={setTVShowDetailsToShow} darkMode={darkMode} trackedTVShows={trackedTVShows} updateTrackedTvShows={updateTrackedTvShows} />}
           {showLoginModal && <LoginFormModal setShowLoginModal={setShowLoginModal} loginUser={loginUser} createAccount={openCreateAccountModalFromLogin} />}
           {showCreateAccountModal && <CreateAccountFormModal setShowCreateAccountModal={setShowCreateAccountModal} createUserAccount={createUserAccount} />}
           <div className='border-t dark:border-gray-600'>
@@ -341,7 +341,7 @@ const App = () => {
           handleButtonClick={removeTrackedTVShow}
           isLoggedIn={isLoggedIn}
           getPopular={getPopularTVShows} />
-        {showTVShowDetailsModal && <TVShowsDetailsModal tvShow={tvShowDetailsToShow} setTVShow={setTVShowDetailsToShow} darkMode={darkMode} />}
+        {showTVShowDetailsModal && <TVShowsDetailsModal tvShow={tvShowDetailsToShow} setTVShow={setTVShowDetailsToShow} darkMode={darkMode} trackedTVShows={trackedTVShows} updateTrackedTvShows={updateTrackedTvShows}/>}
         {showLoginModal && <LoginFormModal setShowLoginModal={setShowLoginModal} loginUser={loginUser} createAccount={openCreateAccountModalFromLogin} />}
         {showCreateAccountModal && <CreateAccountFormModal setShowCreateAccountModal={setShowCreateAccountModal} createUserAccount={createUserAccount} />}
         <div className='border-t dark:border-gray-600'>

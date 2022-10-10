@@ -13,10 +13,11 @@ interface TvShowsListViewProps {
     getPopular: () => any;
 }
 
-const isAlreadyInTrackedList = (tvShow: TVShow, trackedTVShows: TVShow[]) => {
+export const isAlreadyInTrackedList = (tvShow: TVShow, trackedTVShows: TVShow[]) => {
     if(trackedTVShows){
         return trackedTVShows.some((trackedShow) => trackedShow.id === tvShow.id)
     }
+    return false
 }
 
 const shouldButtonBeShown = (isLoggedIn: boolean, isTrackedList: boolean, trackedTVShows: TVShow[], tvShow: TVShow): boolean => {

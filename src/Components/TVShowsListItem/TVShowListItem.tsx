@@ -22,13 +22,21 @@ export const TVShowListItem = ({ tvShow, isTrackedListItem, shouldShowButton, se
     setShowSpinner(false)
   }
 
-  const buttonClass = isTrackedListItem ? `h-[50px] w-[50px] bg-red-500 hover:opacity-100 text-white font-bold rounded-md absolute top-0 right-0 text-center opacity-70` :
-    `h-[50px] w-[50px] bg-blue-500 hover:opacity-100 text-white font-bold rounded-md absolute top-0 right-0 text-center opacity-70`;
+  const buttonClass = isTrackedListItem ? `h-[50px] w-[50px] bg-red-500 hover:opacity-100 text-white font-bold rounded-md absolute top-0 right-0 text-center opacity-70 z-11` :
+    `h-[50px] w-[50px] bg-blue-500 hover:opacity-100 text-white font-bold rounded-md absolute top-0 right-0 text-center opacity-70 z-11`;
 
   return (
     <div key={tvShow.id}>
       <div className='h-[360px] w-[240px] hover:scale-105 hover:duration-200 relative'>
-        <img className='w-full h-full' onClick={() => setShowDetails(tvShow)} src={tvShow.poster_path ? IMAGES_BASE_URL + IMAGE_DEFAULT_SIZE + tvShow.poster_path : "https://via.placeholder.com/400"} alt={tvShow.name} />
+        <button
+          onClick={() => setShowDetails(tvShow)}
+          className="h-full w-full aspect-square block absolute top-0 left-0 transition-opacity duration-300 opacity-0 hover:opacity-100 bg-blue-800/75 z-2"
+        >
+          <h3 className="text-white py-6 px-3 mx-auto text-xl">
+            {tvShow.name}
+          </h3>
+        </button>
+        <img className='w-full h-full' src={tvShow.poster_path ? IMAGES_BASE_URL + IMAGE_DEFAULT_SIZE + tvShow.poster_path : "https://via.placeholder.com/400"} alt={tvShow.name} />
         {shouldShowButton && !showSpinner && <button className={buttonClass} onClick={() => buttonClicked(tvShow)} >{isTrackedListItem ? <XIcon /> : <PlusIcon />}</button>}
         {showSpinner && <button disabled type="button" className={buttonClass}>
           <svg role="status" className="inline w-8 h-8 text-white animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
