@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from "react";
 import { decodeToken } from "react-jwt";
-import { Route, Routes, useLocation, useNavigate, useParams } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import CreateAccountFormModal from './Components/CreateAccountFormModal/CreateAccountFormModal';
 import LoginFormModal from './Components/LoginFormModal/LoginFormModal';
 import { NavBar } from './Components/NavBar/NavBar';
@@ -269,54 +269,11 @@ const App = () => {
     setShowCreateAccountModal(true)
   }
 
-  const Home = () => {
-    const id = useParams();
-    console.log(id)
-    return (
-      <>
-        <div className={darkMode ? 'dark bg-gray-800 w-full h-screen text-white' : ''}>
-          <NavBar
-            currentPage={PAGE_NAME_SEARCH}
-            darkMode={darkMode}
-            isLoggedIn={isLoggedIn}
-            emailAddress={loggedInUser.emailAddress}
-            wantsNotifications={wantsEmailNotifications}
-            setWantsNotifications={updateWantsNotifications}
-            setShowLoginModal={setShowLoginModal}
-            setShowCreateAccountModal={setShowCreateAccountModal}
-            logout={logoutUser}
-            setDarkMode={setDarkMode} />
-          {!isLoggedIn && <div className='container mx-auto text-center py-5'>
-            <div className='text-4xl pb-5'>Welcome to TVTracker</div>
-            <div className='text-lg'>Add shows to your list and get email notifications when episodes air!</div>
-            <div className='text-lg'><button onClick={() => setShowCreateAccountModal(true)} className='underline'>Create an account</button> or <button onClick={() => setShowLoginModal(true)} className='underline'>Login</button> to get started</div>
-          </div>}
-          <SearchBar search={searchTvShow} setSearchTerm={setSearchTerm} searchTerm={searchTerm} />
-          <TVShowsListView
-            isTrackedList={false}
-            tvShows={tvShows}
-            trackedTVShows={trackedTVShows}
-            showSpinner={showSpinner}
-            setShowDetails={setTVShowDetailsToShow}
-            handleButtonClick={addTrackedTVShow}
-            isLoggedIn={isLoggedIn}
-            getPopular={getPopularTVShows} />
-          {showTVShowDetailsModal && <TVShowsDetailsModal tvShow={tvShowDetailsToShow} setTVShow={setTVShowDetailsToShow} darkMode={darkMode} trackedTVShows={trackedTVShows} updateTrackedTvShows={updateTrackedTvShows} />}
-          {showLoginModal && <LoginFormModal setShowLoginModal={setShowLoginModal} loginUser={loginUser} createAccount={openCreateAccountModalFromLogin} />}
-          {showCreateAccountModal && <CreateAccountFormModal setShowCreateAccountModal={setShowCreateAccountModal} createUserAccount={createUserAccount} />}
-          <div className='border-t dark:border-gray-600'>
-            <p className='text-center py-3 text-xs'> Made by Youp Kuiper</p>
-          </div>
-        </div>
-      </>
-    );
-  }
-
-  const MyTrackedList = () => {
+  const ListView = (isTrackedList: boolean) => {
     return (
       <div className={darkMode ? 'dark bg-gray-800 w-full h-screen text-white' : ''}>
         <NavBar
-          currentPage={PAGE_NAME_TRACKED_TV_SHOWS}
+          currentPage={isTrackedList ? PAGE_NAME_TRACKED_TV_SHOWS : PAGE_NAME_SEARCH}
           darkMode={darkMode}
           isLoggedIn={isLoggedIn}
           emailAddress={loggedInUser.emailAddress}
@@ -333,7 +290,7 @@ const App = () => {
         </div>}
         <SearchBar search={searchTvShow} setSearchTerm={setSearchTerm} searchTerm={searchTerm} />
         <TVShowsListView
-          isTrackedList={true}
+          isTrackedList={isTrackedList}
           tvShows={tvShows}
           trackedTVShows={trackedTVShows}
           showSpinner={showSpinner}
@@ -350,15 +307,16 @@ const App = () => {
       </div>
     );
   }
+  
 
   return (
     <>
       <Routes>
-        <Route path="/" element={Home()} />
+        <Route path="/" element={ListView(false)} />
         {/* <Route path="/details" element={Home()}>
           <Route path=":tvShowId" element={Home()} />
         </Route> */}
-        <Route path="tracked" element={MyTrackedList()} />
+        <Route path="tracked" element={ListView(true)} />
         <Route path="/unsubscribe" element={<UnsubscribeEmailModal />} >
           <Route path=":emailAddress/:token" element={<UnsubscribeEmailModal />} />
         </Route>
