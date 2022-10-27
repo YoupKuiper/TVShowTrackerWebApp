@@ -11,6 +11,7 @@ import { TVShowsDetailsModal } from './Components/TVShowDetailsModal/TVShowDetai
 import TVShowsListView from './Components/TVShowsListView/TVShowsListView';
 import UnsubscribeEmailModal from './Components/UnsubscribeEmailModal/UnsubscribeEmailModal';
 import { DARK_MODE_KEY, DEFAULT_TOKEN, DEFAULT_TV_SHOW, DEFAULT_USER, JWT_TOKEN_KEY, PAGE_NAME_SEARCH, PAGE_NAME_TRACKED_TV_SHOWS, TRACKED_TV_SHOWS_KEY } from './constants';
+import { useStickyState } from './hooks';
 import { LoginResponse, TVShow, User, UserObject } from './validators';
 
 const getTrackedShowsFromLocalStorage = (): TVShow[] => {
@@ -34,7 +35,7 @@ const getDarkModeStateFromLocalStorage = () => {
 const App = () => {
 
   const [tvShows, setTvShows] = useState<TVShow[]>([]);
-  const [trackedTVShows, setTrackedTVShows] = useState<TVShow[]>(getTrackedShowsFromLocalStorage);
+  const [trackedTVShows, setTrackedTVShows] = useStickyState(getTrackedShowsFromLocalStorage, TRACKED_TV_SHOWS_KEY);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [wantsEmailNotifications, setWantsEmailNotifications] = useState(false);
   const [showCreateAccountModal, setShowCreateAccountModal] = useState(false);
