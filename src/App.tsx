@@ -295,7 +295,7 @@ const App = () => {
           trackedTVShows={trackedTVShows}
           showSpinner={showSpinner}
           setShowDetails={setTVShowDetailsToShow}
-          handleButtonClick={removeTrackedTVShow}
+          handleButtonClick={ isTrackedList ? removeTrackedTVShow : addTrackedTVShow}
           isLoggedIn={isLoggedIn}
           getPopular={getPopularTVShows} />
         {showTVShowDetailsModal && <TVShowsDetailsModal tvShow={tvShowDetailsToShow} setTVShow={setTVShowDetailsToShow} darkMode={darkMode} trackedTVShows={trackedTVShows} updateTrackedTvShows={updateTrackedTvShows}/>}
