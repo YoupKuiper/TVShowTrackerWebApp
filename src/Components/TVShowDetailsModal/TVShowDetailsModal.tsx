@@ -11,11 +11,10 @@ interface showTVShowDetailsModalProps {
     tvShow: TVShow
     setTVShow: (tvShow: TVShow) => any;
     updateTrackedTvShows: (tvShow: TVShow, shouldRemove: boolean) => any;
-    darkMode: boolean;
     trackedTVShows: TVShow[];
 }
 
-export const TVShowsDetailsModal = ({ tvShow, setTVShow, darkMode, trackedTVShows, updateTrackedTvShows }: showTVShowDetailsModalProps) => {
+export const TVShowsDetailsModal = ({ tvShow, setTVShow, trackedTVShows, updateTrackedTvShows }: showTVShowDetailsModalProps) => {
     let params = useParams();
     const [showSpinner, setShowSpinner] = useState(false)
     const [showButtonSpinner, setShowButtonSpinner] = useState(false)
@@ -86,7 +85,7 @@ export const TVShowsDetailsModal = ({ tvShow, setTVShow, darkMode, trackedTVShow
                     </div>)
             } else {
                 elements.push(
-                    <div key={i} className={darkMode ? "inline-block text-gray-200 align-middle" : 'inline-block text-gray-500 align-middle'}>
+                    <div key={i} className="inline-block dark:text-gray-200 text-gray-500  align-middle">
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M20 7.91677H12.4167L10 0.416763L7.58333 7.91677H0L6.18335 12.3168L3.81668 19.5834L10 15.0834L16.1834 19.5834L13.8167 12.3168L20 7.91677Z" fill="currentColor"></path>
                         </svg>
@@ -118,8 +117,8 @@ export const TVShowsDetailsModal = ({ tvShow, setTVShow, darkMode, trackedTVShow
                             {renderStars(tvShow.vote_average)}
                         </div>
                         <div className="text-sm inline-block pl-1">{tvShow.vote_average / 2}</div>
-                        <div className={darkMode ? "text-sm text-gray-300 inline-block" : "text-sm text-gray-500 inline-block"}>/5</div>
-                        <div className={darkMode ? "text-sm text-gray-300 inline-block pl-1" : "text-sm text-gray-500 inline-block pl-1"}>({formatter.format(tvShow.vote_count)} reviews)</div>
+                        <div className="text-sm dark:text-gray-300 text-gray-500 inline-block">/5</div>
+                        <div className="text-sm dark:text-gray-300 text-gray-500 inline-block pl-1">({formatter.format(tvShow.vote_count)} reviews)</div>
                     </div>
 
                 </div>

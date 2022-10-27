@@ -299,7 +299,7 @@ const App = () => {
           handleButtonClick={ isTrackedList ? removeTrackedTVShow : addTrackedTVShow}
           isLoggedIn={isLoggedIn}
           getPopular={getPopularTVShows} />
-        {showTVShowDetailsModal && <TVShowsDetailsModal tvShow={tvShowDetailsToShow} setTVShow={setTVShowDetailsToShow} darkMode={darkMode} trackedTVShows={trackedTVShows} updateTrackedTvShows={updateTrackedTvShows}/>}
+        {showTVShowDetailsModal && <TVShowsDetailsModal tvShow={tvShowDetailsToShow} setTVShow={setTVShowDetailsToShow} trackedTVShows={trackedTVShows} updateTrackedTvShows={updateTrackedTvShows}/>}
         {showLoginModal && <LoginFormModal setShowLoginModal={setShowLoginModal} loginUser={loginUser} createAccount={openCreateAccountModalFromLogin} />}
         {showCreateAccountModal && <CreateAccountFormModal setShowCreateAccountModal={setShowCreateAccountModal} createUserAccount={createUserAccount} />}
         <div className='border-t dark:border-gray-600'>
