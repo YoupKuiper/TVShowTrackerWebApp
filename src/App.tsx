@@ -36,13 +36,13 @@ const App = () => {
 
   const [tvShows, setTvShows] = useState<TVShow[]>([]);
   const [trackedTVShows, setTrackedTVShows] = useStickyState(getTrackedShowsFromLocalStorage, TRACKED_TV_SHOWS_KEY);
+  const [darkMode, setDarkMode] = useStickyState(getDarkModeStateFromLocalStorage, DARK_MODE_KEY)
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [wantsEmailNotifications, setWantsEmailNotifications] = useState(false);
   const [showCreateAccountModal, setShowCreateAccountModal] = useState(false);
   const [tvShowDetailsToShow, setTVShowDetailsToShow] = useState<TVShow>(DEFAULT_TV_SHOW);
   const [loggedInUser, setLoggedInUser] = useState<User>(DEFAULT_USER);
   const [showSpinner, setShowSpinner] = useState(false)
-  const [darkMode, setDarkMode] = useState(getDarkModeStateFromLocalStorage)
   const [searchTerm, setSearchTerm] = useState('');
   const TV_SHOW_TRACKER_API_BASE_URL = process.env.REACT_APP_API_BASE_URL
   const isLoggedIn = !!loggedInUser.emailAddress
@@ -71,10 +71,6 @@ const App = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    localStorage.setItem(DARK_MODE_KEY, JSON.stringify(darkMode));
-  }, [darkMode]);
 
   const getPopularTVShows = async () => {
     try {
