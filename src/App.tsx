@@ -93,6 +93,7 @@ const App = () => {
     queryClient.resetQueries(['tracked'], {exact: false})
     //Cancel because on logout query seems to want to refetch 4 times
     queryClient.cancelQueries(['tracked'], {exact: false})
+    setCurrentPage(PAGE_NAME_SEARCH)
   }
 
   const addTrackedTVShow = async (tvShow: TVShow) => {
