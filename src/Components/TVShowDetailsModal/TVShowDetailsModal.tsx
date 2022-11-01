@@ -18,12 +18,12 @@ export const TVShowsDetailsModal = ({ tvShow, setTVShow, updateTrackedTvShows }:
     let params = useParams();
     const [showSpinner, setShowSpinner] = useState(false)
     const [showButtonSpinner, setShowButtonSpinner] = useState(false)
-    console.log(tvShow)
-    const isTrackedListItem = !!tvShow.isTrackedListItem
+    const [isTrackedListItem, setIsTrackedListItem] = useState(!!tvShow.isTrackedListItem)
 
     const buttonClicked = async (tvShow: TVShow) => {
         setShowButtonSpinner(true)
         await updateTrackedTvShows(tvShow, isTrackedListItem)
+        setIsTrackedListItem(!isTrackedListItem)
         setShowButtonSpinner(false)
     }
 
