@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import React, { useEffect, useState } from "react"
 import { useParams } from "react-router-dom";
@@ -11,14 +12,14 @@ interface showTVShowDetailsModalProps {
     tvShow: TVShow
     setTVShow: (tvShow: TVShow) => any;
     updateTrackedTvShows: (tvShow: TVShow, shouldRemove: boolean) => any;
-    trackedTVShows: TVShow[];
 }
 
-export const TVShowsDetailsModal = ({ tvShow, setTVShow, trackedTVShows, updateTrackedTvShows }: showTVShowDetailsModalProps) => {
+export const TVShowsDetailsModal = ({ tvShow, setTVShow, updateTrackedTvShows }: showTVShowDetailsModalProps) => {
     let params = useParams();
     const [showSpinner, setShowSpinner] = useState(false)
     const [showButtonSpinner, setShowButtonSpinner] = useState(false)
-    const isTrackedListItem = isAlreadyInTrackedList(tvShow, trackedTVShows)
+    console.log(tvShow)
+    const isTrackedListItem = !!tvShow.isTrackedListItem
 
     const buttonClicked = async (tvShow: TVShow) => {
         setShowButtonSpinner(true)
@@ -42,7 +43,7 @@ export const TVShowsDetailsModal = ({ tvShow, setTVShow, trackedTVShows, updateT
                 { getDetails: true, tvShowsIds: [id] }
             );
 
-            setTVShow(data[0])
+            setTVShow({...tvShow, ...data[0]})
         } catch (error) {
             console.log('no tv show found for this id')
         }

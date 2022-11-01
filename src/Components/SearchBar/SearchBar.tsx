@@ -15,7 +15,6 @@ const SearchBar = ({search, setSearchTerm, searchTerm}: SearchBarProps) => {
 
     const onButtonClicked = (event: any) => {
         event.preventDefault();
-        console.log(searchTerm)
         search(searchTerm)
     }
 

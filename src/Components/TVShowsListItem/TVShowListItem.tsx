@@ -29,7 +29,7 @@ export const TVShowListItem = ({ tvShow, isTrackedListItem, shouldShowButton, se
     <div key={tvShow.id}>
       <div className='h-[360px] w-[240px] hover:scale-105 hover:duration-200 relative'>
         <button
-          onClick={() => setShowDetails(tvShow)}
+          onClick={() => setShowDetails({...tvShow, isTrackedListItem})}
           className="h-full w-full aspect-square block absolute top-0 left-0 transition-opacity duration-300 opacity-0 hover:opacity-100 bg-blue-800/75 z-2"
         >
           <h3 className="text-white py-6 px-3 mx-auto text-xl">

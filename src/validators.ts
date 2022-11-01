@@ -41,6 +41,7 @@ export const TVShowDetailsObject = z.object({
             profile_path: z.string()
         })
     ).optional(),
+    isTrackedListItem: z.boolean().optional(),
     episode_run_time: z.array(z.number()).optional(),
     genres: z.array(z.object({ id: z.number(), name: z.string() })).optional(),
     homepage: z.string().optional(),
@@ -173,5 +174,6 @@ export const IndexAndAlertMessageObject = z.object({
 
 export type User = z.infer<typeof UserObject>;
 export type LoginResponse = z.infer<typeof LoginResponseObject>;
+export type LoginUser = z.infer<typeof LoginUserObject>;
 export type TVShow = z.infer<typeof TVShowDetailsObject>;
 export type IndexAndAlertMessage = z.infer<typeof IndexAndAlertMessageObject>;

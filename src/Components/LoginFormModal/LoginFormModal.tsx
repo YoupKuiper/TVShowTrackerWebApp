@@ -1,9 +1,12 @@
 import { LockClosedIcon } from '@heroicons/react/solid';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { useState } from 'react';
+import Cookies from 'universal-cookie';
 import { z } from 'zod';
+import { JWT_TOKEN_KEY } from '../../constants';
 import logo from '../../Img/logo.png';
-import { IndexAndAlertMessage, LoginUserObject, PasswordResetEmail } from '../../validators';
+import { IndexAndAlertMessage, LoginUser, LoginUserObject, PasswordResetEmail, User } from '../../validators';
 import { Alert } from '../Alert/Alert';
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 const TV_SHOW_TRACKER_API_BASE_URL = process.env.REACT_APP_API_BASE_URL
@@ -12,9 +15,10 @@ interface LoginFormModalProps {
   setShowLoginModal: (params: boolean) => any;
   loginUser: (emailAddress: string, password: string) => Promise<any>;
   createAccount: () => any;
+  setLoggedInUser: (user: User) => any;
 }
 
-const LoginFormModal = ({ setShowLoginModal, loginUser, createAccount }: LoginFormModalProps) => {
+const LoginFormModal = ({ setShowLoginModal, loginUser, createAccount, setLoggedInUser }: LoginFormModalProps) => {
 
   const [emailAddress, setEmailAddress] = useState('');
   const [password, setPassword] = useState('');
@@ -24,6 +28,21 @@ const LoginFormModal = ({ setShowLoginModal, loginUser, createAccount }: LoginFo
   const [errorMessages, setErrorMessages] = useState<IndexAndAlertMessage[]>([]);
   // Index added to try to be able to remove alerts after timeout and still have known unique indices
   const [errorMessageLastIndex, setErrorMessageLastIndex] = useState(0);
+  const cookies = new Cookies();
+  const queryClient = useQueryClient();
+  const userMutation = useMutation((userLogin: LoginUser) => {
+    return loginUser(userLogin.emailAddress, userLogin.password)
+  }, {
+    onSuccess: (data, variables, context) => {
+      cookies.set(JWT_TOKEN_KEY, data.token);
+      queryClient.invalidateQueries(['tracked'])
+      setLoggedInUser(data.user)
+      setShowLoginModal(false)
+    },
+    // onError: (error) => {
+
+    // }
+  })
 
   const handleOnClose = (event: any) => {
     // Only close when background or button is clicked
@@ -92,9 +111,8 @@ const LoginFormModal = ({ setShowLoginModal, loginUser, createAccount }: LoginFo
 
     try {
       LoginUserObject.parse({ emailAddress, password })
-
-      setShowSpinner(true)
-      await loginUser(emailAddress, password)
+      await userMutation.mutateAsync({emailAddress, password})
+      
     } catch (error) {
       if (error instanceof z.ZodError) {
         console.log(JSON.stringify(error.issues))
@@ -107,7 +125,6 @@ const LoginFormModal = ({ setShowLoginModal, loginUser, createAccount }: LoginFo
         setErrorMessages(errorMessages.concat(errorsToAdd))
         return;
       }
-      setShowSpinner(false)
       setErrorMessageLastIndex(errorMessageLastIndex + 1)
       const message = axios.isAxiosError(error) ? 'Email address or password incorrect' : 'Login failed'
       setErrorMessages([...errorMessages, { index: errorMessageLastIndex + 1, message }])
@@ -144,7 +161,7 @@ const LoginFormModal = ({ setShowLoginModal, loginUser, createAccount }: LoginFo
             />
             <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white">{showPasswordResetForm ? 'Please enter your email address' : 'Sign in to your account'}</h2>
           </div>
-          {showSpinner ? <div className="inline-flex justify-center w-full"><LoadingSpinner /></div> :
+          {showSpinner || userMutation.isLoading ? <div className="inline-flex justify-center w-full"><LoadingSpinner /></div> :
             <form className="mt-8 space-y-6" action="#" method="POST">
               {errorMessages ? renderErrorMessages(errorMessages) : null}
               <input type="hidden" name="remember" defaultValue="true" />
