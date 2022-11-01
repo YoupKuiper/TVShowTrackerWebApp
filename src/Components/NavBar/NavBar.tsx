@@ -17,6 +17,7 @@ interface NavBarProps {
   setShowCreateAccountModal: (params: boolean) => any;
   logout: () => any;
   setDarkMode: (params: boolean) => any;
+  setCurrentPage: (newPage: string) => any;
 }
 
 const classNames = (...classes: any) => {
@@ -24,12 +25,12 @@ const classNames = (...classes: any) => {
 }
 
 
-export const NavBar = ({ currentPage, darkMode, isLoggedIn, emailAddress, wantsNotifications, setWantsNotifications, setShowLoginModal, setShowCreateAccountModal, logout, setDarkMode }: NavBarProps) => {
+export const NavBar = ({ currentPage, darkMode, isLoggedIn, emailAddress, wantsNotifications, setWantsNotifications, setShowLoginModal, setShowCreateAccountModal, logout, setDarkMode, setCurrentPage }: NavBarProps) => {
 
   const [showSpinner, setShowSpinner] = useState(false);
   const navigation = [
-    { name: PAGE_NAME_SEARCH, href: '/', current: currentPage === PAGE_NAME_SEARCH },
-    { name: PAGE_NAME_TRACKED_TV_SHOWS, href: '/tracked', current: currentPage === PAGE_NAME_TRACKED_TV_SHOWS },
+    { name: PAGE_NAME_SEARCH, onClick: () => setCurrentPage(PAGE_NAME_SEARCH), current: currentPage === PAGE_NAME_SEARCH },
+    { name: PAGE_NAME_TRACKED_TV_SHOWS, onClick: () => setCurrentPage(PAGE_NAME_TRACKED_TV_SHOWS), current: currentPage === PAGE_NAME_TRACKED_TV_SHOWS },
   ]
 
   const handleChange = async (event: any) => {
@@ -71,9 +72,9 @@ export const NavBar = ({ currentPage, darkMode, isLoggedIn, emailAddress, wantsN
                 <div className="hidden sm:block sm:ml-6">
                   <div className="flex space-x-4">
                     {navigation.map((item) => (
-                      <a
+                      <button
                         key={item.name}
-                        href={item.href}
+                        onClick={() => item.onClick()}
                         className={classNames(
                           item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                           'px-3 py-2 rounded-md text-sm font-medium'
@@ -81,7 +82,7 @@ export const NavBar = ({ currentPage, darkMode, isLoggedIn, emailAddress, wantsN
                         aria-current={item.current ? 'page' : undefined}
                       >
                         {item.name}
-                      </a>
+                      </button>
                     ))}
                   </div>
                 </div>
@@ -178,7 +179,7 @@ export const NavBar = ({ currentPage, darkMode, isLoggedIn, emailAddress, wantsN
                 <Disclosure.Button
                   key={item.name}
                   as="a"
-                  href={item.href}
+                  onClick={item.onClick}
                   className={classNames(
                     item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                     'block px-3 py-2 rounded-md text-base font-medium'

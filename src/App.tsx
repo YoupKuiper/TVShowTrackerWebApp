@@ -12,7 +12,7 @@ import SearchBar from './Components/SearchBar/SearchBar';
 import { TVShowsDetailsModal } from './Components/TVShowDetailsModal/TVShowDetailsModal';
 import TVShowsListView from './Components/TVShowsListView/TVShowsListView';
 import UnsubscribeEmailModal from './Components/UnsubscribeEmailModal/UnsubscribeEmailModal';
-import { DARK_MODE_KEY,  DEFAULT_TV_SHOW, DEFAULT_USER, JWT_TOKEN_KEY, PAGE_NAME_SEARCH, PAGE_NAME_TRACKED_TV_SHOWS, USER_KEY } from './constants';
+import { CURRENT_PAGE_KEY, DARK_MODE_KEY,  DEFAULT_TV_SHOW, DEFAULT_USER, JWT_TOKEN_KEY, PAGE_NAME_SEARCH, PAGE_NAME_TRACKED_TV_SHOWS, USER_KEY } from './constants';
 import { useStickyState } from './hooks';
 import { LoginResponse, TVShow, User } from './validators';
 
@@ -29,6 +29,7 @@ const App = () => {
 
   const [darkMode, setDarkMode] = useStickyState(getDarkModeStateFromLocalStorage, DARK_MODE_KEY)
   const [loggedInUser, setLoggedInUser] = useStickyState(DEFAULT_USER, USER_KEY);
+  const [currentPage, setCurrentPage] = useStickyState(PAGE_NAME_SEARCH, CURRENT_PAGE_KEY)
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showCreateAccountModal, setShowCreateAccountModal] = useState(false);
   const [tvShowDetailsToShow, setTVShowDetailsToShow] = useState<TVShow>(DEFAULT_TV_SHOW);
@@ -47,27 +48,10 @@ const App = () => {
 
   useEffect(() => {
     //If user is not logged in and trying to get tracked shows, open login modal
-    if(!isLoggedIn && location.pathname === '/tracked'){
+    if(!isLoggedIn && currentPage === PAGE_NAME_TRACKED_TV_SHOWS){
       setShowLoginModal(true)
     }
-  }, [isLoggedIn, location.pathname]); 
-
-  // useEffect(() => {
-  //   try {
-  //     const token = localStorage.getItem(JWT_TOKEN_KEY)
-  //     if (token && token !== DEFAULT_TOKEN) {
-  //       const decodedToken: any = decodeToken(token);
-  //       const loggedInUser = UserObject.parse(decodedToken.data);
-  //       setLoggedInUser(loggedInUser);
-  //       setWantsEmailNotifications(loggedInUser.wantsEmailNotifications)
-  //     }
-
-  //   } catch (error) {
-  //     console.log(error)
-  //     logoutUser()
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
+  }, [currentPage, isLoggedIn, location.pathname]); 
 
   const createUserAccount = async (emailAddress: string, password: string) => {
     try {
@@ -168,7 +152,8 @@ const App = () => {
     setShowCreateAccountModal(true)
   }
 
-  const AppView = (isTrackedList: boolean) => {
+  const AppView = () => {
+    const isTrackedList = currentPage === PAGE_NAME_TRACKED_TV_SHOWS
     return (
       <div className={darkMode ? 'dark bg-gray-800 w-full h-screen text-white' : ''}>
         <NavBar
@@ -181,7 +166,8 @@ const App = () => {
           setShowLoginModal={setShowLoginModal}
           setShowCreateAccountModal={setShowCreateAccountModal}
           logout={logoutUser}
-          setDarkMode={setDarkMode} />
+          setDarkMode={setDarkMode}
+          setCurrentPage={setCurrentPage} />
         {!isLoggedIn && <div className='container mx-auto text-center py-5'>
           <div className='text-4xl pb-5'>Welcome to TVTracker</div>
           <div className='text-lg'>Add shows to your list and get email notifications when episodes air!</div>
@@ -208,11 +194,7 @@ const App = () => {
   return (
     <>
       <Routes>
-        <Route path="/" element={AppView(false)} />
-        {/* <Route path="/details" element={Home()}>
-          <Route path=":tvShowId" element={Home()} />
-        </Route> */}
-        <Route path="tracked" element={AppView(true)} />
+        <Route path="/" element={AppView()} />
         <Route path="/unsubscribe" element={<UnsubscribeEmailModal />} >
           <Route path=":emailAddress/:token" element={<UnsubscribeEmailModal />} />
         </Route>
