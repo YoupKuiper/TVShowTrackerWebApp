@@ -106,7 +106,9 @@ const App = () => {
     // Delete jwt token
     cookies.remove(JWT_TOKEN_KEY)
     setLoggedInUser(DEFAULT_USER)
-    queryClient.invalidateQueries(['tracked'])
+    queryClient.resetQueries(['tracked'], {exact: false})
+    //Cancel because on logout query seems to want to refetch 4 times
+    queryClient.cancelQueries(['tracked'], {exact: false})
   }
 
   const addTrackedTVShow = async (tvShow: TVShow) => {
