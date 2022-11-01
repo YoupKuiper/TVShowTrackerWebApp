@@ -1,12 +1,10 @@
-import { useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom";
 import { DEFAULT_TV_SHOW, IMAGES_BASE_URL, IMAGE_DEFAULT_SIZE } from "../../constants";
 import { TVShow } from "../../validators";
 import Carousel from "../Carousel/Carousel";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
-import { isAlreadyInTrackedList } from '../TVShowsListView/TVShowsListView'
 
 interface showTVShowDetailsModalProps {
     tvShow: TVShow
