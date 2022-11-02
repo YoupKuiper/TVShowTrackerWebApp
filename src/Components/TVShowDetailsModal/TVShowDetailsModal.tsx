@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { useEffect, useState } from "react"
-import { useParams } from "react-router-dom";
+import { useState } from "react"
 import { DEFAULT_TV_SHOW, IMAGES_BASE_URL, IMAGE_DEFAULT_SIZE } from "../../constants";
 import { TVShow } from "../../validators";
 import Carousel from "../Carousel/Carousel";
@@ -14,7 +13,6 @@ interface showTVShowDetailsModalProps {
 }
 
 export const TVShowsDetailsModal = ({ tvShow, setTVShow, updateTrackedTvShows }: showTVShowDetailsModalProps) => {
-    const [showSpinner, setShowSpinner] = useState(false)
     const [showButtonSpinner, setShowButtonSpinner] = useState(false)
     const [isTrackedListItem, setIsTrackedListItem] = useState(!!tvShow.isTrackedListItem)
     const { data: detailedTVShow, isLoading } = useQuery(['details', tvShow.id], () => getTVShowDetails(), { staleTime: 60000})
@@ -31,7 +29,7 @@ export const TVShowsDetailsModal = ({ tvShow, setTVShow, updateTrackedTvShows }:
 
     const buttonText = isTrackedListItem ? 'Remove from list' : 'Add to list'
 
-    const getTVShowDetails = async () => {
+    const getTVShowDetails = async (): Promise<TVShow> => {
         try {
             let id: number = tvShow.id
             const { data } = await axios.post<any>(
