@@ -11,6 +11,7 @@ export interface TvShowsListViewProps {
     isLoggedIn: boolean;
     setShowDetails: (tvShow: TVShow) => any;
     handleButtonClick: (tvShow: TVShow) => any;
+    setSearchPopular: (title: string) => any;
     searchPopular: string;
     searchTracked: string;
 }
@@ -62,12 +63,10 @@ export const shouldButtonBeShown = (isLoggedIn: boolean, isTrackedList: boolean,
     return !isAlreadyInTrackedList(tvShow, trackedTVShows)
 }
 
-const TVShowsListView = ({ isTrackedList, setShowDetails, isLoggedIn, handleButtonClick, searchPopular, searchTracked }: TvShowsListViewProps) => {
-    let queryPopularTVShows: any = {}
-    let queryTrackedTVShows: any = {}
+const TVShowsListView = ({ isTrackedList, setShowDetails, isLoggedIn, handleButtonClick, searchPopular, searchTracked, setSearchPopular }: TvShowsListViewProps) => {
 
-    queryPopularTVShows = useQuery(['popular', searchPopular], () => getPopularTVShows(searchPopular), { enabled: !isTrackedList, staleTime: 60000})
-    queryTrackedTVShows = useQuery(['tracked', searchTracked], () => getTrackedTVShows(searchTracked), { enabled: isLoggedIn, staleTime: 60000 })
+    const queryPopularTVShows = useQuery(['popular', searchPopular], () => getPopularTVShows(searchPopular), { enabled: !isTrackedList, staleTime: 60000})
+    const queryTrackedTVShows = useQuery(['tracked', searchTracked], () => getTrackedTVShows(searchTracked), { enabled: isLoggedIn, staleTime: 60000 })
 
     const renderListViewWithData = (listOfTVShows: TVShow[], isLoggedIn: boolean, isTrackedList: boolean) => {
         return (
@@ -80,7 +79,7 @@ const TVShowsListView = ({ isTrackedList, setShowDetails, isLoggedIn, handleButt
                                 <TVShowListItem
                                     key={tvShow.id}
                                     tvShow={tvShow}
-                                    isTrackedListItem={isAlreadyInTrackedList(tvShow, queryTrackedTVShows.data)}
+                                    isTrackedListItem={isAlreadyInTrackedList(tvShow, queryTrackedTVShows.data || [])}
                                     shouldShowButton={shouldShowButton}
                                     setShowDetails={setShowDetails}
                                     handleButtonClick={handleButtonClick} />
@@ -89,7 +88,7 @@ const TVShowsListView = ({ isTrackedList, setShowDetails, isLoggedIn, handleButt
                     </div>
                 ) : (
                     <div className="container mx-auto content-center dark:text-white">
-                        <h2>No TV shows found. {!isTrackedList && <button onClick={() => console.log('getpopular')} className='underline'>Show popular TV Shows</button>}</h2>
+                        <h2>No TV shows found. {!isTrackedList && <button onClick={() => setSearchPopular('')} className='underline'>Show popular TV Shows</button>}</h2>
                     </div>
                 )}
             </div>
@@ -102,16 +101,15 @@ const TVShowsListView = ({ isTrackedList, setShowDetails, isLoggedIn, handleButt
         if(queryTrackedTVShows.isSuccess){
             return renderListViewWithData(queryTrackedTVShows.data, isLoggedIn, isTrackedList)
         }
-        return (<div/>)
-    }else{
-        if(queryPopularTVShows.isLoading) return (<div className="inline-flex justify-center w-full min-h-full"><LoadingSpinner/></div>)
-        if(queryPopularTVShows.isError) return <div/>
-        if(queryPopularTVShows.isSuccess){
-            return renderListViewWithData(queryPopularTVShows.data, isLoggedIn, isTrackedList)
-        }
-        return (<div/>)
     }
 
+    if(queryPopularTVShows.isLoading) return (<div className="inline-flex justify-center w-full min-h-full"><LoadingSpinner/></div>)
+    if(queryPopularTVShows.isError) return <div/>
+    if(queryPopularTVShows.isSuccess){
+        return renderListViewWithData(queryPopularTVShows.data, isLoggedIn, isTrackedList)
+    }
+
+    return (<div/>)
 }
 
 export default TVShowsListView;

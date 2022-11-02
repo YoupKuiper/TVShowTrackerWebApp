@@ -181,7 +181,8 @@ const App = () => {
           handleButtonClick={isTrackedList ? removeTrackedTVShow : addTrackedTVShow}
           isLoggedIn={isLoggedIn}
           searchPopular={searchPopular}
-          searchTracked={searchTracked} />
+          searchTracked={searchTracked}
+          setSearchPopular={setSearchPopular} />
         {showTVShowDetailsModal && <TVShowsDetailsModal tvShow={tvShowDetailsToShow} setTVShow={setTVShowDetailsToShow} updateTrackedTvShows={updateTrackedTvShows} />}
         {showLoginModal && <LoginFormModal setShowLoginModal={setShowLoginModal} loginUser={loginUser} createAccount={openCreateAccountModalFromLogin} setLoggedInUser={setLoggedInUser} />}
         {showCreateAccountModal && <CreateAccountFormModal setShowCreateAccountModal={setShowCreateAccountModal} createUserAccount={createUserAccount} />}
