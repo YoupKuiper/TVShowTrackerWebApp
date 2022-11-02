@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useState } from "react"
+import { toast } from "react-toastify";
 import { DEFAULT_TV_SHOW, IMAGES_BASE_URL, IMAGE_DEFAULT_SIZE } from "../../constants";
 import { TVShow } from "../../validators";
 import Carousel from "../Carousel/Carousel";
@@ -15,7 +16,7 @@ interface showTVShowDetailsModalProps {
 export const TVShowsDetailsModal = ({ tvShow, setTVShow, updateTrackedTvShows }: showTVShowDetailsModalProps) => {
     const [showButtonSpinner, setShowButtonSpinner] = useState(false)
     const [isTrackedListItem, setIsTrackedListItem] = useState(!!tvShow.isTrackedListItem)
-    const { data: detailedTVShow, isLoading } = useQuery(['details', tvShow.id], () => getTVShowDetails(), { staleTime: 60000})
+    const { data: detailedTVShow, isLoading } = useQuery(['details', tvShow.id], () => getTVShowDetails(), { staleTime: 60000 })
 
     const buttonClicked = async (tvShow: TVShow) => {
         setShowButtonSpinner(true)
@@ -37,8 +38,12 @@ export const TVShowsDetailsModal = ({ tvShow, setTVShow, updateTrackedTvShows }:
                 { getDetails: true, tvShowsIds: [id] }
             );
 
-            return {...tvShow, ...data[0] }
+            return { ...tvShow, ...data[0] }
         } catch (error) {
+            toast.error('Failed to get show details', {
+                position: "top-center",
+                theme: "light",
+            });
             throw error
         }
     }

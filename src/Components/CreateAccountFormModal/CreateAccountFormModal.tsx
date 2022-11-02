@@ -53,6 +53,7 @@ const CreateAccountFormModal = ({ setShowCreateAccountModal, createUserAccount }
         theme: "light",
       });
     }
+    setShowSpinner(false)
   }
 
   return (

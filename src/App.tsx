@@ -65,13 +65,7 @@ const App = () => {
       console.log('response status is: ', status);
 
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.error('error message: ', error);
-        throw (error.response?.data || error.message)
-      } else {
-        console.error('unexpected error: ', error);
-        return 'An unexpected error occurred';
-      }
+      throw error
     }
   }
 
@@ -145,13 +139,7 @@ const App = () => {
       queryClient.invalidateQueries(['tracked'])
       console.log('response status is: ', status);
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.log('error message: ', error);
         setShowLoginModal(true)
-      } else {
-        console.log('unexpected error: ', error);
-        return 'An unexpected error occurred';
-      }
     }
   }
 
