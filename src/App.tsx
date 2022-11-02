@@ -3,6 +3,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { useEffect, useState } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
+import { toast } from 'react-toastify';
 import Cookies from 'universal-cookie';
 import CreateAccountFormModal from './Components/CreateAccountFormModal/CreateAccountFormModal';
 import LoginFormModal from './Components/LoginFormModal/LoginFormModal';
@@ -12,7 +13,7 @@ import SearchBar from './Components/SearchBar/SearchBar';
 import { TVShowsDetailsModal } from './Components/TVShowDetailsModal/TVShowDetailsModal';
 import TVShowsListView, { getTrackedTVShows } from './Components/TVShowsListView/TVShowsListView';
 import UnsubscribeEmailModal from './Components/UnsubscribeEmailModal/UnsubscribeEmailModal';
-import { CURRENT_PAGE_KEY, DARK_MODE_KEY,  DEFAULT_TV_SHOW, DEFAULT_USER, JWT_TOKEN_KEY, PAGE_NAME_SEARCH, PAGE_NAME_TRACKED_TV_SHOWS, USER_KEY } from './constants';
+import { CURRENT_PAGE_KEY, DARK_MODE_KEY, DEFAULT_TV_SHOW, DEFAULT_USER, JWT_TOKEN_KEY, PAGE_NAME_SEARCH, PAGE_NAME_TRACKED_TV_SHOWS, USER_KEY } from './constants';
 import { useStickyState } from './hooks';
 import { LoginResponse, TVShow, User } from './validators';
 
@@ -75,7 +76,6 @@ const App = () => {
   }
 
   const loginUser = async (emailAddress: string, password: string) => {
-
     try {
       const { data } = await axios.post<LoginResponse>(
         `${TV_SHOW_TRACKER_API_BASE_URL}/Login`,
@@ -104,13 +104,20 @@ const App = () => {
   }
 
   const updateWantsNotifications = async (newSetting: boolean) => {
-    await axios.post<any>(
-      `${TV_SHOW_TRACKER_API_BASE_URL}/UpdateUser`,
-      { token: cookies.get(JWT_TOKEN_KEY), updateObject: { wantsEmailNotifications: newSetting } }
-    );
-    setLoggedInUser((prevUser: User) => {
-      return {...prevUser, wantsEmailNotifications: newSetting}
-    })
+    try {
+      await axios.post<any>(
+        `${TV_SHOW_TRACKER_API_BASE_URL}/UpdateUser`,
+        { token: cookies.get(JWT_TOKEN_KEY), updateObject: { wantsEmailNotifications: newSetting } }
+      );
+      setLoggedInUser((prevUser: User) => {
+        return {...prevUser, wantsEmailNotifications: newSetting}
+      })
+    } catch (error) {
+      toast.error('Failed to update notification setting', {
+        position: "top-center",
+        theme: "light",
+      });
+    }
   }
 
   const removeTrackedTVShow = async (tvShow: TVShow) => {

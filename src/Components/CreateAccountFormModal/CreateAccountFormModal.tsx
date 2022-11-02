@@ -1,10 +1,10 @@
-import { PlusIcon } from '@heroicons/react/solid'
+import { PlusIcon } from '@heroicons/react/solid';
 import { useState } from 'react';
-import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
+import { toast } from 'react-toastify';
 import { z } from "zod";
-import { IndexAndAlertMessage, UserAccountCreation } from '../../validators';
-import { Alert } from '../Alert/Alert';
-import logo from '../../Img/logo.png'
+import logo from '../../Img/logo.png';
+import { UserAccountCreation } from '../../validators';
+import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 
 interface CreateAccountFormModalProps {
   setShowCreateAccountModal: (params: boolean) => any;
@@ -17,26 +17,13 @@ const CreateAccountFormModal = ({ setShowCreateAccountModal, createUserAccount }
   const [password, setPassword] = useState('');
   const [repeatedPassword, setRepeatedPassword] = useState('');
   const [showSpinner, setShowSpinner] = useState(false);
-  const [errorMessages, setErrorMessages] = useState<IndexAndAlertMessage[]>([]);
   const [showSuccessfulCreation, setShowSuccessfulCreation] = useState(false)
-  // Index added to try to be able to remove alerts after timeout and still have known unique indices
-  const [errorMessageLastIndex, setErrorMessageLastIndex] = useState(0);
 
   const handleOnClose = (event: any) => {
     // Only close when background is clicked
     if (event.target.id === 'container' || event.target.id === 'closebutton') {
       setShowCreateAccountModal(false);
     }
-  }
-
-  const renderErrorMessages = (errorMessages: IndexAndAlertMessage[]) => {
-    return errorMessages.map((error, index) => (<Alert key={index} message={error.message} index={error.index} closeAlert={closeAlert} />))
-  }
-
-  const closeAlert = (indexToRemove: number) => {
-    console.log(`current errorMessages: ${JSON.stringify(errorMessages, null, 2)}`)
-    console.log(`Closing: ${indexToRemove}`)
-    setErrorMessages(errorMessages.filter((message) => message.index !== indexToRemove))
   }
 
   const handleCreateUserAccount = async (event: any) => {
@@ -54,20 +41,17 @@ const CreateAccountFormModal = ({ setShowCreateAccountModal, createUserAccount }
     } catch (error: any) {
       setShowSpinner(false)
       if (error instanceof z.ZodError) {
-        console.log(JSON.stringify(error.issues))
-        let currentIndex = errorMessageLastIndex;
-        const errorsToAdd = error.issues.map((issue) => {
-          currentIndex++
-          return { index: currentIndex, message: issue.message }
+        return error.issues.map((issue) => {
+          return toast.error(issue.message, {
+            position: "top-center",
+            theme: "light",
+          });
         })
-        setErrorMessageLastIndex(currentIndex)
-        setErrorMessages(errorMessages.concat(errorsToAdd))
-        return;
-      } else {
-        let currentIndex = errorMessageLastIndex;
-        setErrorMessageLastIndex(currentIndex + 1)
-        setErrorMessages(errorMessages.concat([{ index: currentIndex, message: error }]))
       }
+      toast.error('Account creation failed', {
+        position: "top-center",
+        theme: "light",
+      });
     }
   }
 
@@ -95,7 +79,6 @@ const CreateAccountFormModal = ({ setShowCreateAccountModal, createUserAccount }
           </div>
           {showSpinner && <div className="inline-flex justify-center w-full"><LoadingSpinner /></div>}
           {!showSuccessfulCreation && !showSpinner && <form className="mt-8 space-y-6" action="#" method="POST">
-            {errorMessages ? renderErrorMessages(errorMessages) : null}
             <input type="hidden" name="remember" defaultValue="true" />
             <div className="rounded-md shadow-sm -space-y-px">
               <div>

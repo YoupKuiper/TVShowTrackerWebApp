@@ -5,6 +5,7 @@ import { TVShow } from "../../validators";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import { TVShowListItem } from "../TVShowsListItem/TVShowListItem";
 import Cookies from "universal-cookie";
+import { ToastContainer } from "react-toastify";
 
 export interface TvShowsListViewProps {
     isTrackedList: boolean;
@@ -71,6 +72,7 @@ const TVShowsListView = ({ isTrackedList, setShowDetails, isLoggedIn, handleButt
     const renderListViewWithData = (listOfTVShows: TVShow[], isLoggedIn: boolean, isTrackedList: boolean) => {
         return (
             <div className="min-h-full">
+                <ToastContainer />
                 {listOfTVShows.length > 0 ? (
                     <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 justify-items-center dark:bg-gray-800 pb-5">
                         {listOfTVShows.map((tvShow: TVShow) => {

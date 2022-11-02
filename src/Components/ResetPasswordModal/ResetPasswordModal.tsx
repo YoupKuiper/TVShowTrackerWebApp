@@ -3,10 +3,10 @@ import { LockClosedIcon } from '@heroicons/react/solid'
 import { useState } from 'react';
 import { Link, useNavigate, useParams } from "react-router-dom";
 import logo from '../../Img/logo.png';
-import { IndexAndAlertMessage, PasswordResetObject } from '../../validators';
-import { Alert } from '../Alert/Alert';
+import { PasswordResetObject } from '../../validators';
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 import { z } from 'zod';
+import { toast } from 'react-toastify';
 
 
 const ResetPasswordModal = () => {
@@ -14,9 +14,7 @@ const ResetPasswordModal = () => {
     const [showSpinner, setShowSpinner] = useState(false);
     const [message, setMessage] = useState('');
     const [newPassword, setNewPassword] = useState('');
-    const [errorMessages, setErrorMessages] = useState<IndexAndAlertMessage[]>([]);
     const [repeatedPassword, setRepeatedPassword] = useState('');
-    const [errorMessageLastIndex, setErrorMessageLastIndex] = useState(0);
     const TV_SHOW_TRACKER_API_BASE_URL = process.env.REACT_APP_API_BASE_URL
 
     const callResetPasswordEndpoint = async () => {
@@ -38,38 +36,23 @@ const ResetPasswordModal = () => {
             PasswordResetObject.parse({ newPassword, repeatedPassword })
             setShowSpinner(true)
             await callResetPasswordEndpoint()
-            setShowSpinner(false)
-
         } catch (error) {
             if (error instanceof z.ZodError) {
-                console.log(JSON.stringify(error.issues))
-                let currentIndex = errorMessageLastIndex;
-                const errorsToAdd = error.issues.map((issue) => {
-                    currentIndex++
-                    return { index: currentIndex, message: issue.message }
+                return error.issues.map((issue) => {
+                    return toast.error(issue.message, {
+                        position: "top-center",
+                        theme: "light",
+                    });
                 })
-                setErrorMessageLastIndex(currentIndex)
-                setErrorMessages(errorMessages.concat(errorsToAdd))
-                return;
             }
-            setShowSpinner(false)
-            setErrorMessageLastIndex(errorMessageLastIndex + 1)
-            const message = 'Password reset failed'
-            setErrorMessages([...errorMessages, { index: errorMessageLastIndex + 1, message }])
+            return toast.error('Password reset failed', {
+                position: "top-center",
+                theme: "light",
+            });
         }
+        setShowSpinner(false)
 
         return true;
-    }
-
-    const renderErrorMessages = (errorMessages: IndexAndAlertMessage[]) => {
-        return errorMessages.map((error, index) => (<Alert key={index} message={error.message} index={error.index} closeAlert={closeAlert} />))
-    }
-
-
-    const closeAlert = (indexToRemove: number) => {
-        console.log(`current errorMessages: ${JSON.stringify(errorMessages, null, 2)}`)
-        console.log(`Closing: ${indexToRemove}`)
-        setErrorMessages(errorMessages.filter((message) => message.index !== indexToRemove))
     }
 
     const navigate = useNavigate();
@@ -103,7 +86,6 @@ const ResetPasswordModal = () => {
                     </div>
                     {showSpinner && <div className="inline-flex justify-center w-full"><LoadingSpinner /></div>}
                     {!showSpinner && !message && <form className="mt-8 space-y-6" action="#" method="POST">
-                        {errorMessages ? renderErrorMessages(errorMessages) : null}
                         <input type="hidden" name="remember" defaultValue="true" />
                         <div className="rounded-md shadow-sm -space-y-px">
                             <div>

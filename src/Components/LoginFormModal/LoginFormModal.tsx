@@ -2,13 +2,14 @@ import { LockClosedIcon } from '@heroicons/react/solid';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { useState } from 'react';
+import { toast } from 'react-toastify';
 import Cookies from 'universal-cookie';
 import { z } from 'zod';
 import { JWT_TOKEN_KEY } from '../../constants';
 import logo from '../../Img/logo.png';
-import { IndexAndAlertMessage, LoginUser, LoginUserObject, PasswordResetEmail, User } from '../../validators';
-import { Alert } from '../Alert/Alert';
+import { LoginUser, LoginUserObject, PasswordResetEmail, User } from '../../validators';
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
+import "react-toastify/dist/ReactToastify.css";
 const TV_SHOW_TRACKER_API_BASE_URL = process.env.REACT_APP_API_BASE_URL
 
 interface LoginFormModalProps {
@@ -25,9 +26,7 @@ const LoginFormModal = ({ setShowLoginModal, loginUser, createAccount, setLogged
   const [showSpinner, setShowSpinner] = useState(false);
   const [showPasswordResetForm, setShowPasswordResetForm] = useState(false);
   const [message, setMessage] = useState('');
-  const [errorMessages, setErrorMessages] = useState<IndexAndAlertMessage[]>([]);
-  // Index added to try to be able to remove alerts after timeout and still have known unique indices
-  const [errorMessageLastIndex, setErrorMessageLastIndex] = useState(0);
+
   const cookies = new Cookies();
   const queryClient = useQueryClient();
   const userMutation = useMutation((userLogin: LoginUser) => {
@@ -38,10 +37,7 @@ const LoginFormModal = ({ setShowLoginModal, loginUser, createAccount, setLogged
       queryClient.invalidateQueries(['tracked'])
       setLoggedInUser(data.user)
       setShowLoginModal(false)
-    },
-    // onError: (error) => {
-
-    // }
+    }
   })
 
   const handleOnClose = (event: any) => {
@@ -75,35 +71,22 @@ const LoginFormModal = ({ setShowLoginModal, loginUser, createAccount, setLogged
       );
       console.log(`Response status: ${status}`)
       setMessage(data)
-      setShowSpinner(false)
     } catch (error) {
       if (error instanceof z.ZodError) {
-        console.log(JSON.stringify(error.issues))
-        let currentIndex = errorMessageLastIndex;
-        const errorsToAdd = error.issues.map((issue) => {
-          currentIndex++
-          return { index: currentIndex, message: issue.message }
+        return error.issues.map((issue) => {
+          return toast.error(issue.message, {
+            position: "top-center",
+            theme: "light",
+          });
         })
-        setShowSpinner(false)
-        setErrorMessageLastIndex(currentIndex)
-        setErrorMessages(errorMessages.concat(errorsToAdd))
-        return;
       }
-      setShowSpinner(false)
-      setErrorMessageLastIndex(errorMessageLastIndex + 1)
       const message = axios.isAxiosError(error) ? 'Email address incorrect' : 'Sending email failed'
-      setErrorMessages([...errorMessages, { index: errorMessageLastIndex + 1, message }])
+      toast.error(message, {
+        position: "top-center",
+        theme: "light",
+      });
     }
-  }
-
-  const renderErrorMessages = (errorMessages: IndexAndAlertMessage[]) => {
-    return errorMessages.map((error, index) => (<Alert key={index} message={error.message} index={error.index} closeAlert={closeAlert} />))
-  }
-
-  const closeAlert = (indexToRemove: number) => {
-    console.log(`current errorMessages: ${JSON.stringify(errorMessages, null, 2)}`)
-    console.log(`Closing: ${indexToRemove}`)
-    setErrorMessages(errorMessages.filter((message) => message.index !== indexToRemove))
+    setShowSpinner(false)
   }
 
   const handleLogin = async (event: any) => {
@@ -111,23 +94,22 @@ const LoginFormModal = ({ setShowLoginModal, loginUser, createAccount, setLogged
 
     try {
       LoginUserObject.parse({ emailAddress, password })
-      await userMutation.mutateAsync({emailAddress, password})
-      
+      await userMutation.mutateAsync({ emailAddress, password })
+
     } catch (error) {
       if (error instanceof z.ZodError) {
-        console.log(JSON.stringify(error.issues))
-        let currentIndex = errorMessageLastIndex;
-        const errorsToAdd = error.issues.map((issue) => {
-          currentIndex++
-          return { index: currentIndex, message: issue.message }
+        return error.issues.map((issue) => {
+          return toast.error(issue.message, {
+            position: "top-center",
+            theme: "light",
+          });
         })
-        setErrorMessageLastIndex(currentIndex)
-        setErrorMessages(errorMessages.concat(errorsToAdd))
-        return;
       }
-      setErrorMessageLastIndex(errorMessageLastIndex + 1)
       const message = axios.isAxiosError(error) ? 'Email address or password incorrect' : 'Login failed'
-      setErrorMessages([...errorMessages, { index: errorMessageLastIndex + 1, message }])
+      toast.error(message, {
+        position: "top-center",
+        theme: "light",
+      });
     }
 
     return true;
@@ -163,7 +145,6 @@ const LoginFormModal = ({ setShowLoginModal, loginUser, createAccount, setLogged
           </div>
           {showSpinner || userMutation.isLoading ? <div className="inline-flex justify-center w-full"><LoadingSpinner /></div> :
             <form className="mt-8 space-y-6" action="#" method="POST">
-              {errorMessages ? renderErrorMessages(errorMessages) : null}
               <input type="hidden" name="remember" defaultValue="true" />
               <div className="rounded-md shadow-sm -space-y-px">
                 {!message && <div>
