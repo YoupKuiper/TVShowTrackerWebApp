@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom";
@@ -13,10 +14,10 @@ interface showTVShowDetailsModalProps {
 }
 
 export const TVShowsDetailsModal = ({ tvShow, setTVShow, updateTrackedTvShows }: showTVShowDetailsModalProps) => {
-    let params = useParams();
     const [showSpinner, setShowSpinner] = useState(false)
     const [showButtonSpinner, setShowButtonSpinner] = useState(false)
     const [isTrackedListItem, setIsTrackedListItem] = useState(!!tvShow.isTrackedListItem)
+    const { data: detailedTVShow, isLoading } = useQuery(['details', tvShow.id], () => getTVShowDetails(), { staleTime: 60000})
 
     const buttonClicked = async (tvShow: TVShow) => {
         setShowButtonSpinner(true)
@@ -29,39 +30,20 @@ export const TVShowsDetailsModal = ({ tvShow, setTVShow, updateTrackedTvShows }:
         `h-[50px] w-40 bg-blue-500 hover:opacity-100 text-white font-bold rounded-md text-center opacity-70 z-11 float-left`;
 
     const buttonText = isTrackedListItem ? 'Remove from list' : 'Add to list'
+
     const getTVShowDetails = async () => {
         try {
             let id: number = tvShow.id
-            // Maybe can implement routing here
-            if (tvShow.id === DEFAULT_TV_SHOW.id) {
-                id = parseInt(params.tvShowId!)
-            }
             const { data } = await axios.post<any>(
                 `${process.env.REACT_APP_API_BASE_URL}/SearchTVShows`,
                 { getDetails: true, tvShowsIds: [id] }
             );
 
-            setTVShow({...tvShow, ...data[0]})
+            return {...tvShow, ...data[0] }
         } catch (error) {
-            console.log('no tv show found for this id')
+            throw error
         }
     }
-
-    useEffect(() => {
-        try {
-            setShowSpinner(true)
-            const fetchTVShowDetails = async () => {
-                await getTVShowDetails();
-                setShowSpinner(false)
-            }
-            fetchTVShowDetails();
-        } catch (error) {
-            console.log(error)
-            setShowSpinner(false)
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [tvShow.id]);
-
 
     const handleOnClose = (event: any) => {
         // Only close when background is clicked
@@ -134,14 +116,14 @@ export const TVShowsDetailsModal = ({ tvShow, setTVShow, updateTrackedTvShows }:
                                 <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentColor" />
                             </svg>
                         </button>}
-                        {showSpinner && <LoadingSpinner />}
-                        {tvShow.number_of_episodes && <div>
+                        {isLoading && <LoadingSpinner />}
+                        {detailedTVShow && <div>
                             <div>
-                                <p>Network: {<img className="inline" src={tvShow.networks ? IMAGES_BASE_URL + IMAGE_DEFAULT_SIZE + tvShow.networks[0].logo_path : ''} alt={tvShow.name} width={40} />}</p>
-                                <p>Total Episodes: {tvShow.number_of_episodes ? tvShow.number_of_episodes : ''}</p>
-                                <p>Seasons: {tvShow.number_of_seasons ? tvShow.number_of_seasons : ''}</p>
-                                <p>Episode duration: {tvShow.episode_run_time && tvShow.episode_run_time.length ? tvShow.episode_run_time[0].toString() + ' minutes' : 'N/A'}</p>
-                                <p>Next episode:  {tvShow.next_episode_to_air ? tvShow.next_episode_to_air.air_date : 'N/A'}</p>
+                                <p>Network: {<img className="inline" src={detailedTVShow.networks ? IMAGES_BASE_URL + IMAGE_DEFAULT_SIZE + detailedTVShow.networks[0].logo_path : ''} alt={detailedTVShow.name} width={40} />}</p>
+                                <p>Total Episodes: {detailedTVShow.number_of_episodes ? detailedTVShow.number_of_episodes : ''}</p>
+                                <p>Seasons: {detailedTVShow.number_of_seasons ? detailedTVShow.number_of_seasons : ''}</p>
+                                <p>Episode duration: {detailedTVShow.episode_run_time && detailedTVShow.episode_run_time.length ? detailedTVShow.episode_run_time[0].toString() + ' minutes' : 'N/A'}</p>
+                                <p>Next episode:  {detailedTVShow.next_episode_to_air ? detailedTVShow.next_episode_to_air.air_date : 'N/A'}</p>
                             </div>
                         </div>}
                     </div>
@@ -150,9 +132,9 @@ export const TVShowsDetailsModal = ({ tvShow, setTVShow, updateTrackedTvShows }:
                     <h1 className='font-bold'>Overview</h1>
                     <div className="pt-4">{tvShow.overview}</div>
                 </div>
-                {tvShow.recommendations ? <div>
+                {detailedTVShow && detailedTVShow.recommendations ? <div>
                     <p>Recommended shows: </p>
-                    <Carousel tvShows={tvShow.recommendations.results} setTVShow={setTVShow} />
+                    <Carousel tvShows={detailedTVShow.recommendations.results} setTVShow={setTVShow} />
                 </div> :
                     <LoadingSpinner />}
             </div>

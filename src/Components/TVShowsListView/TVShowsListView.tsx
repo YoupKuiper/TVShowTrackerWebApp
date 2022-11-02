@@ -31,7 +31,7 @@ const getPopularTVShows = async (title: string = ''): Promise<TVShow[]> => {
     }
 }
 
-const getTrackedTVShows = async (searchString: string): Promise<TVShow[]> => {
+export const getTrackedTVShows = async (searchString: string): Promise<TVShow[]> => {
     try {
         const cookies = new Cookies()
         const { data } = await axios.post<TVShow[]>(
@@ -66,8 +66,8 @@ const TVShowsListView = ({ isTrackedList, setShowDetails, isLoggedIn, handleButt
     let queryPopularTVShows: any = {}
     let queryTrackedTVShows: any = {}
 
-    queryPopularTVShows = useQuery(['popular', searchPopular], () => getPopularTVShows(searchPopular), { enabled: !isTrackedList})
-    queryTrackedTVShows = useQuery(['tracked', searchTracked], () => getTrackedTVShows(searchTracked), { enabled: isLoggedIn })
+    queryPopularTVShows = useQuery(['popular', searchPopular], () => getPopularTVShows(searchPopular), { enabled: !isTrackedList, staleTime: 60000})
+    queryTrackedTVShows = useQuery(['tracked', searchTracked], () => getTrackedTVShows(searchTracked), { enabled: isLoggedIn, staleTime: 60000 })
 
     const renderListViewWithData = (listOfTVShows: TVShow[], isLoggedIn: boolean, isTrackedList: boolean) => {
         return (

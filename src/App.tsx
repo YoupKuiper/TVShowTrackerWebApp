@@ -1,5 +1,5 @@
 
-import { useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { useEffect, useState } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
@@ -10,7 +10,7 @@ import { NavBar } from './Components/NavBar/NavBar';
 import ResetPasswordModal from './Components/ResetPasswordModal/ResetPasswordModal';
 import SearchBar from './Components/SearchBar/SearchBar';
 import { TVShowsDetailsModal } from './Components/TVShowDetailsModal/TVShowDetailsModal';
-import TVShowsListView from './Components/TVShowsListView/TVShowsListView';
+import TVShowsListView, { getTrackedTVShows } from './Components/TVShowsListView/TVShowsListView';
 import UnsubscribeEmailModal from './Components/UnsubscribeEmailModal/UnsubscribeEmailModal';
 import { CURRENT_PAGE_KEY, DARK_MODE_KEY,  DEFAULT_TV_SHOW, DEFAULT_USER, JWT_TOKEN_KEY, PAGE_NAME_SEARCH, PAGE_NAME_TRACKED_TV_SHOWS, USER_KEY } from './constants';
 import { useStickyState } from './hooks';
@@ -44,6 +44,7 @@ const App = () => {
   const isLoggedIn = !!loggedInUser.emailAddress
   const location = useLocation();
   const showTVShowDetailsModal = tvShowDetailsToShow && tvShowDetailsToShow.id !== DEFAULT_TV_SHOW.id
+  const queryTrackedTVShows = useQuery(['tracked', searchTracked], () => getTrackedTVShows(searchTracked), { enabled: isLoggedIn, staleTime: 60000 })
 
 
   useEffect(() => {
@@ -116,19 +117,18 @@ const App = () => {
     console.log(`Removing: ${tvShow.id}`)
     await updateTrackedTvShows(tvShow, true)
   }
-
+  
   const updateTrackedTvShows = async (tvShow: TVShow, toRemove: boolean) => {
     try {
-      const trackedTVShows = queryClient.getQueryData(['tracked'], {exact: false}) as TVShow[] || undefined
-      if(!trackedTVShows){
+      if(!queryTrackedTVShows.data){
         return;
       }
       let newTrackedTvShowsList = [];
       if (toRemove) {
-        newTrackedTvShowsList = trackedTVShows.filter((trackedTVShow) => trackedTVShow.id !== tvShow.id)
+        newTrackedTvShowsList = queryTrackedTVShows.data.filter((trackedTVShow) => trackedTVShow.id !== tvShow.id)
       } else {
         // TODO: Prevent duplicates
-        newTrackedTvShowsList = trackedTVShows.concat(tvShow)
+        newTrackedTvShowsList = queryTrackedTVShows.data.concat(tvShow)
       }
 
       const { status } = await axios.post<any>(
