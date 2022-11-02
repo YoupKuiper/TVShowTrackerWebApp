@@ -1,11 +1,9 @@
 import { LockClosedIcon } from '@heroicons/react/solid';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
-import Cookies from 'universal-cookie';
 import { z } from 'zod';
-import { JWT_TOKEN_KEY } from '../../constants';
 import logo from '../../Img/logo.png';
 import { LoginUser, LoginUserObject, PasswordResetEmail, User } from '../../validators';
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
