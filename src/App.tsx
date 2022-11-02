@@ -50,10 +50,10 @@ const App = () => {
 
   useEffect(() => {
     //If user is not logged in and trying to get tracked shows, open login modal
-    if(!isLoggedIn && currentPage === PAGE_NAME_TRACKED_TV_SHOWS){
+    if (!isLoggedIn && currentPage === PAGE_NAME_TRACKED_TV_SHOWS) {
       setShowLoginModal(true)
     }
-  }, [currentPage, isLoggedIn, location.pathname]); 
+  }, [currentPage, isLoggedIn, location.pathname]);
 
   const createUserAccount = async (emailAddress: string, password: string) => {
     try {
@@ -85,9 +85,9 @@ const App = () => {
     // Delete jwt token
     cookies.remove(JWT_TOKEN_KEY)
     setLoggedInUser(DEFAULT_USER)
-    queryClient.resetQueries(['tracked'], {exact: false})
+    queryClient.resetQueries(['tracked'], { exact: false })
     //Cancel because on logout query seems to want to refetch 4 times
-    queryClient.cancelQueries(['tracked'], {exact: false})
+    queryClient.cancelQueries(['tracked'], { exact: false })
     setCurrentPage(PAGE_NAME_SEARCH)
   }
 
@@ -104,7 +104,7 @@ const App = () => {
         { token: cookies.get(JWT_TOKEN_KEY), updateObject: { wantsEmailNotifications: newSetting } }
       );
       setLoggedInUser((prevUser: User) => {
-        return {...prevUser, wantsEmailNotifications: newSetting}
+        return { ...prevUser, wantsEmailNotifications: newSetting }
       })
     } catch (error) {
       toast.error('Failed to update notification setting', {
@@ -118,11 +118,11 @@ const App = () => {
     console.log(`Removing: ${tvShow.id}`)
     await updateTrackedTvShows(tvShow, true)
   }
-  
+
   const updateTrackedTvShows = async (tvShow: TVShow, toRemove: boolean) => {
     try {
-      if(!queryTrackedTVShows.data){
-        return;
+      if (!queryTrackedTVShows.data) {
+        throw new Error('No tracked shows data found')
       }
       let newTrackedTvShowsList = [];
       if (toRemove) {
@@ -139,7 +139,9 @@ const App = () => {
       queryClient.invalidateQueries(['tracked'])
       console.log('response status is: ', status);
     } catch (error) {
-        setShowLoginModal(true)
+      //TODO: check if error is because user is not logged in
+      setShowLoginModal(true)
+      throw error
     }
   }
 

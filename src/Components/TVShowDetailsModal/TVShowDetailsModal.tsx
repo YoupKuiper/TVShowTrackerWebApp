@@ -19,9 +19,16 @@ export const TVShowsDetailsModal = ({ tvShow, setTVShow, updateTrackedTvShows }:
     const { data: detailedTVShow, isLoading } = useQuery(['details', tvShow.id], () => getTVShowDetails(), { staleTime: 60000 })
 
     const buttonClicked = async (tvShow: TVShow) => {
-        setShowButtonSpinner(true)
-        await updateTrackedTvShows(tvShow, isTrackedListItem)
-        setIsTrackedListItem(!isTrackedListItem)
+        try {
+            setShowButtonSpinner(true)
+            await updateTrackedTvShows(tvShow, isTrackedListItem)
+            setIsTrackedListItem(!isTrackedListItem)
+        } catch (error) {
+            return toast.error('Failed to update tracked list', {
+                position: "top-center",
+                theme: "light",
+            });
+        }
         setShowButtonSpinner(false)
     }
 
