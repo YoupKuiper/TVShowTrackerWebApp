@@ -75,6 +75,12 @@ const App = () => {
         `${TV_SHOW_TRACKER_API_BASE_URL}/Login`,
         { emailAddress, password }
       );
+
+      cookies.set(JWT_TOKEN_KEY, data.token);
+      queryClient.invalidateQueries(['tracked'])
+      setLoggedInUser(data.user)
+      setShowLoginModal(false)
+      setCurrentPage(PAGE_NAME_TRACKED_TV_SHOWS)
       return data;
     } catch (error) {
       throw error

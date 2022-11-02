@@ -27,17 +27,8 @@ const LoginFormModal = ({ setShowLoginModal, loginUser, createAccount, setLogged
   const [showPasswordResetForm, setShowPasswordResetForm] = useState(false);
   const [message, setMessage] = useState('');
 
-  const cookies = new Cookies();
-  const queryClient = useQueryClient();
   const userMutation = useMutation((userLogin: LoginUser) => {
     return loginUser(userLogin.emailAddress, userLogin.password)
-  }, {
-    onSuccess: (data, variables, context) => {
-      cookies.set(JWT_TOKEN_KEY, data.token);
-      queryClient.invalidateQueries(['tracked'])
-      setLoggedInUser(data.user)
-      setShowLoginModal(false)
-    }
   })
 
   const handleOnClose = (event: any) => {
@@ -144,7 +135,7 @@ const LoginFormModal = ({ setShowLoginModal, loginUser, createAccount, setLogged
             <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white">{showPasswordResetForm ? 'Please enter your email address' : 'Sign in to your account'}</h2>
           </div>
           {showSpinner || userMutation.isLoading ? <div className="inline-flex justify-center w-full"><LoadingSpinner /></div> :
-            <form className="mt-8 space-y-6" action="#" method="POST">
+            <form className="mt-8 space-y-6" action="#" method="POST" >
               <input type="hidden" name="remember" defaultValue="true" />
               <div className="rounded-md shadow-sm -space-y-px">
                 {!message && <div>
@@ -159,6 +150,7 @@ const LoginFormModal = ({ setShowLoginModal, loginUser, createAccount, setLogged
                     value={emailAddress}
                     onChange={e => setEmailAddress(e.target.value)}
                     required
+                    ref={input => input && input.focus()}
                     className="appearance-none rounded-none relative block w-full px-3 py-2 border dark:bg-gray-700 dark:text-white border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                     placeholder="Email address"
                   />
@@ -195,7 +187,7 @@ const LoginFormModal = ({ setShowLoginModal, loginUser, createAccount, setLogged
                 </div>
 
                 <div className="text-sm">
-                  <button onClick={openPasswordResetForm} className="font-medium text-indigo-600 hover:text-indigo-500 dark:text-white">
+                  <button type="button" onClick={openPasswordResetForm} className="font-medium text-indigo-600 hover:text-indigo-500 dark:text-white">
                     Forgot your password?
                   </button>
                 </div>
