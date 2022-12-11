@@ -5,7 +5,7 @@ import '@testing-library/jest-dom'
 import { tvShowsList, tvShowNotInList } from '../../TestData/test-data'
 
 const makeSut = (props: Partial<TvShowsListViewProps>) => {
-  return render(<TVShowsListView isTrackedList={true} setShowDetails={jest.fn()} isLoggedIn={true} handleButtonClick={jest.fn()} searchPopular={''} searchTracked={''} setSearchPopular={jest.fn()} {...props} />);
+  return render(<TVShowsListView isTrackedList={true} setShowDetails={jest.fn()} isLoggedIn={true} handleButtonClick={jest.fn()} searchPopular={''} searchTracked={''} setSearchPopular={jest.fn()} logoutUser={jest.fn()} {...props} />);
 };
 
 describe("<TVShowsListView />", () => {

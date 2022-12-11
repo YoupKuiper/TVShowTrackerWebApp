@@ -3,7 +3,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { useEffect, useState } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import Cookies from 'universal-cookie';
 import CreateAccountFormModal from './Components/CreateAccountFormModal/CreateAccountFormModal';
 import LoginFormModal from './Components/LoginFormModal/LoginFormModal';
@@ -130,12 +130,11 @@ const App = () => {
       if (!queryTrackedTVShows.data) {
         throw new Error('No tracked shows data found')
       }
-      let newTrackedTvShowsList = [];
+      let newTrackedTvShowsList = new Set<TVShow>();
       if (toRemove) {
-        newTrackedTvShowsList = queryTrackedTVShows.data.filter((trackedTVShow) => trackedTVShow.id !== tvShow.id)
+        newTrackedTvShowsList = new Set(queryTrackedTVShows.data.filter((trackedTVShow) => trackedTVShow.id !== tvShow.id))
       } else {
-        // TODO: Prevent duplicates
-        newTrackedTvShowsList = queryTrackedTVShows.data.concat(tvShow)
+        newTrackedTvShowsList = new Set(queryTrackedTVShows.data.concat(tvShow))
       }
 
       const { status } = await axios.post<any>(
@@ -160,6 +159,7 @@ const App = () => {
     const isTrackedList = currentPage === PAGE_NAME_TRACKED_TV_SHOWS
     return (
       <div className={darkMode ? 'dark bg-gray-800 w-full h-screen text-white' : ''}>
+        <ToastContainer />
         <NavBar
           currentPage={isTrackedList ? PAGE_NAME_TRACKED_TV_SHOWS : PAGE_NAME_SEARCH}
           darkMode={darkMode}
@@ -185,7 +185,8 @@ const App = () => {
           isLoggedIn={isLoggedIn}
           searchPopular={searchPopular}
           searchTracked={searchTracked}
-          setSearchPopular={setSearchPopular} />
+          setSearchPopular={setSearchPopular}
+          logoutUser={logoutUser} />
         {showTVShowDetailsModal && <TVShowsDetailsModal tvShow={tvShowDetailsToShow} setTVShow={setTVShowDetailsToShow} updateTrackedTvShows={updateTrackedTvShows} />}
         {showLoginModal && <LoginFormModal setShowLoginModal={setShowLoginModal} loginUser={loginUser} createAccount={openCreateAccountModalFromLogin} setLoggedInUser={setLoggedInUser} />}
         {showCreateAccountModal && <CreateAccountFormModal setShowCreateAccountModal={setShowCreateAccountModal} createUserAccount={createUserAccount} />}

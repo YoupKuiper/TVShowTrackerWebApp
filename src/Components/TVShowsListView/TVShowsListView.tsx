@@ -5,7 +5,7 @@ import { TVShow } from "../../validators";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import { TVShowListItem } from "../TVShowsListItem/TVShowListItem";
 import Cookies from "universal-cookie";
-import { ToastContainer } from "react-toastify";
+import { toast } from 'react-toastify';
 
 export interface TvShowsListViewProps {
     isTrackedList: boolean;
@@ -15,6 +15,7 @@ export interface TvShowsListViewProps {
     setSearchPopular: (title: string) => any;
     searchPopular: string;
     searchTracked: string;
+    logoutUser: () => any;
 }
 
 const TV_SHOW_TRACKER_API_BASE_URL = process.env.REACT_APP_API_BASE_URL
@@ -64,15 +65,29 @@ export const shouldButtonBeShown = (isLoggedIn: boolean, isTrackedList: boolean,
     return !isAlreadyInTrackedList(tvShow, trackedTVShows)
 }
 
-const TVShowsListView = ({ isTrackedList, setShowDetails, isLoggedIn, handleButtonClick, searchPopular, searchTracked, setSearchPopular }: TvShowsListViewProps) => {
+const TVShowsListView = ({ isTrackedList, setShowDetails, isLoggedIn, handleButtonClick, searchPopular, searchTracked, setSearchPopular, logoutUser }: TvShowsListViewProps) => {
 
-    const queryPopularTVShows = useQuery(['popular', searchPopular], () => getPopularTVShows(searchPopular), { enabled: !isTrackedList, staleTime: 60000})
-    const queryTrackedTVShows = useQuery(['tracked', searchTracked], () => getTrackedTVShows(searchTracked), { enabled: isLoggedIn, staleTime: 60000 })
+    const queryPopularTVShows = useQuery(['popular', searchPopular], () => getPopularTVShows(searchPopular), {
+        enabled: !isTrackedList, staleTime: 60000, onError: (error) => {
+            toast.error('Failed to get popular TV Shows, please retry later', {
+                position: "top-center",
+                theme: "light",
+            });
+        }
+    })
+    const queryTrackedTVShows = useQuery(['tracked', searchTracked], () => getTrackedTVShows(searchTracked), {
+        enabled: isLoggedIn, staleTime: 60000, onError: (error) => {
+            toast.error('Failed to get tracked TV Shows, please retry later', {
+                position: "top-center",
+                theme: "light",
+            });
+            logoutUser()
+        }
+    })
 
     const renderListViewWithData = (listOfTVShows: TVShow[], isLoggedIn: boolean, isTrackedList: boolean) => {
         return (
             <div className="min-h-full">
-                <ToastContainer />
                 {listOfTVShows.length > 0 ? (
                     <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 justify-items-center dark:bg-gray-800 pb-5">
                         {listOfTVShows.map((tvShow: TVShow) => {
@@ -97,21 +112,20 @@ const TVShowsListView = ({ isTrackedList, setShowDetails, isLoggedIn, handleButt
         )
     }
 
-    if(isTrackedList){
-        if(queryTrackedTVShows.isLoading) return (<div className="inline-flex justify-center w-full min-h-full"><LoadingSpinner/></div>)
-        if(queryTrackedTVShows.isError) return <div/>
-        if(queryTrackedTVShows.isSuccess){
+    if (isTrackedList) {
+        if (queryTrackedTVShows.isLoading && queryTrackedTVShows.isFetching) return (<div className="inline-flex justify-center w-full min-h-full"><LoadingSpinner /></div>)
+        if (queryTrackedTVShows.isSuccess) {
             return renderListViewWithData(queryTrackedTVShows.data, isLoggedIn, isTrackedList)
+        }
+    }else{
+        if (queryPopularTVShows.isLoading) return (<div className="inline-flex justify-center w-full min-h-full"><LoadingSpinner /></div>)
+        if (queryPopularTVShows.isSuccess) {
+            return renderListViewWithData(queryPopularTVShows.data, isLoggedIn, isTrackedList)
         }
     }
 
-    if(queryPopularTVShows.isLoading) return (<div className="inline-flex justify-center w-full min-h-full"><LoadingSpinner/></div>)
-    if(queryPopularTVShows.isError) return <div/>
-    if(queryPopularTVShows.isSuccess){
-        return renderListViewWithData(queryPopularTVShows.data, isLoggedIn, isTrackedList)
-    }
 
-    return (<div/>)
+    return (<div />)
 }
 
 export default TVShowsListView;
