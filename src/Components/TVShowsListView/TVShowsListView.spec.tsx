@@ -2,7 +2,7 @@ import { TvShowsListViewProps, shouldButtonBeShown } from "./TVShowsListView";
 import {  render, screen } from "@testing-library/react";
 import TVShowsListView from "./TVShowsListView";
 import '@testing-library/jest-dom'
-import { tvShowsList, tvShowNotInList } from '../../TestData/test-data'
+import { tvShowsList, tvShowNotInList } from '../../Test/test-data'
 
 const makeSut = (props: Partial<TvShowsListViewProps>) => {
   return render(<TVShowsListView isTrackedList={true} setShowDetails={jest.fn()} isLoggedIn={true} handleButtonClick={jest.fn()} searchPopular={''} searchTracked={''} setSearchPopular={jest.fn()} logoutUser={jest.fn()} {...props} />);
