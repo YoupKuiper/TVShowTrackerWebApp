@@ -8,8 +8,8 @@ interface TvShowsListItemProps {
   tvShow: TVShow;
   isTrackedListItem: boolean;
   shouldShowButton: boolean;
-  setShowDetails: (TVShow: TVShow) => any;
-  handleButtonClick: (tvShow: TVShow) => any;
+  setShowDetails: (TVShow: TVShow) => void;
+  handleButtonClick: (tvShow: TVShow) => void;
 }
 
 export const TVShowListItem = ({ tvShow, isTrackedListItem, shouldShowButton, setShowDetails, handleButtonClick }: TvShowsListItemProps) => {

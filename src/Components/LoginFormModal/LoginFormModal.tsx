@@ -1,20 +1,20 @@
 import { LockClosedIcon } from '@heroicons/react/solid';
 import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
-import { useState } from 'react';
+import axios, { AxiosResponse } from 'axios';
+import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import { z } from 'zod';
 import logo from '../../Img/logo.png';
-import { LoginUser, LoginUserObject, PasswordResetEmail, User } from '../../validators';
+import { LoginResponse, LoginUser, LoginUserObject, PasswordResetEmail, User } from '../../validators';
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 import "react-toastify/dist/ReactToastify.css";
 const TV_SHOW_TRACKER_API_BASE_URL = process.env.REACT_APP_API_BASE_URL
 
 interface LoginFormModalProps {
-  setShowLoginModal: (params: boolean) => any;
-  loginUser: (emailAddress: string, password: string) => Promise<any>;
-  createAccount: () => any;
-  setLoggedInUser: (user: User) => any;
+  setShowLoginModal: (params: boolean) => void;
+  loginUser: (emailAddress: string, password: string) => Promise<LoginResponse>;
+  createAccount: () => void;
+  setLoggedInUser: (user: User) => void;
 }
 
 const LoginFormModal = ({ setShowLoginModal, loginUser, createAccount, setLoggedInUser }: LoginFormModalProps) => {
@@ -29,16 +29,18 @@ const LoginFormModal = ({ setShowLoginModal, loginUser, createAccount, setLogged
     return loginUser(userLogin.emailAddress, userLogin.password)
   })
 
-  const handleOnClose = (event: any) => {
+  const handleOnClose = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
     // Only close when background or button is clicked
-    if (event.target.id === 'container' || event.target.id === 'closebutton') {
+    const target = event.target as HTMLElement
+    if (target.id === 'container' || target.id === 'closebutton') {
       setShowLoginModal(false);
     }
   }
 
-  const handleBackToLogin = (event: any) => {
+  const handleBackToLogin = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
     // Only close when background or button is clicked
-    if (event.target.id === 'backbutton') {
+    const target = event.target as HTMLElement
+    if (target.id === 'backbutton') {
       setShowPasswordResetForm(false)
       setShowSpinner(false)
     }
@@ -48,18 +50,18 @@ const LoginFormModal = ({ setShowLoginModal, loginUser, createAccount, setLogged
     setShowPasswordResetForm(true)
   }
 
-  const handleSendPasswordResetEmail = async (event: any) => {
+  const handleSendPasswordResetEmail = async (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
     event.preventDefault();
 
     try {
       setShowSpinner(true)
       PasswordResetEmail.parse(emailAddress)
-      const { data, status } = await axios.post<any>(
+      const { data, status } = await axios.post<AxiosResponse<string>>(
         `${TV_SHOW_TRACKER_API_BASE_URL}/ResetPassword`,
         { emailAddress }
       );
       console.log(`Response status: ${status}`)
-      setMessage(data)
+      setMessage(data.toString())
     } catch (error) {
       if (error instanceof z.ZodError) {
         return error.issues.map((issue) => {
@@ -78,7 +80,7 @@ const LoginFormModal = ({ setShowLoginModal, loginUser, createAccount, setLogged
     setShowSpinner(false)
   }
 
-  const handleLogin = async (event: any) => {
+  const handleLogin = async (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
     event.preventDefault();
 
     try {
@@ -201,7 +203,7 @@ const LoginFormModal = ({ setShowLoginModal, loginUser, createAccount, setLogged
                   </span>
                   {showPasswordResetForm ? 'Send reset email' : 'Sign in'}
                 </button> :
-                  <div className='text-center'><b>{message}</b></div>}
+                  <div className='text-center'><b>{message.toString()}</b></div>}
               </div>
               <div className='text-center'>Don't have an account yet? <button className='underline' onClick={() => createAccount()}>Create one!</button></div>
             </form>}

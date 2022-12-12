@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { LockClosedIcon } from '@heroicons/react/solid'
 import { useState } from 'react';
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -18,16 +18,16 @@ const ResetPasswordModal = () => {
     const TV_SHOW_TRACKER_API_BASE_URL = process.env.REACT_APP_API_BASE_URL
 
     const callResetPasswordEndpoint = async () => {
-        const { data } = await axios.post<any>(
+        const { data } = await axios.post<AxiosResponse<string>>(
             `${TV_SHOW_TRACKER_API_BASE_URL}/UpdateUser`,
             { emailAddress: params.emailAddress, resetPasswordToken: params.token, newPassword }
         );
 
-        setMessage(data)
+        setMessage(data.toString())
         return data;
     }
 
-    const handleResetPassword = async (event: any) => {
+    const handleResetPassword = async (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
         event.preventDefault();
 
         try {
@@ -56,8 +56,9 @@ const ResetPasswordModal = () => {
     }
 
     const navigate = useNavigate();
-    const handleClose = (event: any) => {
-        if (event.target.id === 'container' || event.target.id === 'closebutton') {
+    const handleClose = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+        const target = event.target as HTMLElement
+        if (target.id === 'container' || target.id === 'closebutton') {
             let path = `/`;
             navigate(path);
         }

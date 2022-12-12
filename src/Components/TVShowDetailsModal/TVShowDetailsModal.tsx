@@ -9,8 +9,8 @@ import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 
 interface showTVShowDetailsModalProps {
     tvShow: TVShow
-    setTVShow: (tvShow: TVShow) => any;
-    updateTrackedTvShows: (tvShow: TVShow, shouldRemove: boolean) => any;
+    setTVShow: (tvShow: TVShow) => void;
+    updateTrackedTvShows: (tvShow: TVShow, shouldRemove: boolean) => void;
 }
 
 export const TVShowsDetailsModal = ({ tvShow, setTVShow, updateTrackedTvShows }: showTVShowDetailsModalProps) => {
@@ -44,8 +44,8 @@ export const TVShowsDetailsModal = ({ tvShow, setTVShow, updateTrackedTvShows }:
                 `${process.env.REACT_APP_API_BASE_URL}/SearchTVShows`,
                 { getDetails: true, tvShowsIds: [id] }
             );
-
-            return { ...tvShow, ...data[0] }
+            const showWithDetails: TVShow = data[0]
+            return { ...tvShow, ...showWithDetails }
         } catch (error) {
             toast.error('Failed to get show details', {
                 position: "top-center",
@@ -55,9 +55,10 @@ export const TVShowsDetailsModal = ({ tvShow, setTVShow, updateTrackedTvShows }:
         }
     }
 
-    const handleOnClose = (event: any) => {
+    const handleOnClose = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
         // Only close when background is clicked
-        if (event.target.id === 'container' || event.target.id === 'closebutton') {
+        const target = event.target as HTMLElement
+        if (target.id === 'container' || target.id === 'closebutton') {
             setTVShow(DEFAULT_TV_SHOW)
         }
     }

@@ -12,12 +12,12 @@ interface NavBarProps {
   darkMode: boolean;
   emailAddress: string;
   wantsNotifications: boolean;
-  setWantsNotifications: (newSetting: boolean) => any;
-  setShowLoginModal: (params: boolean) => any;
-  setShowCreateAccountModal: (params: boolean) => any;
-  logout: () => any;
-  setDarkMode: (params: boolean) => any;
-  setCurrentPage: (newPage: string) => any;
+  setWantsNotifications: (newSetting: boolean) => void;
+  setShowLoginModal: (params: boolean) => void;
+  setShowCreateAccountModal: (params: boolean) => void;
+  logout: () => void;
+  setDarkMode: (params: boolean) => void;
+  setCurrentPage: (newPage: string) => void;
 }
 
 const classNames = (...classes: any) => {
@@ -33,7 +33,7 @@ export const NavBar = ({ currentPage, darkMode, isLoggedIn, emailAddress, wantsN
     { name: PAGE_NAME_TRACKED_TV_SHOWS, onClick: () => setCurrentPage(PAGE_NAME_TRACKED_TV_SHOWS), current: currentPage === PAGE_NAME_TRACKED_TV_SHOWS },
   ]
 
-  const handleChange = async (event: any) => {
+  const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     setShowSpinner(true)
     await setWantsNotifications(!wantsNotifications)
     setShowSpinner(false)

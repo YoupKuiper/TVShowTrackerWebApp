@@ -7,8 +7,8 @@ import { UserAccountCreation } from '../../validators';
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 
 interface CreateAccountFormModalProps {
-  setShowCreateAccountModal: (params: boolean) => any;
-  createUserAccount: (emailAddress: string, password: string) => Promise<any>;
+  setShowCreateAccountModal: (params: boolean) => void;
+  createUserAccount: (emailAddress: string, password: string) => Promise<void>;
 }
 
 const CreateAccountFormModal = ({ setShowCreateAccountModal, createUserAccount }: CreateAccountFormModalProps) => {
@@ -19,14 +19,15 @@ const CreateAccountFormModal = ({ setShowCreateAccountModal, createUserAccount }
   const [showSpinner, setShowSpinner] = useState(false);
   const [showSuccessfulCreation, setShowSuccessfulCreation] = useState(false)
 
-  const handleOnClose = (event: any) => {
+  const handleOnClose = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
     // Only close when background is clicked
-    if (event.target.id === 'container' || event.target.id === 'closebutton') {
+    const element = event.target as HTMLElement
+    if (element.id === 'container' || element.id === 'closebutton') {
       setShowCreateAccountModal(false);
     }
   }
 
-  const handleCreateUserAccount = async (event: any) => {
+  const handleCreateUserAccount = async (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
     event.preventDefault();
 
     try {
@@ -38,7 +39,7 @@ const CreateAccountFormModal = ({ setShowCreateAccountModal, createUserAccount }
       // If success, show successful account creation message
       setShowSpinner(false)
       setShowSuccessfulCreation(true)
-    } catch (error: any) {
+    } catch (error) {
       setShowSpinner(false)
       if (error instanceof z.ZodError) {
         return error.issues.map((issue) => {

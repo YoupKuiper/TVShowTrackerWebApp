@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from "react-router-dom";
 import logo from '../../Img/logo.png';
@@ -13,7 +13,7 @@ const UnsubscribeEmailModal = () => {
 
 
     const callUnsubscribeEndpoint = async () => {
-        const { data } = await axios.post<any>(
+        const { data } = await axios.post<AxiosResponse<string>>(
             `${TV_SHOW_TRACKER_API_BASE_URL}/UpdateUser`,
             { emailAddress: params.emailAddress, unsubscribeEmailToken: params.token }
         );
@@ -21,8 +21,9 @@ const UnsubscribeEmailModal = () => {
     }
 
     const navigate = useNavigate();
-    const handleClose = (event: any) => {
-        if (event.target.id === 'container' || event.target.id === 'closebutton') {
+    const handleClose = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+        const target = event.target as HTMLElement
+        if (target.id === 'container' || target.id === 'closebutton') {
             let path = `/`;
             navigate(path);
         }
@@ -33,7 +34,7 @@ const UnsubscribeEmailModal = () => {
         setShowSpinner(true)
         callUnsubscribeEndpoint().then((data) => {
             console.log('Response status is: ', data);
-            setMessage(data)
+            setMessage(data.toString())
             setShowSpinner(false)
         }).catch((error) => {
             setShowSpinner(false)

@@ -10,12 +10,12 @@ import { toast } from 'react-toastify';
 export interface TvShowsListViewProps {
     isTrackedList: boolean;
     isLoggedIn: boolean;
-    setShowDetails: (tvShow: TVShow) => any;
-    handleButtonClick: (tvShow: TVShow) => any;
-    setSearchPopular: (title: string) => any;
+    setShowDetails: (tvShow: TVShow) => void;
+    handleButtonClick: (tvShow: TVShow) => void;
+    setSearchPopular: (title: string) => void;
     searchPopular: string;
     searchTracked: string;
-    logoutUser: () => any;
+    logoutUser: () => void;
 }
 
 const TV_SHOW_TRACKER_API_BASE_URL = process.env.REACT_APP_API_BASE_URL
@@ -113,11 +113,13 @@ const TVShowsListView = ({ isTrackedList, setShowDetails, isLoggedIn, handleButt
     }
 
     if (isTrackedList) {
-        if (queryTrackedTVShows.isLoading && queryTrackedTVShows.isFetching) return (<div className="inline-flex justify-center w-full min-h-full"><LoadingSpinner /></div>)
+        if (queryTrackedTVShows.isLoading && queryTrackedTVShows.isFetching) return (<div className="inline-flex justify-center w-full min-h-full">
+            <LoadingSpinner />
+        </div>)
         if (queryTrackedTVShows.isSuccess) {
             return renderListViewWithData(queryTrackedTVShows.data, isLoggedIn, isTrackedList)
         }
-    }else{
+    } else {
         if (queryPopularTVShows.isLoading) return (<div className="inline-flex justify-center w-full min-h-full"><LoadingSpinner /></div>)
         if (queryPopularTVShows.isSuccess) {
             return renderListViewWithData(queryPopularTVShows.data, isLoggedIn, isTrackedList)

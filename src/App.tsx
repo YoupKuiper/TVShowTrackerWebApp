@@ -1,6 +1,6 @@
 
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { useEffect, useState } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
 import { toast, ToastContainer } from 'react-toastify';
@@ -57,7 +57,7 @@ const App = () => {
 
   const createUserAccount = async (emailAddress: string, password: string) => {
     try {
-      const { status } = await axios.post<any>(
+      const { status } = await axios.post<AxiosResponse>(
         `${TV_SHOW_TRACKER_API_BASE_URL}/CreateAccount`,
         { emailAddress, password }
       );
@@ -105,7 +105,7 @@ const App = () => {
 
   const updateWantsNotifications = async (newSetting: boolean) => {
     try {
-      await axios.post<any>(
+      await axios.post<AxiosResponse>(
         `${TV_SHOW_TRACKER_API_BASE_URL}/UpdateUser`,
         { token: cookies.get(JWT_TOKEN_KEY), updateObject: { wantsEmailNotifications: newSetting } }
       );
@@ -137,7 +137,7 @@ const App = () => {
         newTrackedTvShowsList = new Set(queryTrackedTVShows.data.concat(tvShow))
       }
 
-      const { status } = await axios.post<any>(
+      const { status } = await axios.post<AxiosResponse>(
         `${TV_SHOW_TRACKER_API_BASE_URL}/UpdateUser`,
         { token: cookies.get(JWT_TOKEN_KEY), updateObject: { trackedTVShows: newTrackedTvShowsList } }
       );

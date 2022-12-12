@@ -1,19 +1,19 @@
 interface SearchBarProps {
-    search: (params: any) => any;
-    setSearchTerm: (params: string) => any;
+    search: (params: string) => void;
+    setSearchTerm: (params: string) => void;
     searchTerm: string;
 }
 
 const SearchBar = ({search, setSearchTerm, searchTerm}: SearchBarProps) => {
     
-    const onKeypressed = (event: any) => {
+    const onKeypressed = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Enter') {
             event.preventDefault();
             search(event.target.value);
         }
     }
 
-    const onButtonClicked = (event: any) => {
+    const onButtonClicked = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
         event.preventDefault();
         search(searchTerm)
     }

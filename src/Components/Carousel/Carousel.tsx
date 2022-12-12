@@ -5,7 +5,7 @@ import { TVShow } from '../../validators';
 
 interface CarouselProps {
     tvShows: TVShow[]
-    setTVShow: (tvShow: TVShow) => any;
+    setTVShow: (tvShow: TVShow) => void;
   }
   
 
@@ -111,10 +111,10 @@ const Carousel = ({ tvShows, setTVShow }: CarouselProps) => {
           ref={carousel}
           className="carousel-container relative flex gap-1 overflow-hidden scroll-smooth snap-x snap-mandatory touch-pan-x z-0"
         >
-          {tvShows.map((tvShow: TVShow, index: any) => {
+          {tvShows.map((tvShow: TVShow) => {
             return (
               <div
-                key={index}
+                key={tvShow.id}
                 className="carousel-item text-center relative h-72 w-48 snap-start"
               >
                 <button
