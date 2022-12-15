@@ -32,8 +32,8 @@ export const TVShowsDetailsModal = ({ tvShow, setTVShow, updateTrackedTvShows }:
         setShowButtonSpinner(false)
     }
 
-    const buttonClass = isTrackedListItem ? `h-[50px] w-40 bg-red-500 hover:opacity-100 text-white font-bold rounded-md text-center opacity-70 z-11 float-left` :
-        `h-[50px] w-40 bg-blue-500 hover:opacity-100 text-white font-bold rounded-md text-center opacity-70 z-11 float-left`;
+    const buttonClass = isTrackedListItem ? `tst-remove-button h-[50px] w-40 bg-red-500 hover:opacity-100 text-white font-bold rounded-md text-center opacity-70 z-11 float-left` :
+        `tst-add-button h-[50px] w-40 bg-blue-500 hover:opacity-100 text-white font-bold rounded-md text-center opacity-70 z-11 float-left`;
 
     const buttonText = isTrackedListItem ? 'Remove from list' : 'Add to list'
 
@@ -91,7 +91,7 @@ export const TVShowsDetailsModal = ({ tvShow, setTVShow, updateTrackedTvShows }:
     const formatter = Intl.NumberFormat('en', { notation: 'compact' });
 
     return (
-        <div id='container' onClick={handleOnClose} className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm
+        <div id='container' onClick={handleOnClose} className="tst-details-modal fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm
         flex justify-center overflow-y-scroll">
             <div className="bg-white grid max-w-3xl w-full h-full sm:h-auto space-y-8 p-8 sm:rounded-md overflow-auto dark:bg-gray-700 dark:text-white">
                 <div className="h-fit rounded-t border-b dark:border-gray-600">

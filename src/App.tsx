@@ -139,7 +139,7 @@ const App = () => {
 
       const { status } = await axios.post<AxiosResponse>(
         `${TV_SHOW_TRACKER_API_BASE_URL}/UpdateUser`,
-        { token: cookies.get(JWT_TOKEN_KEY), updateObject: { trackedTVShows: newTrackedTvShowsList } }
+        { token: cookies.get(JWT_TOKEN_KEY), updateObject: { trackedTVShows: [...newTrackedTvShowsList] } }
       );
       queryClient.invalidateQueries(['tracked'])
       console.log('response status is: ', status);

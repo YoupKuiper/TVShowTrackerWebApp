@@ -26,7 +26,7 @@ export const TVShowListItem = ({ tvShow, isTrackedListItem, shouldShowButton, se
     `h-[50px] w-[50px] bg-blue-500 hover:opacity-100 text-white font-bold rounded-md absolute top-0 right-0 text-center opacity-70 z-11`;
 
   return (
-    <div key={tvShow.id}>
+    <div key={tvShow.id} className='tst-tvshow'>
       <div className='h-[360px] w-[240px] hover:scale-105 hover:duration-200 relative'>
         <button
           onClick={() => setShowDetails({...tvShow, isTrackedListItem})}

@@ -109,7 +109,7 @@ const LoginFormModal = ({ setShowLoginModal, loginUser, createAccount, setLogged
   return (
     <>
       <div id='container' onClick={handleOnClose} className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm
-      flex justify-center items-center">
+      flex justify-center items-center tst-loginModal">
 
         <div className="bg-white max-w-md w-full space-y-8 p-10 rounded-md dark:bg-gray-700 dark:text-white">
           <div className="flex justify-between items-start rounded-t">
@@ -150,7 +150,7 @@ const LoginFormModal = ({ setShowLoginModal, loginUser, createAccount, setLogged
                     value={emailAddress}
                     onChange={e => setEmailAddress(e.target.value)}
                     required
-                    ref={input => input && input.focus()}
+                    // ref={input => input && input.focus()}
                     className="appearance-none rounded-none relative block w-full px-3 py-2 border dark:bg-gray-700 dark:text-white border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                     placeholder="Email address"
                   />
@@ -196,7 +196,7 @@ const LoginFormModal = ({ setShowLoginModal, loginUser, createAccount, setLogged
               <div>
                 {!message ? <button
                   onClick={showPasswordResetForm ? handleSendPasswordResetEmail : handleLogin}
-                  className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  className="tst-formSendButton group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
                   <span className="absolute left-0 inset-y-0 flex items-center pl-3">
                     <LockClosedIcon className="h-5 w-5 text-indigo-500 group-hover:text-indigo-400" aria-hidden="true" />
