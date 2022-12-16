@@ -158,7 +158,7 @@ const App = () => {
   const AppView = () => {
     const isTrackedList = currentPage === PAGE_NAME_TRACKED_TV_SHOWS
     return (
-      <div className={darkMode ? 'dark bg-gray-800 w-full h-screen text-white' : ''}>
+      <div className={darkMode ? 'tst-main-div dark bg-gray-800 w-full h-screen text-white' : ''}>
         <ToastContainer />
         <NavBar
           currentPage={isTrackedList ? PAGE_NAME_TRACKED_TV_SHOWS : PAGE_NAME_SEARCH}

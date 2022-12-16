@@ -1,7 +1,7 @@
 import { LockClosedIcon } from '@heroicons/react/solid';
 import { useMutation } from '@tanstack/react-query';
 import axios, { AxiosResponse } from 'axios';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { z } from 'zod';
 import logo from '../../Img/logo.png';
@@ -24,10 +24,15 @@ const LoginFormModal = ({ setShowLoginModal, loginUser, createAccount, setLogged
   const [showSpinner, setShowSpinner] = useState(false);
   const [showPasswordResetForm, setShowPasswordResetForm] = useState(false);
   const [message, setMessage] = useState('');
+  const emailInput = useRef<HTMLInputElement>(null)
 
   const userMutation = useMutation((userLogin: LoginUser) => {
     return loginUser(userLogin.emailAddress, userLogin.password)
   })
+
+  useEffect(() => {
+      emailInput.current?.focus();
+  }, []);
 
   const handleOnClose = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
     // Only close when background or button is clicked
@@ -149,8 +154,8 @@ const LoginFormModal = ({ setShowLoginModal, loginUser, createAccount, setLogged
                     autoComplete="email"
                     value={emailAddress}
                     onChange={e => setEmailAddress(e.target.value)}
+                    ref={emailInput}
                     required
-                    // ref={input => input && input.focus()}
                     className="appearance-none rounded-none relative block w-full px-3 py-2 border dark:bg-gray-700 dark:text-white border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                     placeholder="Email address"
                   />

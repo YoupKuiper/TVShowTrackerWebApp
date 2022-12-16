@@ -10,7 +10,7 @@ import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 interface showTVShowDetailsModalProps {
     tvShow: TVShow
     setTVShow: (tvShow: TVShow) => void;
-    updateTrackedTvShows: (tvShow: TVShow, shouldRemove: boolean) => void;
+    updateTrackedTvShows: (tvShow: TVShow, shouldRemove: boolean) => Promise<void>;
 }
 
 export const TVShowsDetailsModal = ({ tvShow, setTVShow, updateTrackedTvShows }: showTVShowDetailsModalProps) => {
@@ -32,8 +32,8 @@ export const TVShowsDetailsModal = ({ tvShow, setTVShow, updateTrackedTvShows }:
         setShowButtonSpinner(false)
     }
 
-    const buttonClass = isTrackedListItem ? `tst-remove-button h-[50px] w-40 bg-red-500 hover:opacity-100 text-white font-bold rounded-md text-center opacity-70 z-11 float-left` :
-        `tst-add-button h-[50px] w-40 bg-blue-500 hover:opacity-100 text-white font-bold rounded-md text-center opacity-70 z-11 float-left`;
+    const buttonClass = isTrackedListItem ? `tst-modal-remove-button h-[50px] w-40 bg-red-500 hover:opacity-100 text-white font-bold rounded-md text-center opacity-70 z-11 float-left` :
+        `tst-modal-add-button h-[50px] w-40 bg-blue-500 hover:opacity-100 text-white font-bold rounded-md text-center opacity-70 z-11 float-left`;
 
     const buttonText = isTrackedListItem ? 'Remove from list' : 'Add to list'
 
