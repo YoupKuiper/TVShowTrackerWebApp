@@ -33,6 +33,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test --testPathIgnorePatterns=.*e2e.test.ts",
     "test:e2e": "react-scripts test --testPathPattern=.*e2e.test.ts$",
+    "test-with-retries": "node ./src/Test/run_tests_with_retries.js",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

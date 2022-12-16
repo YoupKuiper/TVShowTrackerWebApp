@@ -87,7 +87,7 @@ const App = () => {
     }
   }
 
-  const logoutUser = () => {
+  const logoutUser = async (): Promise<void> => {
     // Delete jwt token
     cookies.remove(JWT_TOKEN_KEY)
     setLoggedInUser(DEFAULT_USER)

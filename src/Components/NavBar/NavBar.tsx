@@ -12,7 +12,7 @@ interface NavBarProps {
   darkMode: boolean;
   emailAddress: string;
   wantsNotifications: boolean;
-  setWantsNotifications: (newSetting: boolean) => void;
+  setWantsNotifications: (newSetting: boolean) => Promise<void>;
   setShowLoginModal: (params: boolean) => void;
   setShowCreateAccountModal: (params: boolean) => void;
   logout: () => void;

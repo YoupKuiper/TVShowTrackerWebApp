@@ -1,4 +1,4 @@
-import puppeteer, { Browser, ElementHandle, Page } from "puppeteer";
+import puppeteer, { Browser, Page } from "puppeteer";
 
 describe("App.js", () => {
   let browser: Browser;
@@ -14,28 +14,38 @@ describe("App.js", () => {
     await page.waitForSelector('div > div.Toastify > div')
     const toast = await page.$('div > div.Toastify > div')
     let value = await page.evaluate(el => el?.textContent, toast)
-    if(toastText){
+    if (toastText) {
       expect(value).toBe(toastText)
     }
     await page.waitForSelector('.Toastify__close-button', { hidden: false, visible: true })
-    await page.click('.Toastify__close-button')
+    await delay(100)
     await page.click('.Toastify__close-button')
     await page.waitForSelector('div > div.Toastify > div', { hidden: true, visible: false })
   }
 
-  beforeAll(async () => {
+  // beforeAll(async () => {
+  //   browser = await puppeteer.launch({
+  //     args: ['--start-maximized'],
+  //     headless: false,
+  //     defaultViewport: {
+  //       width: 1920,
+  //       height: 1080
+  //     }
+  //   });
+  //   page = await browser.newPage();
+  // });
+  jest.retryTimes(3);
+
+  it('loads popular tv shows', async () => {
     browser = await puppeteer.launch({
       args: ['--start-maximized'],
-      // headless: false,
+      headless: false,
       defaultViewport: {
         width: 1920,
         height: 1080
       }
     });
     page = await browser.newPage();
-  });
-
-  it('loads popular tv shows', async () => {
 
     await page.goto("http://localhost:3000");
     await page.waitForSelector('.tst-tvshow')
@@ -72,7 +82,7 @@ describe("App.js", () => {
     console.log('trying to log in now')
 
     // Expect to be logged in
-    await page.waitForSelector('.tst-loginModal', { hidden: true })
+    await page.waitForSelector('.tst-loginModal', { hidden: true, visible: false })
     expect(await page.evaluate(el => el.ariaCurrent, navBarButtons[1])).toBe('page')
     const userButton = await page.waitForSelector('.tst-userButton')
     await userButton?.click()
@@ -95,6 +105,7 @@ describe("App.js", () => {
     await page.waitForSelector('.animate-spin', { visible: true, hidden: false })
     await page.waitForSelector('.animate-spin', { visible: false, hidden: true })
     console.log('spinner came and went');
+    await delay(2000)
     await page.waitForSelector('.tst-modal-remove-button', { visible: true, hidden: false })
 
     // Close the modal
@@ -190,13 +201,13 @@ describe("App.js", () => {
     await page.click('.toggle-dark-state')
     await page.click('.toggle-dark-state')
     console.log('dark mode button clicked');
-    await page.waitForSelector('.dark', {visible: false, hidden: true})
+    await page.waitForSelector('.dark', { visible: false, hidden: true })
     console.log('dark mode toggled');
     await page.click('.toggle-dark-state')
     await page.waitForSelector('.dark')
 
-    await page.screenshot({path: 'screenshot.png'})
-  }, 20000);
+    await page.screenshot({ path: 'screenshot.png' })
+  }, 60000);
 
   afterAll(() => browser.close());
 });

@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useQuery } from '@tanstack/react-query';
 import { JWT_TOKEN_KEY } from "../../constants";
 import { TVShow } from "../../validators";
@@ -15,7 +15,7 @@ export interface TvShowsListViewProps {
     setSearchPopular: (title: string) => void;
     searchPopular: string;
     searchTracked: string;
-    logoutUser: () => void;
+    logoutUser: () => Promise<void>;
 }
 
 const TV_SHOW_TRACKER_API_BASE_URL = process.env.REACT_APP_API_BASE_URL
@@ -76,12 +76,19 @@ const TVShowsListView = ({ isTrackedList, setShowDetails, isLoggedIn, handleButt
         }
     })
     const queryTrackedTVShows = useQuery(['tracked', searchTracked], () => getTrackedTVShows(searchTracked), {
-        enabled: isLoggedIn, staleTime: 60000, onError: (error) => {
-            toast.error('Failed to get tracked TV Shows, please retry later', {
-                position: "top-center",
-                theme: "light",
-            });
-            logoutUser()
+        enabled: isLoggedIn, staleTime: 60000, onError: async (error: AxiosError) => {
+            if(error?.response?.status === 400){
+                await logoutUser()
+                toast.error('Token expired, please log in again.', {
+                    position: "top-center",
+                    theme: "light",
+                });
+            }else{
+                toast.error('Failed to get tracked TV Shows, please retry later', {
+                    position: "top-center",
+                    theme: "light",
+                });
+            }
         }
     })
 
