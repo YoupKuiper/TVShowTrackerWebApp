@@ -34,12 +34,12 @@ describe("App.js", () => {
   //   });
   //   page = await browser.newPage();
   // });
-  jest.retryTimes(3);
+  // jest.retryTimes(3);
 
   it('loads popular tv shows', async () => {
     browser = await puppeteer.launch({
       args: ['--start-maximized'],
-      headless: false,
+      // headless: false,
       defaultViewport: {
         width: 1920,
         height: 1080
@@ -52,15 +52,24 @@ describe("App.js", () => {
     let popularTVShows = await page.$$('.tst-tvshow');
     //Expect 20 tvshows to be loaded
     expect(popularTVShows.length).toBe(20)
+    await popularTVShows[0].click()
+    await page.waitForSelector('.tst-modal-add-button', { visible: true, hidden: false })
+    await page.click('.tst-modal-add-button')
+    await expectToastAndCloseIt(page, 'Please log in first to add shows to your list')
+    console.log('toast for please login disappeared');
+    await page.click('#closebutton')
+    await page.click('#closebutton')
 
     //Expect Search to be current page
     let navBarButtons = await page.$$('.tst-navButton')
     expect(navBarButtons.length).toBe(2)
     expect(await page.evaluate(el => el.ariaCurrent, navBarButtons[0])).toBe('page')
+    console.log('navbarbuttons checked');
 
     //Expect login modal to appear when not logged in and clicking on my tracked shows
     await navBarButtons[1].click()
     await page.waitForSelector('.tst-loginModal')
+    console.log('login modal shown');
 
     //Login
     await page.waitForSelector('#email-address')
@@ -96,11 +105,12 @@ describe("App.js", () => {
     const tvShowsCount = tvShows.length
     let showName = await page.evaluate(el => el.textContent, tvShows[0]);
     console.log(showName)
+    await delay(200)
     await tvShows[0].click()
-    await page.waitForSelector('.animate-spin', { visible: true, hidden: false })
     await page.waitForSelector('.animate-spin', { visible: false, hidden: true })
     console.log('spinner came and went');
     await page.waitForSelector('.tst-modal-add-button', { visible: true, hidden: false })
+    await delay(200)
     await page.click('.tst-modal-add-button')
     await page.waitForSelector('.animate-spin', { visible: true, hidden: false })
     await page.waitForSelector('.animate-spin', { visible: false, hidden: true })

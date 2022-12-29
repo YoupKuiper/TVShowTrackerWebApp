@@ -128,7 +128,7 @@ const App = () => {
   const updateTrackedTvShows = async (tvShow: TVShow, toRemove: boolean) => {
     try {
       if (!queryTrackedTVShows.data) {
-        throw new Error('No tracked shows data found')
+        throw new Error('Please log in first to add shows to your list')
       }
       let newTrackedTvShowsList = new Set<TVShow>();
       if (toRemove) {
@@ -143,8 +143,21 @@ const App = () => {
       );
       queryClient.invalidateQueries(['tracked'])
       console.log('response status is: ', status);
-    } catch (error) {
-      //TODO: check if error is because user is not logged in
+    } catch (error: any) {
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 400) {
+          await logoutUser()
+          toast.error('Token expired, please log in again.', {
+            position: "top-center",
+            theme: "light",
+          });
+        }
+      } else {
+        toast.error(error.message, {
+          position: "top-center",
+          theme: "light",
+        });
+      }
       setShowLoginModal(true)
       throw error
     }

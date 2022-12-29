@@ -24,10 +24,7 @@ export const TVShowsDetailsModal = ({ tvShow, setTVShow, updateTrackedTvShows }:
             await updateTrackedTvShows(tvShow, isTrackedListItem)
             setIsTrackedListItem(!isTrackedListItem)
         } catch (error) {
-            return toast.error('Failed to update tracked list', {
-                position: "top-center",
-                theme: "light",
-            });
+            // Error is handled by updateTrackedTvShows
         }
         setShowButtonSpinner(false)
     }
@@ -130,7 +127,7 @@ export const TVShowsDetailsModal = ({ tvShow, setTVShow, updateTrackedTvShows }:
                         {isLoading && <LoadingSpinner />}
                         {detailedTVShow && <div>
                             <div>
-                                <p>Network: {<img className="inline" src={detailedTVShow.networks ? IMAGES_BASE_URL + IMAGE_DEFAULT_SIZE + detailedTVShow.networks[0].logo_path : ''} alt={detailedTVShow.name} width={40} />}</p>
+                                <p>Network: {detailedTVShow.networks && detailedTVShow.networks.length > 0 ? <img className="inline" src={IMAGES_BASE_URL + IMAGE_DEFAULT_SIZE + detailedTVShow.networks[0].logo_path} alt={detailedTVShow.name} width={40} /> : 'unknown network'}</p>
                                 <p>Total Episodes: {detailedTVShow.number_of_episodes ? detailedTVShow.number_of_episodes : ''}</p>
                                 <p>Seasons: {detailedTVShow.number_of_seasons ? detailedTVShow.number_of_seasons : ''}</p>
                                 <p>Episode duration: {detailedTVShow.episode_run_time && detailedTVShow.episode_run_time.length ? detailedTVShow.episode_run_time[0].toString() + ' minutes' : 'N/A'}</p>
