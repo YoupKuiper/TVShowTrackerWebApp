@@ -128,7 +128,7 @@ const App = () => {
   const updateTrackedTvShows = async (tvShow: TVShow, toRemove: boolean) => {
     try {
       if (!queryTrackedTVShows.data) {
-        throw new Error('Please log in first to add shows to your list')
+        throw new Error('Please log in first to add shows to your Watchlist')
       }
       let newTrackedTvShowsList = new Set<TVShow>();
       if (toRemove) {
@@ -187,7 +187,7 @@ const App = () => {
           setCurrentPage={setCurrentPage} />
         {!isLoggedIn && <div className='container mx-auto text-center py-5'>
           <div className='text-4xl pb-5'>Welcome to TVTracker</div>
-          <div className='text-lg'>Add shows to your list and get email notifications when episodes air!</div>
+          <div className='text-lg'>Add shows to your Watchlist and get email notifications when episodes air!</div>
           <div className='text-lg'><button onClick={() => setShowCreateAccountModal(true)} className='underline'>Create an account</button> or <button onClick={() => setShowLoginModal(true)} className='underline'>Login</button> to get started</div>
         </div>}
         <SearchBar search={isTrackedList ? () => setSearchTracked(searchTerm) : () => setSearchPopular(searchTerm)} setSearchTerm={setSearchTerm} searchTerm={searchTerm} />
