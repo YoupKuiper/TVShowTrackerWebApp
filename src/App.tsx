@@ -223,9 +223,12 @@ const App = () => {
         <Route
           path="*"
           element={
-            <main style={{ padding: "1rem" }}>
-              <p>There's nothing here!</p>
-            </main>
+            <main className={darkMode ? 'tst-main-div dark bg-gray-800 w-full h-screen text-white' : ''}>
+              <div className='container mx-auto text-center py-5'>
+                <p>There's nothing here!</p>
+                <p>Click <a href='/' className='underline'>here</a> to go back to the main page</p>
+              </div>
+            </main >
           }
         />
       </Routes>
