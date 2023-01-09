@@ -172,8 +172,16 @@ export const IndexAndAlertMessageObject = z.object({
     message: z.string()
 })
 
+export const updateUserResponseObject = z.object({
+    trackedTVShows: z.array(TVShowObject),
+    emailAddress: z.string().email(),
+    wantsEmailNotifications: z.boolean(),
+    emailAddressVerified: z.boolean()
+})
+
 export type User = z.infer<typeof UserObject>;
 export type LoginResponse = z.infer<typeof LoginResponseObject>;
 export type LoginUser = z.infer<typeof LoginUserObject>;
 export type TVShow = z.infer<typeof TVShowDetailsObject>;
 export type IndexAndAlertMessage = z.infer<typeof IndexAndAlertMessageObject>;
+export type UpdateUserResponse = z.infer<typeof updateUserResponseObject>;
