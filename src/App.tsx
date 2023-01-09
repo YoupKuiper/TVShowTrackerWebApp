@@ -316,6 +316,9 @@ const App = () => {
         <Route path="/resetpassword" element={<ResetPasswordModal />}>
           <Route path=":emailAddress/:token" element={<ResetPasswordModal />} />
         </Route>
+        <Route path="/verifyemailaddress" element={<ResetPasswordModal />}>
+          <Route path=":emailAddress/:token" element={<ResetPasswordModal />} />
+        </Route>
         <Route
           path="*"
           element={
