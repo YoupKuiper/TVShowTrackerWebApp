@@ -14,6 +14,7 @@ import TVShowsListView, {
   getTrackedTVShows,
 } from "./Components/TVShowsListView/TVShowsListView";
 import UnsubscribeEmailModal from "./Components/UnsubscribeEmailModal/UnsubscribeEmailModal";
+import VerifyEmailAddressView from "./Components/VerifyEmailAddressView/VerifyEmailAddressView";
 import {
   CURRENT_PAGE_KEY,
   DARK_MODE_KEY,
@@ -316,8 +317,8 @@ const App = () => {
         <Route path="/resetpassword" element={<ResetPasswordModal />}>
           <Route path=":emailAddress/:token" element={<ResetPasswordModal />} />
         </Route>
-        <Route path="/verifyemailaddress" element={<ResetPasswordModal />}>
-          <Route path=":emailAddress/:token" element={<ResetPasswordModal />} />
+        <Route path="/verifyemailaddress" element={<VerifyEmailAddressView />}>
+          <Route path=":emailAddress/:token" element={<VerifyEmailAddressView />} />
         </Route>
         <Route
           path="*"
