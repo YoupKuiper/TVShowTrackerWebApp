@@ -52,7 +52,7 @@ const App = () => {
 	const isLoggedIn = !!cookies.get(JWT_TOKEN_KEY);
 	const location = useLocation();
 	const showTVShowDetailsModal = tvShowDetailsToShow && tvShowDetailsToShow.id !== DEFAULT_TV_SHOW.id;
-	const queryTrackedTVShows = useQuery(["tracked", searchTracked], () => getTrackedTVShows(searchTracked), {
+	useQuery(["tracked", searchTracked], () => getTrackedTVShows(searchTracked), {
 		enabled: isLoggedIn,
 		staleTime: 60000,
 	});
