@@ -80,7 +80,7 @@ export default function VerifyEmailAddressView() {
 					<div style={{ marginTop: "0" }}>
 						<img className="mx-auto h-24 w-auto" src={logo} alt="Workflow" />
 						{success ? (
-							<h2>Done!</h2>
+							<h2 className="mt-6 text-center text-md font-extrabold text-white">Done!</h2>
 						) : (
 							<h2 className="mt-6 text-center text-md font-extrabold text-white">
 								Verifying your email address..
