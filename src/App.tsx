@@ -272,7 +272,7 @@ const App = () => {
 					<Route path=":emailAddress/:token" element={<ResetPasswordModal />} />
 				</Route>
 				<Route path="/verifyemailaddress" element={<VerifyEmailAddressView />}>
-					<Route path=":emailAddress/:token/" element={<VerifyEmailAddressView />} />
+					<Route path=":emailAddress/:token/:mobileRegistration" element={<VerifyEmailAddressView />} />
 				</Route>
 				<Route
 					path="*"

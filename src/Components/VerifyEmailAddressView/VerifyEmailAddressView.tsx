@@ -24,7 +24,6 @@ export default function VerifyEmailAddressView() {
 		callVerifyEmailAddressEndpoint()
 			.then((data) => {
 				console.log("Response status is: ", data);
-				setMessage(data.toString());
 				setSuccess(true);
 				setShowSpinner(false);
 				handleSuccess();
@@ -39,8 +38,12 @@ export default function VerifyEmailAddressView() {
 	const navigate = useNavigate();
 
 	const handleSuccess = async () => {
-		let path = `/`;
-		navigate(path);
+		if (params.mobileRegistration) {
+			setMessage("Registration successful, you can now log in to the TV Tracker app!");
+		} else {
+			let path = `/`;
+			navigate(path);
+		}
 	};
 
 	return (
