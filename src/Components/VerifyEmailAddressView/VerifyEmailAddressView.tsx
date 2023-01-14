@@ -38,7 +38,7 @@ export default function VerifyEmailAddressView() {
 	const navigate = useNavigate();
 
 	const handleSuccess = async () => {
-		if (params.mobileRegistration) {
+		if (params.mobileRegistration === "true") {
 			setMessage("Registration successful, you can now log in to the TV Tracker app!");
 		} else {
 			let path = `/`;
