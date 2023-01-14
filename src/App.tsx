@@ -26,16 +26,8 @@ import {
 import { useStickyState } from "./hooks";
 import { LoginResponse, TVShow, UpdateUserResponse, User } from "./validators";
 
-const getDarkModeStateFromLocalStorage = () => {
-	try {
-		return !!JSON.parse(localStorage.getItem(DARK_MODE_KEY) || "");
-	} catch (error) {
-		return false;
-	}
-};
-
 const App = () => {
-	const [darkMode, setDarkMode] = useStickyState(getDarkModeStateFromLocalStorage, DARK_MODE_KEY);
+	const [darkMode, setDarkMode] = useStickyState(true, DARK_MODE_KEY);
 	const [loggedInUser, setLoggedInUser] = useStickyState(DEFAULT_USER, USER_KEY);
 	const [currentPage, setCurrentPage] = useStickyState(PAGE_NAME_SEARCH, CURRENT_PAGE_KEY);
 	const [showLoginModal, setShowLoginModal] = useState(false);
@@ -280,7 +272,7 @@ const App = () => {
 					<Route path=":emailAddress/:token" element={<ResetPasswordModal />} />
 				</Route>
 				<Route path="/verifyemailaddress" element={<VerifyEmailAddressView />}>
-					<Route path=":emailAddress/:token" element={<VerifyEmailAddressView />} />
+					<Route path=":emailAddress/:token/" element={<VerifyEmailAddressView />} />
 				</Route>
 				<Route
 					path="*"

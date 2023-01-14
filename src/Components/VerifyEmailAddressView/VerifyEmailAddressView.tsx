@@ -39,14 +39,8 @@ export default function VerifyEmailAddressView() {
 	const navigate = useNavigate();
 
 	const handleSuccess = async () => {
-		if (params.platform === "mobile") {
-			navigate("tvtracker://verifyemailaddress/{EMAILADDRESS}/{VERIFYEMAILTOKEN}", {
-				relative: "route",
-			});
-		} else {
-			let path = `/`;
-			navigate(path);
-		}
+		let path = `/`;
+		navigate(path);
 	};
 
 	return (
