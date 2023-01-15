@@ -152,7 +152,9 @@ export const UserObject = z.object({
 
 export const LoginResponseObject = z.object({
 	token: z.string(),
-	user: UserObject,
+	emailAddress: z.string(),
+	wantsEmailNotifications: z.boolean(),
+	wantsMobileNotifications: z.boolean(),
 });
 
 export const LoginUserObject = z.object({

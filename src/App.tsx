@@ -78,7 +78,11 @@ const App = () => {
 
 			cookies.set(JWT_TOKEN_KEY, data.token);
 			queryClient.invalidateQueries(["tracked"]);
-			setLoggedInUser(data.user);
+			setLoggedInUser({
+				emailAddress: data.emailAddress,
+				wantsEmailNotifications: data.wantsEmailNotifications,
+				wantsMobileNotifications: data.wantsMobileNotifications,
+			});
 			setShowLoginModal(false);
 			setCurrentPage(PAGE_NAME_TRACKED_TV_SHOWS);
 			return data;
