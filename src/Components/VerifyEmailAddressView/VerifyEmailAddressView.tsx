@@ -1,7 +1,8 @@
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import logo from "../../Img/logo.png";
+import { SimpleResponse } from "../../validators";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 
 export default function VerifyEmailAddressView() {
@@ -12,11 +13,11 @@ export default function VerifyEmailAddressView() {
 	const TV_SHOW_TRACKER_API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 	const callVerifyEmailAddressEndpoint = async () => {
-		const { data } = await axios.post<AxiosResponse<string>>(`${TV_SHOW_TRACKER_API_BASE_URL}/UpdateUser`, {
+		const { data } = await axios.post<SimpleResponse>(`${TV_SHOW_TRACKER_API_BASE_URL}/UpdateUser`, {
 			emailAddress: params.emailAddress,
 			verifyEmailAddressToken: params.token,
 		});
-		return data;
+		return data.message;
 	};
 
 	useEffect(() => {

@@ -1,11 +1,11 @@
 import { LockClosedIcon } from "@heroicons/react/solid";
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { z } from "zod";
 import logo from "../../Img/logo.png";
-import { PasswordResetObject } from "../../validators";
+import { PasswordResetObject, SimpleResponse } from "../../validators";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 
 const ResetPasswordModal = () => {
@@ -17,13 +17,13 @@ const ResetPasswordModal = () => {
 	const TV_SHOW_TRACKER_API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 	const callResetPasswordEndpoint = async () => {
-		const { data } = await axios.post<AxiosResponse<string>>(`${TV_SHOW_TRACKER_API_BASE_URL}/UpdateUser`, {
+		const { data } = await axios.post<SimpleResponse>(`${TV_SHOW_TRACKER_API_BASE_URL}/UpdateUser`, {
 			emailAddress: params.emailAddress,
 			resetPasswordToken: params.token,
 			newPassword,
 		});
 
-		setMessage(data.toString());
+		setMessage(data.message);
 		return data;
 	};
 
