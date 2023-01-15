@@ -69,7 +69,7 @@ const ResetPasswordModal = () => {
 					</div>
 					{showSpinner && (
 						<div className="inline-flex justify-center w-full">
-							<LoadingSpinner />
+							<LoadingSpinner forcedWhite={true} />
 						</div>
 					)}
 					{!showSpinner && !message && (
