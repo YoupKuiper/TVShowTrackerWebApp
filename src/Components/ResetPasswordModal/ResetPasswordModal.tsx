@@ -1,12 +1,12 @@
-import axios, { AxiosResponse } from "axios";
 import { LockClosedIcon } from "@heroicons/react/solid";
+import axios, { AxiosResponse } from "axios";
 import { useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import { z } from "zod";
 import logo from "../../Img/logo.png";
 import { PasswordResetObject } from "../../validators";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
-import { z } from "zod";
-import { toast } from "react-toastify";
 
 const ResetPasswordModal = () => {
 	let params = useParams();
@@ -53,15 +53,6 @@ const ResetPasswordModal = () => {
 		setShowSpinner(false);
 
 		return true;
-	};
-
-	const navigate = useNavigate();
-	const handleClose = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
-		const target = event.target as HTMLElement;
-		if (target.id === "container" || target.id === "closebutton") {
-			let path = `/`;
-			navigate(path);
-		}
 	};
 
 	return (
