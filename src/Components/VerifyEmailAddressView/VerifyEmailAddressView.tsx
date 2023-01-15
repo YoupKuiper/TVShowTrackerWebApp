@@ -49,7 +49,7 @@ export default function VerifyEmailAddressView() {
 	return (
 		<>
 			<div>
-				<div className="bg-gray-800 w-full h-screen w-full space-y-8 p-10 dark:bg-gray-700 text-white">
+				<div className="bg-gray-800 w-full h-screen space-y-8 p-10 dark:bg-gray-700 text-white">
 					<div className="flex justify-between items-start rounded-t">
 						<Link
 							id="closebutton"
