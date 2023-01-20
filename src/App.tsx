@@ -7,6 +7,7 @@ import Cookies from "universal-cookie";
 import CreateAccountFormModal from "./Components/CreateAccountFormModal/CreateAccountFormModal";
 import LoginFormModal from "./Components/LoginFormModal/LoginFormModal";
 import { NavBar } from "./Components/NavBar/NavBar";
+import PrivacyPolicy from "./Components/PrivacyPolicy/PrivacyPolicy";
 import ResetPasswordModal from "./Components/ResetPasswordModal/ResetPasswordModal";
 import SearchBar from "./Components/SearchBar/SearchBar";
 import { TVShowsDetailsModal } from "./Components/TVShowDetailsModal/TVShowDetailsModal";
@@ -278,6 +279,7 @@ const App = () => {
 				<Route path="/verifyemailaddress" element={<VerifyEmailAddressView />}>
 					<Route path=":emailAddress/:token/:mobileRegistration" element={<VerifyEmailAddressView />} />
 				</Route>
+				<Route path="/privacy-policy" element={<PrivacyPolicy />} />
 				<Route
 					path="*"
 					element={
